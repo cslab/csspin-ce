@@ -1,0 +1,87 @@
+# -*- mode: yaml; coding: utf-8 -*-
+#
+# Schema for the ce_services plugin for cs.spin
+
+ce_services:
+    type: object
+    help: |
+        The ce_services plugin equips cs.spin with the ability to provision,
+        start, stop or even control services. These services are e.g. traefik,
+        solr, redis and many more.
+    properties:
+        hivemq:
+            type: object
+            help: |
+                Configuration regarding the HiveMQ service
+            properties:
+                enabled:
+                    type: bool
+                    help: If enabled, the hivemq service will be started.
+                version:
+                    type: str
+                    help: The version of HiveMQ to use.
+                install_dir:
+                    type: path
+                    help: The installation directory of hivemq.
+                elements_integration:
+                    type: object
+                    help: |
+                        Configuration regarding the CONTACT Elements
+                        Integration for HiveMQ
+                    properties:
+                        version:
+                            type: str
+                            help: The version of CONTACT Elements Integration
+                        user:
+                            type: str
+                            help: |
+                                The default user to use when accessing the
+                                CONTACT Elements Integration
+                        password:
+                            type: str
+                            help: The password corresponding to the user
+                        install_dir:
+                            type: path
+                            help: |
+                                The installation directory of the CONTACT
+                                Elements integration.
+        influxdb:
+            type: object
+            help: Configuration regarding the influxdb service.
+            properties:
+                enabled:
+                    type: bool
+                    help: If enabled, the influxdb service will be started.
+                version:
+                    type: str
+                    help: The version of InfluxDB to use.
+                install_dir:
+                    type: path
+                    help: Installation directory of influxdb.
+        traefik:
+            type: object
+            help: Configuration regarding the traefik service.
+            properties:
+                version:
+                    type: str
+                    help: The version of Traefik to use.
+                dashboard_port:
+                    type: str
+                    help: |
+                        The port at which the Traefik dashboard should be
+                        exposed.
+                install_dir:
+                    type: path
+                    help: Traefik's installation directory.
+        redis_install_dir:
+            type: path
+            help: The installation directory of redis.
+        redis_version:
+            type: str
+            help: The redis version to use.
+        timeout:
+            type: int
+            help: Timeout for services to come up.
+        loglevel:
+            type: str
+            help: The loglevel of the ce_services plugin.

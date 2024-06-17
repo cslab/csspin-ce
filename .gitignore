@@ -1,0 +1,87 @@
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+
+# Distribution / packaging
+bin/
+build*/
+develop-eggs/
+dist/
+downloads/
+package_sources/
+**/node_modules/
+eggs/
+.eggs/
+parts/
+sdist/
+*.egg-info/
+.installed.cfg
+.mr.developer.cfg
+.*.build
+**.cache/
+**.cache-prod/
+**.cache-dev/
+*.cdx.json
+*.cdx.xml
+version.txt
+
+# Unit test / coverage reports
+.coverage
+.coverage.*
+**/coverage/
+nosetests.xml
+*coverage*.xml
+.noseids
+python-ut-coverage.xml
+python-it-coverage.xml
+**.jest-cache/
+*.junit.xml
+/reports/*
+junit.xml
+cept_test_results.json
+pytest*.xml
+
+# Performance Test artifacts
+benchrunner.log
+benchmarkResults*.json
+
+# cypress artifacts
+**/cypress/videos/*
+**/cypress/screenshots/*
+
+# Translations
+*.pot
+*.mo
+
+# Sphinx documentation
+doc/_build
+doc/_docindex
+doc/docportal.db
+doc/*/*/*/docset.info
+doc/*/*/doctrees/
+doc/*/*/html/
+doc/*/*/htmlhelp/
+doc/*/*/latex/
+doc/*/*/pickle/
+doc/*/*/.build
+.doctrees/
+doc/**/_js
+
+# IDE configuration
+.idea/
+.vscode/
+*.code-workspace
+
+# CDB Instances
+inst/
+sqlite/
+oracle/
+mssql*/
+instance/
+eggtest/
+pkgtest_instances/
+
+*.log
+
+# virtual and working environments
+.spin*
+venv*/

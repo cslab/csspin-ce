@@ -1,0 +1,130 @@
+# -*- mode: yaml; coding: utf-8 -*-
+#
+# Schema for the mkinstance plugin for cs.spin
+
+mkinstance:
+    type: object
+    help: |
+        The mkinstance plugin for cs.spin provides the full mkinstance
+        experience - all in the context of cs.spin.
+    properties:
+        opts:
+            type: list
+            help: List of additional options for the mkinstance command.
+        dbms:
+            type: str
+            help: The DBMS that mkinstance should use.
+        webmake:
+            type: bool
+            help: If set to ``True``, webmake will be run.
+        base:
+            type: object
+            help: The base defines the base properties for an CE instance.
+            properties:
+                namespace:
+                    type: str
+                    help: |
+                        The namespace that the CE instance should be assigned
+                        to.
+                instance_admpwd:
+                    type: str
+                    help: |
+                        The admin password for the CE instance to create. Use
+                        ``""`` for empty password, thus the user caddok is
+                        accessible.
+                instance_location:
+                    type: path
+                    help: The location where the CE instance should be created.
+                sslmode:
+                    type: bool
+                    help: Enable or disable TLS for the CE instance.
+        oracle:
+            type: object
+            help: |
+                The Oracle DBMS properties are exclusively used, if
+                `mkinstance.dbms=oracle`.
+            properties:
+                ora_dbhost:
+                    type: str
+                    help: |
+                        The hostname or IP address of the Oracle database
+                        server.
+                ora_syspwd:
+                    type: str
+                    help: |
+                        The password for the Oracle SYS user, used for
+                        administrative tasks.
+                ora_dbuser:
+                    type: str
+                    help: The username for connecting to the Oracle database.
+                ora_dbpasswd:
+                    type: str
+                    help: The password for the specified Oracle database user.
+        mssql:
+            type: object
+            help: |
+                The MSSQL DBMS properties are exclusively used, if
+                `mkinstance.dbms=mssql`.
+            properties:
+                mssql_dbuser:
+                    type: str
+                    help: The username for connecting to the MSSQL database.
+                mssql_dbhost:
+                    type: str
+                    help: |
+                        The hostname or IP address of the MSSQL database server.
+                mssql_syspwd:
+                    type: str
+                    help: |
+                        The password for the MSSQL SYS user, used for
+                        administrative tasks.
+                mssql_catalog:
+                    type: str
+                    help: The name of the database catalog to use or create.
+        mssql_sspi:
+            type: object
+            help: |
+                The MSSQL sspi DBMS properties are exclusively used, if
+                `mkinstance.dbms=mssql_sspi`.
+            properties:
+                mssql_dbhost:
+                    type: str
+                    help: |
+                        The hostname or IP address of the MSSQL sspi database
+                        server.
+                mssql_catalog:
+                    type: str
+                    help: The name of the database catalog to use or create.
+        postgres:
+            type: object
+            help: |
+                The Postgres DBMS properties are exclusively used, if
+                `mkinstance.dbms=postgres`.
+            properties:
+                postgres_database:
+                    type: str
+                    help: The database that should be created or accessed.
+                postgres_dbhost:
+                    type: str
+                    help: |
+                        The hostname or IP address of the Postgres database
+                        server.
+                postgres_dbpasswd:
+                    type: str
+                    help: The database password.
+                postgres_dbport:
+                    type: int
+                    help: |
+                        The port that the Postgres database is accessible via
+                        postgres.host.
+                postgres_dbuser:
+                    type: str
+                    help: The username for connecting to the Postgres database.
+                postgres_system_user:
+                    type: str
+                    help: |
+                        The system user with administrative privileges in
+                        Postgres.
+                postgres_syspwd:
+                    type: str
+                    help: The password for the Postgres system user.
