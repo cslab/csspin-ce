@@ -5,6 +5,11 @@
 # https://www.contact-software.com/
 # pylint: disable=too-many-lines
 
+"""
+Provides a wrapper around the CLI tool of ce_services and
+provisions all tool necessary for these ce_services.
+"""
+
 import asyncio
 import atexit
 import contextlib
@@ -74,7 +79,7 @@ defaults = config(
 @contextlib.contextmanager
 def with_ce_services(
     cfg,
-):  # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+):  # pylint: disable=too-many-locals,too-many-statements,too-many-branches,missing-function-docstring
     def _get_cdb_secret(path):
         cmdline = ["cdbwallet", "resolve", path]
         return subprocess.check_output(
@@ -92,7 +97,12 @@ def with_ce_services(
     if cfg.ce_services.influxdb.enabled:
         required_binaries_in_path.add("influxd")
 
-    required_scripts_in_venv = {"blobstore", "cdbsrv", "cdbwallet", "powerscript"}
+    required_scripts_in_venv = {
+        "blobstore",
+        "cdbsrv",
+        "cdbwallet",
+        "powerscript",
+    }
 
     for env_dir_var in required_env_dir_vars:
         if env_dir_var not in os.environ:
@@ -818,6 +828,9 @@ def with_ce_services(
 
 @task()
 def ce_services(cfg, instance: option("-i", "--instance")):  # noqa: F821
+    """
+    Start the ce services synchronously.
+    """
     inst = (
         os.path.abspath(instance)
         if instance
@@ -835,6 +848,9 @@ def ce_services(cfg, instance: option("-i", "--instance")):  # noqa: F821
 
 
 def provision(cfg):  # pylint: disable=too-many-statements
+    """
+    Provision tools necessary to startup all ce_services.
+    """
     import tarfile
     import zipfile
     from tempfile import TemporaryDirectory
@@ -1068,6 +1084,9 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
 
 def init(cfg):
+    """
+    Set all provisioned tools into the PATH variable.
+    """
     path_extensions = {
         Path(interpolate1(cfg.ce_services.traefik.install_dir))
         / interpolate1(cfg.ce_services.traefik.version),
@@ -1094,10 +1113,3 @@ def init(cfg):
     setenv(
         PATH=f"{os.pathsep.join([str(e) for e in path_extensions])}{os.pathsep}{os.environ.get('PATH', '')}"
     )
-
-
-def cleanup(cfg):
-    # Cleanup not needed because:
-    # - We don't want to remove the cached files, so they can be reused
-    # - The traefik.yml gets cleaned up anyway when the venv directory is being cleaned up
-    pass
