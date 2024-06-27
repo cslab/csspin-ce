@@ -1,0 +1,8 @@
+minimum-spin: '0.2'
+plugin-packages:
+    - git+https://code.contact.de/qs/spin/spin_python # FIXME: Use stable release
+    - ../../..
+plugins:
+    - spin_ce.mkinstance
+python:
+    version: '3.11'
