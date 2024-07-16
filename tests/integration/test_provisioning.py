@@ -6,17 +6,21 @@
 
 """Module implementing the integration tests for spin_cpp"""
 
+from os import getcwd
+
 import pytest
-from spin import backtick, cli
+from spin import backtick, cd, cli
 
 
 @pytest.fixture(autouse=True)
 def cfg():
     """Fixture creating the configuration tree"""
-    cli.load_config_tree(None)
+    cwd = getcwd()
+    cli.load_config_tree("tests/yamls/minimal.yaml")
+    cd(cwd)
 
 
-def do_test(tmpdir, what, cmd, path="tests/integration/yamls", props=""):
+def execute_spin(tmpdir, what, cmd, path="tests/integration/yamls", props=""):
     """Helper to execute spin calls via spin."""
     output = backtick(
         f"spin -p spin.cache={tmpdir} {props} -C {path} --env {tmpdir} -f"
@@ -29,7 +33,7 @@ def do_test(tmpdir, what, cmd, path="tests/integration/yamls", props=""):
 @pytest.mark.integration()
 def test_mkinstance_provision(tmpdir):
     """Provision the mkinstnace plugin"""
-    do_test(tmpdir=tmpdir, what="mkinstance.yaml", cmd="mkinstance --help")
+    execute_spin(tmpdir=tmpdir, what="mkinstance.yaml", cmd="mkinstance --help")
 
 
 # FIXME: Implement this properly (as soon as ce_services_lib is done)
@@ -37,4 +41,4 @@ def test_mkinstance_provision(tmpdir):
 @pytest.mark.integration()
 def test_ce_services_provision(tmpdir):
     """Provision the ce_services plugin"""
-    do_test(tmpdir=tmpdir, what="ce_services.yaml", cmd="ce_services --help")
+    execute_spin(tmpdir=tmpdir, what="ce_services.yaml", cmd="ce_services --help")
