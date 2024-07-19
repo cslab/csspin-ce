@@ -1,6 +1,6 @@
 minimum-spin: '0.2'
 plugin-packages:
-    - spin-python<2.0.0,>=1.0.0a0
+    - git+https://code.contact.de/qs/spin/spin_python # FIXME: Use stable release
     - ../../..
 plugins:
     - spin_ce.ce_services
