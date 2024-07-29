@@ -1,8 +1,14 @@
 minimum-spin: '0.2'
 plugin-packages:
-    - spin-python<2.0.0,>=1.0.0a0
+    - spin_frontend<2.0.0,>=1.0.0a0
+    - spin_python<2.0.0,>=1.0.0a0
     - ../../..
 plugins:
     - spin_ce.ce_services
 python:
-    version: '3.11'
+    version: '3.11.9'
+    pipconf:
+        global:
+            index-url: https://packages.contact.de/apps/16.0-dev/+simple/
+node:
+    version: '18.20.4'

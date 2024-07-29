@@ -6,41 +6,49 @@
 
 """Module implementing the integration tests for spin_cpp"""
 
-from os import getcwd
+import subprocess
 
 import pytest
-from spin import backtick, cd, cli
 
 
-@pytest.fixture(autouse=True)
-def cfg():
-    """Fixture creating the configuration tree"""
-    cwd = getcwd()
-    cli.load_config_tree("tests/yamls/minimal.yaml")
-    cd(cwd)
-
-
-def execute_spin(tmpdir, what, cmd, path="tests/integration/yamls", props=""):
+def execute_spin(tmpdir, what, cmd, path="tests/integration/yamls"):
     """Helper to execute spin calls via spin."""
-    output = backtick(
-        f"spin -p spin.cache={tmpdir} {props} -C {path} --env {tmpdir} -f"
-        f" {what} --cleanup --provision {cmd}"
-    )
-    output = output.strip()
-    return output
+    full_cmd = [
+        "spin",
+        "-p",
+        f"spin.cache={tmpdir}",
+        "-C",
+        path,
+        "--env",
+        tmpdir,
+        "-f",
+        f"tests/integration/yamls/{what}",
+        "--cleanup",
+        "--provision",
+    ]
+    full_cmd.extend(cmd)
+    print(subprocess.list2cmdline(full_cmd))
+    try:
+        output = subprocess.check_output(full_cmd, encoding="utf-8")
+    except subprocess.CalledProcessError as ex:
+        print(ex.stdout.strip())
+        raise
+    return output.strip()
 
 
 @pytest.mark.integration()
 def test_mkinstance_provision(tmpdir):
     """Provision the mkinstnace plugin"""
-    execute_spin(tmpdir=tmpdir, what="mkinstance.yaml", cmd="mkinstance --help")
+    execute_spin(tmpdir=tmpdir, what="mkinstance.yaml", cmd=["mkinstance", "--help"])
 
 
 @pytest.mark.integration()
 @pytest.mark.xfail(reason="Latest plugin-package states may fail")
 def test_mkinstance_latest_provision(tmpdir):
     """Provision the mkinstnace plugin"""
-    execute_spin(tmpdir=tmpdir, what="mkinstance-latest.yaml", cmd="mkinstance --help")
+    execute_spin(
+        tmpdir=tmpdir, what="mkinstance-latest.yaml", cmd=["mkinstance", "--help"]
+    )
 
 
 # FIXME: Implement this properly (as soon as ce_services_lib is done)
@@ -48,7 +56,7 @@ def test_mkinstance_latest_provision(tmpdir):
 @pytest.mark.integration()
 def test_ce_services_provision(tmpdir):
     """Provision the ce_services plugin"""
-    execute_spin(tmpdir=tmpdir, what="ce_services.yaml", cmd="ce_services --help")
+    execute_spin(tmpdir=tmpdir, what="ce_services.yaml", cmd=["ce_services", "--help"])
 
 
 # FIXME: Implement this properly (as soon as ce_services_lib is done)
@@ -58,5 +66,5 @@ def test_ce_services_provision(tmpdir):
 def test_ce_services_latest_provision(tmpdir):
     """Provision the ce_services plugin"""
     execute_spin(
-        tmpdir=tmpdir, what="ce_services-latest.yaml", cmd="ce_services --help"
+        tmpdir=tmpdir, what="ce_services-latest.yaml", cmd=["ce_services", "--help"]
     )
