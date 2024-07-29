@@ -1,8 +1,14 @@
 minimum-spin: '0.2'
 plugin-packages:
+    - git+https://code.contact.de/qs/spin/spin_frontend # FIXME: Use stable release
     - git+https://code.contact.de/qs/spin/spin_python # FIXME: Use stable release
     - ../../..
 plugins:
     - spin_ce.mkinstance
 python:
-    version: '3.11'
+    version: '3.11.9'
+    pipconf:
+        global:
+            index-url: https://packages.contact.de/apps/16.0-dev/+simple/
+node:
+    version: '18.20.4'

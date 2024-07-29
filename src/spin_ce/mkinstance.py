@@ -82,6 +82,10 @@ defaults = config(
     requires=config(
         python=["nodeenv", "cs.platform"],
         npm=["sass", "yarn"],
+        spin=[
+            "spin_frontend.node",
+            "spin_python.python",
+        ],
     ),
 )
 
