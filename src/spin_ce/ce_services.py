@@ -66,6 +66,44 @@ defaults = config(
 )
 
 
+def extract_service_config(cfg):
+    """
+    Helper to match the config of the plugin into the config of the ce_services
+    command-line tool.
+
+    Returns a dict to feed directly into
+    ce_services.RequireAllServices/ce_services.Require.
+
+    :param cfg: The spin config tree
+    :type cfg: ConfigTree
+    :return: A dict with the ce_services config from the config_tree
+    :rtype: dict
+    """
+    additional_cfg = {}
+    if cfg.mkinstance.base.instance_admpwd:
+        additional_cfg["instance_admpwd"] = cfg.mkinstance.instance_admpwd
+    # "--loglevel": None, # TODO: Set it depending on the verbosity level of spin
+    if cfg.ce_services.influxdb.enabled:
+        additional_cfg["influxd"] = True
+    if cfg.ce_services.hivemq.enabled:
+        additional_cfg["hivemq"] = True
+        hivemq_options = {
+            "hivemq_bin_path": cfg.ce_services.hivemq.install_dir
+            / cfg.ce_services.hivemq.version,
+            "hivemq_elements_integration_install_dir": (
+                cfg.ce_services.hivemq.elements_integration.install_dir
+            ),
+            "hivemq_elements_integration_password": cfg.ce_services.hivemq.elements_integration.password,
+            "hivemq_elements_integration_user": cfg.ce_services.hivemq.elements_integration.user,
+            "hivemq_elements_integration_version": cfg.ce_services.hivemq.elements_integration.version,
+        }
+        for key, value in hivemq_options.items():
+            if value:
+                additional_cfg[key] = value
+
+    return additional_cfg
+
+
 @task(aliases=["ce_services"])
 def ce_services(cfg, instance: option("-i", "--instance"), args):  # noqa: F821
     """
@@ -83,31 +121,13 @@ def ce_services(cfg, instance: option("-i", "--instance"), args):  # noqa: F821
     # Now set the relevant CLI options from cfg, making sure to only add those
     # from cfg that haven't already been set by the CLI.
     all_cli_args = list(args)
-    if cfg.mkinstance.base.instance_admpwd and "--instance_admpwd" not in all_cli_args:
-        all_cli_args.append(f"--instance_admpwd={cfg.mkinstance.base.instance_admpwd}")
-    # "--loglevel": None, # TODO: Set it depending on the verbosity level of spin
-    if cfg.ce_services.influxdb.enabled and "--influxd" not in all_cli_args:
-        all_cli_args.append("--influxd")
-    if cfg.ce_services.hivemq.enabled:
-        if "--hivemq" not in all_cli_args:
-            all_cli_args.append("--hivemq")
-        hivemq_options = {
-            "--hivemq_bin_path": cfg.ce_services.hivemq.install_dir
-            / cfg.ce_services.hivemq.version,
-            "--hivemq_elements_integration_install_dir": (
-                cfg.ce_services.hivemq.elements_integration.install_dir
-            ),
-            "--hivemq_elements_integration_password": cfg.ce_services.hivemq.elements_integration.password,
-            "--hivemq_elements_integration_user": cfg.ce_services.hivemq.elements_integration.user,
-            "--hivemq_elements_integration_version": cfg.ce_services.hivemq.elements_integration.version,
-        }
-        all_cli_args.extend(
-            [
-                f"{k}={v}"
-                for k, v in hivemq_options.items()
-                if v and k not in all_cli_args
-            ]
-        )
+    for key, value in extract_service_config(cfg).items():
+        cli_option_name = f"--{key}"
+        if cli_option_name not in args:
+            if cli_option_name in ("--influxd", "--hivemq"):
+                all_cli_args.append(cli_option_name)
+            else:
+                all_cli_args.append(f"{cli_option_name}={value}")
 
     sh("ce_services", *all_cli_args)
 
