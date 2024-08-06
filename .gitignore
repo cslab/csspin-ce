@@ -40,14 +40,6 @@ junit.xml
 cept_test_results.json
 pytest*.xml
 
-# Performance Test artifacts
-benchrunner.log
-benchmarkResults*.json
-
-# cypress artifacts
-**/cypress/videos/*
-**/cypress/screenshots/*
-
 # Translations
 *.pot
 *.mo
