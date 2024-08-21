@@ -12,3 +12,4 @@ python:
             index-url: https://packages.contact.de/apps/16.0-dev/+simple/
 node:
     version: '18.20.4'
+    mirror: https://nodejs-proxy.ops.contact.de/dist/

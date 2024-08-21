@@ -38,17 +38,8 @@ def execute_spin(tmpdir, what, cmd, path="tests/integration/yamls"):
 
 @pytest.mark.integration()
 def test_mkinstance_provision(tmpdir):
-    """Provision the mkinstnace plugin"""
+    """Provision the mkinstance plugin"""
     execute_spin(tmpdir=tmpdir, what="mkinstance.yaml", cmd=["mkinstance", "--help"])
-
-
-@pytest.mark.integration()
-@pytest.mark.xfail(reason="Latest plugin-package states may fail")
-def test_mkinstance_latest_provision(tmpdir):
-    """Provision the mkinstnace plugin"""
-    execute_spin(
-        tmpdir=tmpdir, what="mkinstance-latest.yaml", cmd=["mkinstance", "--help"]
-    )
 
 
 # FIXME: Implement this properly (as soon as ce_services_lib is done)
@@ -57,14 +48,3 @@ def test_mkinstance_latest_provision(tmpdir):
 def test_ce_services_provision(tmpdir):
     """Provision the ce_services plugin"""
     execute_spin(tmpdir=tmpdir, what="ce_services.yaml", cmd=["ce_services", "--help"])
-
-
-# FIXME: Implement this properly (as soon as ce_services_lib is done)
-@pytest.mark.skip("Skipped: Can't install Redis on Linux")
-@pytest.mark.integration()
-@pytest.mark.xfail(reason="Latest plugin-package states may fail")
-def test_ce_services_latest_provision(tmpdir):
-    """Provision the ce_services plugin"""
-    execute_spin(
-        tmpdir=tmpdir, what="ce_services-latest.yaml", cmd=["ce_services", "--help"]
-    )
