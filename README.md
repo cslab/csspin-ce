@@ -3,10 +3,12 @@
 This repository contains the spin plugin-package `spin_ce`. It provides the
 following spin-plugins:
 
--   spin_ce.mkinstance
 -   spin_ce.ce_services
+-   spin_ce.mkinstance
+-   spin_ce.pkgtest
 
-The sources for the plugins have been copied from https://code.contact.de/qs/tooling/spin-plugins/-/tree/87399f327a5979c3ef5619291cd12bc26fce04ac
+Initially, the sources for the plugins mkinstance and ce_services have been
+copied from https://code.contact.de/qs/tooling/spin-plugins/-/tree/87399f327a5979c3ef5619291cd12bc26fce04ac.
 
 ## Creating a New Release
 
