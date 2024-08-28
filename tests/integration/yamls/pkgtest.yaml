@@ -1,10 +1,9 @@
-minimum-spin: '0.2'
 plugin-packages:
     - spin_frontend
     - spin_python
     - ../../..
 plugins:
-    - spin_ce.ce_services
+    - spin_ce.pkgtest
 python:
     version: '3.11.9'
     pipconf:

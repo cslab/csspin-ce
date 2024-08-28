@@ -6,7 +6,9 @@
 
 """Module implementing the integration tests for spin_cpp"""
 
+import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -42,9 +44,17 @@ def test_mkinstance_provision(tmpdir):
     execute_spin(tmpdir=tmpdir, what="mkinstance.yaml", cmd=["mkinstance", "--help"])
 
 
-# FIXME: Implement this properly (as soon as ce_services_lib is done)
-@pytest.mark.skip("Skipped: Can't install Redis on Linux")
+@pytest.mark.skipif(
+    sys.platform != "win32" and shutil.which("redis-server") is None,
+    reason="ce_services needs redis-server, which must be preinstalled on Linux",
+)
 @pytest.mark.integration()
 def test_ce_services_provision(tmpdir):
     """Provision the ce_services plugin"""
     execute_spin(tmpdir=tmpdir, what="ce_services.yaml", cmd=["ce_services", "--help"])
+
+
+@pytest.mark.integration()
+def test_pkgtest_provision(tmpdir):
+    """Provision the pgktest plugin"""
+    execute_spin(tmpdir=tmpdir, what="pkgtest.yaml", cmd=["pkgtest", "--help"])

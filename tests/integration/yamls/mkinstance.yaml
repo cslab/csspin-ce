@@ -1,7 +1,7 @@
 minimum-spin: '0.2'
 plugin-packages:
     - spin_frontend
-    - spin_python<2.0.0,>=1.0.0a0
+    - spin_python
     - ../../..
 plugins:
     - spin_ce.mkinstance
