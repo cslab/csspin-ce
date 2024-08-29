@@ -12,3 +12,18 @@ test_linux:
 triggered_integration_tests_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
     image: registry.contact.de/cetest:16.0-2.latest
+    before_script:
+        # We need to overwrite this, as spin_plugin_common needs to install jq and
+        # asserts that we're root, which isn't the case for cetest. But as jq is
+        # already installed, we can simply do the rest of spin_plugin_common's
+        # before_script:
+        - |
+            export WHEEL_JOB_ID=$( \
+              curl -s \
+              "${CI_API_V4_URL}/projects/1065/pipelines/${PARENT_PIPELINE_ID}/jobs?scope=success" \
+              | jq -S '.[] | select (.name == "wheel") | {id}' | jq -rj '.[]' \
+            )
+        - curl -O ${CI_API_V4_URL}/projects/1065/jobs/${WHEEL_JOB_ID}/artifacts.zip
+        - unzip artifacts.zip "dist/*"
+        - pip install dist/cs.spin*.whl
+        - pip install ".[test]"
