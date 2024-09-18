@@ -10,17 +10,18 @@ Provides a wrapper around the CLI tool of ce_services and
 provisions all tool necessary for these ce_services.
 """
 
+import filecmp
 import os
 import shutil
 import sys
-from pathlib import Path
 
+from path import Path
 from spin import (
     config,
+    copy,
+    debug,
     die,
     exists,
-    info,
-    interpolate1,
     mkdir,
     option,
     rmtree,
@@ -110,9 +111,7 @@ def ce_services(cfg, instance: option("-i", "--instance"), args):  # noqa: F821
     Start the ce services synchronously.
     """
     inst = (
-        os.path.abspath(instance)
-        if instance
-        else interpolate1(cfg.mkinstance.base.instance_location)
+        os.path.abspath(instance) if instance else cfg.mkinstance.base.instance_location
     )
     if not os.path.isdir(inst):
         die(f"Cannot find the CE instance '{inst}'.")
@@ -143,72 +142,71 @@ def provision(cfg):  # pylint: disable=too-many-statements
     from spin import download
 
     def install_traefik(cfg):
-        # TODO: Download into tempdir (like for hivemq)
-        traefik_install_base = Path(interpolate1(cfg.ce_services.traefik.install_dir))
-        version = interpolate1(cfg.ce_services.traefik.version)
-        traefik_install_dir = traefik_install_base / version
+        version = cfg.ce_services.traefik.version
+        traefik_install_dir = cfg.ce_services.traefik.install_dir / version
+        mkdir(traefik_install_dir)
 
-        if not traefik_install_base.exists():
-            traefik_install_base.mkdir()
-        if not traefik_install_dir.exists():
-            traefik_install_dir.mkdir()
+        traefik = traefik_install_dir / f"traefik{cfg.platform.exe}"
 
-        if not any(
-            x in os.listdir(traefik_install_dir) for x in ["traefik", "traefik.exe"]
-        ):
-            info("Installing Traefik")
+        if not traefik.exists():
+            debug("Installing Traefik")
             if sys.platform == "win32":
-                traefik_url = f"https://github.com/traefik/traefik/releases/download/v{version}/traefik_v{version}_windows_amd64.zip"  # noqa: E501
-                traefik_installer_archive = (
-                    traefik_install_dir / f"traefik_v{version}_windows_amd64.zip"
-                )
-                download(traefik_url, traefik_installer_archive)
-                with zipfile.ZipFile(traefik_installer_archive, "r") as zipped:
-                    zipped.extractall(
-                        members=["traefik.exe"], path=traefik_install_dir
-                    )  # nosec: tarfile_unsafe_members
-                traefik_installer_archive.unlink()
+                archive = f"traefik_v{version}_windows_amd64.zip"
+                extractor = zipfile.ZipFile
+                mode = "r"
             else:
-                traefik_url = f"https://github.com/traefik/traefik/releases/download/v{version}/traefik_v{version}_linux_amd64.tar.gz"  # noqa: E501
-                traefik_installer_archive = (
-                    traefik_install_dir / f"traefik_v{version}_linux_amd64.tar.gz"
+                archive = f"traefik_v{version}_linux_amd64.tar.gz"
+                extractor = tarfile.open
+                mode = "r:gz"
+            with TemporaryDirectory() as tmp_dir:
+                archive_path = Path(tmp_dir) / archive
+                download(
+                    f"https://github.com/traefik/traefik/releases/download/v{version}/{archive}",
+                    archive_path,
                 )
-                download(traefik_url, traefik_installer_archive)
-                with tarfile.open(traefik_installer_archive, "r:gz") as tgz:
-                    tgz.extractall(
-                        members=["traefik"], path=traefik_install_dir
+                with extractor(archive_path, mode=mode) as arc:
+                    arc.extractall(
+                        members=[f"traefik{cfg.platform.exe}"], path=traefik_install_dir
                     )  # nosec: tarfile_unsafe_members
-                traefik_installer_archive.unlink()
+        else:
+            debug(f"Using cached traefik ({traefik})")
+
+        venv_traefik = cfg.python.scriptdir / f"traefik{cfg.platform.exe}"
+        if not exists(venv_traefik) or not filecmp.cmp(traefik, venv_traefik):
+            copy(traefik, venv_traefik)
 
     def install_redis(cfg):
-        # TODO: Download into tempdir (like for hivemq)
         if sys.platform == "win32":
-            redis_install_base = Path(interpolate1(cfg.ce_services.redis_install_dir))
-            redis_install_dir = redis_install_base / cfg.ce_services.redis_version
-            if not redis_install_base.exists():
-                redis_install_base.mkdir()
+            redis_install_dir = (
+                cfg.ce_services.redis_install_dir / cfg.ce_services.redis_version
+            )
+            redis = redis_install_dir / "redis-server.exe"
+            if not redis.exists():
+                mkdir(cfg.ce_services.redis_install_dir)
+                debug("Installing redis-server")
+                with TemporaryDirectory() as tmp_dir:
+                    redis_installer_archive = (
+                        Path(tmp_dir)
+                        / f"redis-windows-{cfg.ce_services.redis_version}.zip"
+                    )
+                    download(
+                        f"https://github.com/zkteco-home/redis-windows/archive/refs/tags/{cfg.ce_services.redis_version}.zip",  # noqa: E501
+                        redis_installer_archive,
+                    )
+                    with zipfile.ZipFile(redis_installer_archive, "r") as zipped:
+                        zipped.extractall(
+                            path=cfg.ce_services.redis_install_dir
+                        )  # nosec: tarfile_unsafe_members
+                        (
+                            cfg.ce_services.redis_install_dir
+                            / f"redis-windows-{cfg.ce_services.redis_version}"
+                        ).rename(redis_install_dir)
+            else:
+                debug(f"Using cached redis-server ({redis})")
+            venv_redis = cfg.python.scriptdir / "redis-server.exe"
+            if not exists(venv_redis) or not filecmp.cmp(redis, venv_redis):
+                copy(redis, cfg.python.scriptdir / "redis-server.exe")
 
-            info("Installing redis-server")
-            if not redis_install_dir.exists() or "redis-server.exe" not in os.listdir(
-                redis_install_dir
-            ):
-                redis_installer_archive = (
-                    redis_install_base
-                    / f"redis-windows-{cfg.ce_services.redis_version}.zip"
-                )
-                download(
-                    f"https://github.com/zkteco-home/redis-windows/archive/refs/tags/{cfg.ce_services.redis_version}.zip",  # noqa: E501
-                    redis_installer_archive,
-                )
-                with zipfile.ZipFile(redis_installer_archive, "r") as zipped:
-                    zipped.extractall(
-                        path=redis_install_base
-                    )  # nosec: tarfile_unsafe_members
-                    (
-                        redis_install_base
-                        / f"redis-windows-{cfg.ce_services.redis_version}"
-                    ).rename(redis_install_dir)
-                redis_installer_archive.unlink()
         elif not shutil.which("redis-server"):
             die(
                 "Cannot provision redis on linux. Install it yourself and make sure its available in PATH!"  # noqa: E501
@@ -245,7 +243,7 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     )
                 ):
                     if f not in ignore:
-                        info(
+                        debug(
                             "Moving"
                             f" {(source := str(unpacked_source_directory / f))}"
                             f" -> {(target := str(target_directory))}"
@@ -253,16 +251,11 @@ def provision(cfg):  # pylint: disable=too-many-statements
                         shutil.move(source, target)
 
         hivemq_version = cfg.ce_services.hivemq.version
-        hivemq_base_dir = (
-            Path(
-                interpolate1(cfg.ce_services.hivemq.install_dir),
-            )
-            / hivemq_version
-        )
+        hivemq_base_dir = cfg.ce_services.hivemq.install_dir / hivemq_version
         if exists(hivemq_base_dir):
-            info(f"Using cached HiveMQ ({hivemq_base_dir})")
+            debug(f"Using cached HiveMQ ({hivemq_base_dir})")
         else:
-            info(f"Installing HiveMQ {hivemq_version}")
+            debug(f"Installing HiveMQ {hivemq_version}")
             hivemq_zipfile = f"hivemq-ce-{hivemq_version}.zip"
             _download(
                 url="https://github.com/hivemq/hivemq-community-edition/releases"
@@ -287,19 +280,17 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
         integration_version = cfg.ce_services.hivemq.elements_integration.version
         hivemq_elements_integration_dir = (
-            Path(
-                interpolate1(cfg.ce_services.hivemq.elements_integration.install_dir),
-            )
+            cfg.ce_services.hivemq.elements_integration.install_dir
             / integration_version
-            / "hivemq-elements-integration"  # HiveMQ expects plugins to be in a subfolder
-        )
+            / "hivemq-elements-integration"
+        )  # HiveMQ expects plugins to be in a subfolder
         if exists(hivemq_elements_integration_dir):
-            info(
+            debug(
                 "Using cached HiveMQ Elements Integration"
                 f" ({hivemq_elements_integration_dir})"
             )
         else:
-            info(f"Installing HiveMQ Elements Integration {integration_version}")
+            debug(f"Installing HiveMQ Elements Integration {integration_version}")
             elements_integration_zipfile = (
                 "hivemq-elements-integration-" f"{integration_version}-distribution.zip"
             )
@@ -315,48 +306,51 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     def install_influxdb(cfg):
         version = cfg.ce_services.influxdb.version
-        if exists(
-            (
-                influxdb_dir := Path(interpolate1(cfg.ce_services.influxdb.install_dir))
-                / version
-            )
-        ):
-            info(f"Using cached InfluxDB ({influxdb_dir})")
-            return
-        mkdir(influxdb_dir)
-
-        info(f"Installing InfluxDB {version}")
-        archive = f"influxdb-{version}_"
-        if sys.platform == "win32":
-            archive += "windows_amd64.zip"
-            extractor = zipfile.ZipFile
-            mode = "r"
-        else:
-            archive += "linux_amd64.tar.gz"
-            extractor = tarfile.open
-            mode = "r:gz"
-
-        with TemporaryDirectory() as tmp_dir:
-            download(
-                f"https://dl.influxdata.com/influxdb/releases/{archive}",
-                (archive_path := Path(tmp_dir) / archive),
-            )
-            with extractor(archive_path, mode=mode) as arc:
-                arc.extractall(path=tmp_dir)  # nosec: tarfile_unsafe_members
-
-            if (
-                sources := Path(tmp_dir) / f"influxdb-{version}-1"
-            ) and sys.platform == "win32":
-                for f in os.listdir(sources):
-                    info("Moving" f" {(source := sources / f)}" f" -> {influxdb_dir}")
-                    shutil.move(source, influxdb_dir)
+        if not (
+            influxdb_dir := cfg.ce_services.influxdb.install_dir / version
+        ).exists():
+            mkdir(influxdb_dir)
+            debug(f"Installing InfluxDB {version}")
+            archive = f"influxdb-{version}_"
+            if sys.platform == "win32":
+                archive += "windows_amd64.zip"
+                extractor = zipfile.ZipFile
+                mode = "r"
             else:
-                from stat import S_IEXEC
+                archive += "linux_amd64.tar.gz"
+                extractor = tarfile.open
+                mode = "r:gz"
 
-                for f in os.listdir((sources := sources / "usr" / "bin")):
-                    info("Moving" f" {(source := sources / f)} -> {influxdb_dir}")
-                    shutil.move(source, influxdb_dir)
-                    os.chmod((f := influxdb_dir / f), os.stat(f).st_mode | S_IEXEC)
+            with TemporaryDirectory() as tmp_dir:
+                download(
+                    f"https://dl.influxdata.com/influxdb/releases/{archive}",
+                    (archive_path := Path(tmp_dir) / archive),
+                )
+                with extractor(archive_path, mode=mode) as arc:
+                    arc.extractall(path=tmp_dir)  # nosec: tarfile_unsafe_members
+
+                if (
+                    sources := Path(tmp_dir) / f"influxdb-{version}-1"
+                ) and sys.platform == "win32":
+                    for f in os.listdir(sources):
+                        debug(
+                            "Moving" f" {(source := sources / f)}" f" -> {influxdb_dir}"
+                        )
+                        shutil.move(source, influxdb_dir)
+                else:
+                    from stat import S_IEXEC
+
+                    for f in os.listdir((sources := sources / "usr" / "bin")):
+                        debug("Moving" f" {(source := sources / f)} -> {influxdb_dir}")
+                        shutil.move(source, influxdb_dir)
+                        os.chmod((f := influxdb_dir / f), os.stat(f).st_mode | S_IEXEC)
+        else:
+            debug(f"Using cached InfluxDB ({influxdb_dir})")
+
+        influxd = influxdb_dir / f"influxd{cfg.platform.exe}"
+        venv_influxd = cfg.python.scriptdir / f"influxd{cfg.platform.exe}"
+        if not exists(venv_influxd) or not filecmp.cmp(influxd, venv_influxd):
+            copy(influxd, venv_influxd)
 
     install_traefik(cfg)
     install_redis(cfg)
@@ -366,35 +360,3 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     if cfg.ce_services.influxdb.enabled:
         install_influxdb(cfg)
-
-
-def init(cfg):
-    """
-    Set all provisioned tools into the PATH variable.
-    """
-    path_extensions = {
-        Path(interpolate1(cfg.ce_services.traefik.install_dir))
-        / interpolate1(cfg.ce_services.traefik.version),
-    }
-
-    if sys.platform == "win32":
-        path_extensions.add(
-            Path(interpolate1(cfg.ce_services.redis_install_dir))
-            / cfg.ce_services.redis_version
-        )
-
-    if cfg.ce_services.hivemq.enabled:
-        path_extensions.add(
-            Path(interpolate1(cfg.ce_services.hivemq.install_dir))
-            / interpolate1(cfg.ce_services.hivemq.version)
-        )
-
-    if cfg.ce_services.influxdb.enabled:
-        path_extensions.add(
-            Path(interpolate1(cfg.ce_services.influxdb.install_dir))
-            / interpolate1(cfg.ce_services.influxdb.version)
-        )
-
-    setenv(
-        PATH=f"{os.pathsep.join([str(e) for e in path_extensions])}{os.pathsep}{os.environ.get('PATH', '')}"
-    )

@@ -2,7 +2,7 @@
 
 include:
     - project: qs/spin/spin_plugin_common
-      ref: v1.0.1
+      ref: v1.2.0
       file: ci/.gitlab-ci.yml
 
 test_linux:
@@ -27,3 +27,22 @@ triggered_integration_tests_linux:
         - unzip artifacts.zip "dist/*"
         - pip install dist/cs.spin*.whl
         - pip install ".[test]"
+
+# ------------------------------------------------------------------------------
+# FIXME: Remove the following customizations as soon as the documentation for
+#        this plugin-package is added.
+.release_deps:
+    needs:
+        - wheel
+        - job: test_linux
+          artifacts: false
+        - job: test_windows
+          artifacts: false
+
+documentation:
+    rules:
+        - when: never
+
+pages:
+    rules:
+        - when: never
