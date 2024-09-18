@@ -16,12 +16,6 @@ maintainers = [
 name = "spin_ce"
 requires-python = ">=3.9"
 
-[project.optional-dependencies]
-spin = [
-  "cs.spin @ git+https://code.contact.de/qs/tooling/cs.spin.git"  # FIXME: pull from package-index
-]
-test = ["pytest"]
-
 [project.urls]
 Issues = "https://code.contact.de/qs/spin/spin_ce/-/issues"
 Repository = "https://code.contact.de/qs/spin/spin_ce"

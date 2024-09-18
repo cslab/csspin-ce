@@ -11,3 +11,8 @@ python:
 node:
     version: '18.20.4'
     mirror: https://nodejs-proxy.ops.contact.de/dist/
+ce_services:
+    influxdb:
+        enabled: True
+    hivemq:
+        enabled: True
