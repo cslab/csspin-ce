@@ -79,6 +79,19 @@ defaults = config(
         postgres_system_user="postgres",
         postgres_syspwd="system",
     ),
+    s3_blobstore=config(
+        s3_bucket=None,
+        s3_region=None,
+        s3_endpoint_url=None,
+        s3_access_key_id=None,
+        s3_secret_access_key=None,
+    ),
+    azure_blobstore=config(
+        azure_container=None,
+        azure_endpoint_url=None,
+        azure_account_name=None,
+        azure_account_key=None,
+    ),
     requires=config(
         python=["nodeenv", "cs.platform"],
         npm=["sass", "yarn"],
@@ -108,9 +121,14 @@ def mkinstance(cfg, rebuild: option("--rebuild", is_flag=True)):  # noqa: F821
     """Run the 'mkinstance' command for development."""
 
     def to_cli_options(cfgtree):
-        return [f"--{k}={v}" for k, v in cfgtree.items()]
+        return [f"--{k}={v}" for k, v in cfgtree.items() if v is not None]
 
-    opts = cfg.mkinstance.opts + to_cli_options(cfg.mkinstance.base)
+    opts = (
+        cfg.mkinstance.opts
+        + to_cli_options(cfg.mkinstance.base)
+        + to_cli_options(cfg.mkinstance.s3_blobstore)
+        + to_cli_options(cfg.mkinstance.azure_blobstore)
+    )
     dbms = cfg.mkinstance.dbms
     dbms_opts = to_cli_options(cfg.mkinstance.get(dbms, {}))
 
