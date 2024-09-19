@@ -26,7 +26,7 @@ triggered_integration_tests_linux:
         - curl -O ${CI_API_V4_URL}/projects/1065/jobs/${WHEEL_JOB_ID}/artifacts.zip
         - unzip artifacts.zip "dist/*"
         - pip install dist/cs.spin*.whl
-        - pip install ".[test]"
+        - pip install --index-url https://packages.contact.de/tools/stable dist/cs.spin*.whl -r requirements-dev.txt
 
 # ------------------------------------------------------------------------------
 # FIXME: Remove the following customizations as soon as the documentation for
