@@ -141,6 +141,38 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     from spin import download
 
+    def extract(archive, extract_to, member=""):
+        """Unpacks archives"""
+        if tarfile.is_tarfile(archive):
+            extractor = tarfile.open
+            mode = "r:gz"
+        elif zipfile.is_zipfile(archive):
+            extractor = zipfile.ZipFile
+            mode = "r"
+        else:
+            raise KeyError("Unsupported archive type...")
+
+        with extractor(archive, mode=mode) as arc:
+            if isinstance(arc, tarfile.TarFile):
+                members = (
+                    entity
+                    for entity in arc.getmembers()  # pylint: disable=maybe-no-member
+                    if entity.name.startswith(member)
+                )
+            elif isinstance(arc, zipfile.ZipFile):
+                members = (
+                    entity
+                    for entity in arc.namelist()  # pylint: disable=maybe-no-member
+                    if entity.startswith(member)
+                )
+            else:
+                members = ()
+
+            arc.extractall(
+                members=members,
+                path=extract_to,
+            )  # nosec: tarfile_unsafe_members
+
     def install_traefik(cfg):
         version = cfg.ce_services.traefik.version
         traefik_install_dir = cfg.ce_services.traefik.install_dir / version
@@ -150,24 +182,20 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
         if not traefik.exists():
             debug("Installing Traefik")
-            if sys.platform == "win32":
-                archive = f"traefik_v{version}_windows_amd64.zip"
-                extractor = zipfile.ZipFile
-                mode = "r"
-            else:
-                archive = f"traefik_v{version}_linux_amd64.tar.gz"
-                extractor = tarfile.open
-                mode = "r:gz"
+
+            archive = (
+                f"traefik_v{version}_windows_amd64.zip"
+                if sys.platform == "win32"
+                else f"traefik_v{version}_linux_amd64.tar.gz"
+            )
+
             with TemporaryDirectory() as tmp_dir:
                 archive_path = Path(tmp_dir) / archive
                 download(
                     f"https://github.com/traefik/traefik/releases/download/v{version}/{archive}",
                     archive_path,
                 )
-                with extractor(archive_path, mode=mode) as arc:
-                    arc.extractall(
-                        members=[f"traefik{cfg.platform.exe}"], path=traefik_install_dir
-                    )  # nosec: tarfile_unsafe_members
+                extract(archive_path, traefik_install_dir, f"traefik{cfg.platform.exe}")
         else:
             debug(f"Using cached traefik ({traefik})")
 
@@ -193,14 +221,11 @@ def provision(cfg):  # pylint: disable=too-many-statements
                         f"https://github.com/zkteco-home/redis-windows/archive/refs/tags/{cfg.ce_services.redis_version}.zip",  # noqa: E501
                         redis_installer_archive,
                     )
-                    with zipfile.ZipFile(redis_installer_archive, "r") as zipped:
-                        zipped.extractall(
-                            path=cfg.ce_services.redis_install_dir
-                        )  # nosec: tarfile_unsafe_members
-                        (
-                            cfg.ce_services.redis_install_dir
-                            / f"redis-windows-{cfg.ce_services.redis_version}"
-                        ).rename(redis_install_dir)
+                    extract(redis_installer_archive, cfg.ce_services.redis_install_dir)
+                    (
+                        cfg.ce_services.redis_install_dir
+                        / f"redis-windows-{cfg.ce_services.redis_version}"
+                    ).rename(redis_install_dir)
             else:
                 debug(f"Using cached redis-server ({redis})")
             venv_redis = cfg.python.scriptdir / "redis-server.exe"
@@ -233,8 +258,7 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     url=url,
                     location=(download_file := Path(tmp_dir) / zipfile_name),
                 )
-                with zipfile.ZipFile(download_file, "r") as zippy:
-                    zippy.extractall(path=tmp_dir)  # nosec: tarfile_unsafe_members
+                extract(download_file, tmp_dir)
 
                 for f in os.listdir(
                     (
@@ -311,23 +335,18 @@ def provision(cfg):  # pylint: disable=too-many-statements
         ).exists():
             mkdir(influxdb_dir)
             debug(f"Installing InfluxDB {version}")
-            archive = f"influxdb-{version}_"
-            if sys.platform == "win32":
-                archive += "windows_amd64.zip"
-                extractor = zipfile.ZipFile
-                mode = "r"
-            else:
-                archive += "linux_amd64.tar.gz"
-                extractor = tarfile.open
-                mode = "r:gz"
+            archive = (
+                f"influxdb-{version}_windows_amd64.zip"
+                if sys.platform == "win32"
+                else f"influxdb-{version}_linux_amd64.tar.gz"
+            )
 
             with TemporaryDirectory() as tmp_dir:
                 download(
                     f"https://dl.influxdata.com/influxdb/releases/{archive}",
                     (archive_path := Path(tmp_dir) / archive),
                 )
-                with extractor(archive_path, mode=mode) as arc:
-                    arc.extractall(path=tmp_dir)  # nosec: tarfile_unsafe_members
+                extract(archive_path, tmp_dir)
 
                 if (
                     sources := Path(tmp_dir) / f"influxdb-{version}-1"
