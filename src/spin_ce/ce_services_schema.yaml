@@ -73,6 +73,19 @@ ce_services:
                 install_dir:
                     type: path
                     help: Traefik's installation directory.
+        solr:
+            type: object
+            help: Configuration regarding the Apache Solr service.
+            properties:
+                version:
+                    type: str
+                    help: The version of Apache Solr to use.
+                install_dir:
+                    type: path
+                    help: The installation directory of Apache Solr.
+                version_postfix:
+                    type: str
+                    help: The solr version postfix.
         redis:
             type: object
             help: Configuration regarding redis
