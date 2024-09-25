@@ -73,12 +73,16 @@ ce_services:
                 install_dir:
                     type: path
                     help: Traefik's installation directory.
-        redis_install_dir:
-            type: path
-            help: The installation directory of redis.
-        redis_version:
-            type: str
-            help: The redis version to use.
+        redis:
+            type: object
+            help: Configuration regarding redis
+            properties:
+                version:
+                    type: str
+                    help: The redis version to use.
+                install_dir:
+                    type: path
+                    help: The installation directory of redis.
         timeout:
             type: int
             help: Timeout for services to come up.

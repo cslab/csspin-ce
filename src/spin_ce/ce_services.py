@@ -62,8 +62,10 @@ defaults = config(
         dashboard_port="",
         install_dir="{spin.cache}/traefik",
     ),
-    redis_install_dir="{spin.cache}/redis",
-    redis_version="7.2.4",
+    redis=config(
+        version="7.2.4",
+        install_dir="{spin.cache}/redis",
+    ),
 )
 
 
@@ -206,25 +208,25 @@ def provision(cfg):  # pylint: disable=too-many-statements
     def install_redis(cfg):
         if sys.platform == "win32":
             redis_install_dir = (
-                cfg.ce_services.redis_install_dir / cfg.ce_services.redis_version
+                cfg.ce_services.redis.install_dir / cfg.ce_services.redis.version
             )
             redis = redis_install_dir / "redis-server.exe"
             if not redis.exists():
-                mkdir(cfg.ce_services.redis_install_dir)
+                mkdir(cfg.ce_services.redis.install_dir)
                 debug("Installing redis-server")
                 with TemporaryDirectory() as tmp_dir:
                     redis_installer_archive = (
                         Path(tmp_dir)
-                        / f"redis-windows-{cfg.ce_services.redis_version}.zip"
+                        / f"redis-windows-{cfg.ce_services.redis.version}.zip"
                     )
                     download(
-                        f"https://github.com/zkteco-home/redis-windows/archive/refs/tags/{cfg.ce_services.redis_version}.zip",  # noqa: E501
+                        f"https://github.com/zkteco-home/redis-windows/archive/refs/tags/{cfg.ce_services.redis.version}.zip",  # noqa: E501
                         redis_installer_archive,
                     )
-                    extract(redis_installer_archive, cfg.ce_services.redis_install_dir)
+                    extract(redis_installer_archive, cfg.ce_services.redis.install_dir)
                     (
-                        cfg.ce_services.redis_install_dir
-                        / f"redis-windows-{cfg.ce_services.redis_version}"
+                        cfg.ce_services.redis.install_dir
+                        / f"redis-windows-{cfg.ce_services.redis.version}"
                     ).rename(redis_install_dir)
             else:
                 debug(f"Using cached redis-server ({redis})")
