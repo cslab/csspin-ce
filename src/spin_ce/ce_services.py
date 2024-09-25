@@ -62,6 +62,11 @@ defaults = config(
         dashboard_port="",
         install_dir="{spin.cache}/traefik",
     ),
+    solr=config(
+        version="9.7.0",
+        install_dir="{spin.cache}/solr",
+        version_postfix="-slim",
+    ),
     redis=config(
         version="7.2.4",
         install_dir="{spin.cache}/redis",
@@ -145,6 +150,8 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     def extract(archive, extract_to, member=""):
         """Unpacks archives"""
+        member = member.replace("\\", "/")
+
         if tarfile.is_tarfile(archive):
             extractor = tarfile.open
             mode = "r:gz"
@@ -204,6 +211,28 @@ def provision(cfg):  # pylint: disable=too-many-statements
         venv_traefik = cfg.python.scriptdir / f"traefik{cfg.platform.exe}"
         if not exists(venv_traefik) or not filecmp.cmp(traefik, venv_traefik):
             copy(traefik, venv_traefik)
+
+    def install_solr(cfg):
+        version = cfg.ce_services.solr.version
+        install_dir = cfg.ce_services.solr.install_dir
+        postfix = cfg.ce_services.solr.version_postfix
+        mkdir(install_dir)
+
+        solr_name = Path(f"solr-{version}{postfix}")
+        solr_path = install_dir / solr_name
+
+        if not solr_path.exists():
+            debug("Installing Apache Solr")
+            archive = f"{solr_name}.tgz"
+            with TemporaryDirectory() as tmp_dir:
+                archive_path = Path(tmp_dir) / archive
+                download(
+                    f"https://archive.apache.org/dist/solr/solr/{version}/{archive}",
+                    archive_path,
+                )
+                extract(archive_path, install_dir, solr_name)
+        else:
+            debug(f"Using cached Apache Solr ({solr_path})")
 
     def install_redis(cfg):
         if sys.platform == "win32":
@@ -375,9 +404,21 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     install_traefik(cfg)
     install_redis(cfg)
+    install_solr(cfg)
 
     if cfg.ce_services.hivemq.enabled:
         install_hivemq(cfg)
 
     if cfg.ce_services.influxdb.enabled:
         install_influxdb(cfg)
+
+
+def init(cfg):
+    """Sets some environment variables"""
+    setenv(
+        PATH=cfg.ce_services.solr.install_dir
+        / f"solr-{cfg.ce_services.solr.version}{cfg.ce_services.solr.version_postfix}"
+        / "bin"
+        + os.pathsep
+        + "{PATH}"
+    )
