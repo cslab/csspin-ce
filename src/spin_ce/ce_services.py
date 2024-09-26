@@ -17,6 +17,7 @@ import sys
 
 from path import Path
 from spin import (
+    Verbosity,
     config,
     copy,
     debug,
@@ -71,6 +72,7 @@ defaults = config(
         version="7.2.4",
         install_dir="{spin.cache}/redis",
     ),
+    loglevel="",
 )
 
 
@@ -89,8 +91,9 @@ def extract_service_config(cfg):
     """
     additional_cfg = {}
     if cfg.mkinstance.base.instance_admpwd:
-        additional_cfg["instance_admpwd"] = cfg.mkinstance.instance_admpwd
-    # "--loglevel": None, # TODO: Set it depending on the verbosity level of spin
+        additional_cfg["instance_admpwd"] = cfg.mkinstance.base.instance_admpwd
+    if cfg.ce_services.loglevel:
+        additional_cfg["loglevel"] = cfg.ce_services.loglevel
     if cfg.ce_services.influxdb.enabled:
         additional_cfg["influxd"] = True
     if cfg.ce_services.hivemq.enabled:
@@ -135,7 +138,16 @@ def ce_services(cfg, instance: option("-i", "--instance"), args):  # noqa: F821
             else:
                 all_cli_args.append(f"{cli_option_name}={value}")
 
-    sh("ce_services", *all_cli_args)
+    if cfg.verbosity == Verbosity.QUIET:
+        verbosity_arg = "-q"
+    elif cfg.verbosity == Verbosity.INFO:
+        verbosity_arg = "-v"
+    elif cfg.verbosity == Verbosity.DEBUG:
+        verbosity_arg = "-vv"
+    else:
+        verbosity_arg = None
+
+    sh("ce_services", verbosity_arg, *all_cli_args)
 
 
 def provision(cfg):  # pylint: disable=too-many-statements
