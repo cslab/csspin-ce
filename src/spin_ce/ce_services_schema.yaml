@@ -101,4 +101,4 @@ ce_services:
             help: Timeout for services to come up.
         loglevel:
             type: str
-            help: The loglevel of the ce_services plugin.
+            help: The loglevel for the started services.

@@ -104,7 +104,6 @@ repos:
                 ]
             types: [file] # override `types: [python]`
             files: \.(pyi?|ue)$
-    # FIXME: pylint generates lots of issues that should get fixed prior proper releasing
     - repo: https://github.com/pycqa/pylint
       # Linting of Python 3 files
       rev: v3.0.4
@@ -113,7 +112,6 @@ repos:
             args:
                 - '--rcfile=pyproject.toml'
                 - '--output-format=parseable'
-                - '-d=W0511' # W0511 disables fixme checking
                 - '-j=4'
     - repo: https://github.com/PyCQA/bandit
       # Bandit is a tool designed to find common security issues in Python code.
