@@ -44,33 +44,33 @@ defaults = config(
     ),
     hivemq=config(
         enabled=False,
-        install_dir="{spin.cache}/hivemq",
+        install_dir="{spin.data}/hivemq",
         version="2024.4",
         elements_integration=config(
             version="1.0",
             user="csiot_integrator",
             password="",  # nosec: hardcoded_password_funcarg
-            install_dir="{spin.cache}/hivemq-elements-integration",
+            install_dir="{spin.data}/hivemq-elements-integration",
         ),
     ),
     influxdb=config(
         enabled=False,
         version="1.8.10",
-        install_dir="{spin.cache}/influxdb",
+        install_dir="{spin.data}/influxdb",
     ),
     traefik=config(
         version="2.11.2",
         dashboard_port="",
-        install_dir="{spin.cache}/traefik",
+        install_dir="{spin.data}/traefik",
     ),
     solr=config(
         version="9.7.0",
-        install_dir="{spin.cache}/solr",
+        install_dir="{spin.data}/solr",
         version_postfix="-slim",
     ),
     redis=config(
         version="7.2.4",
-        install_dir="{spin.cache}/redis",
+        install_dir="{spin.data}/redis",
     ),
     loglevel="",
 )

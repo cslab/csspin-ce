@@ -18,7 +18,7 @@ def execute_spin(tmpdir, what, cmd, path="tests/integration/yamls"):
     full_cmd = [
         "spin",
         "-p",
-        f"spin.cache={tmpdir}",
+        f"spin.data={tmpdir}",
         "-C",
         path,
         "--env",
