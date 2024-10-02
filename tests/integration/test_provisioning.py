@@ -13,35 +13,29 @@ import sys
 import pytest
 
 
-def execute_spin(tmpdir, what, cmd, path="tests/integration/yamls"):
-    """Helper to execute spin calls via spin."""
-    full_cmd = [
-        "spin",
-        "-p",
-        f"spin.data={tmpdir}",
-        "-C",
-        path,
-        "--env",
-        tmpdir,
-        "-f",
-        f"tests/integration/yamls/{what}",
-        "--cleanup",
-        "--provision",
-    ]
-    full_cmd.extend(cmd)
-    print(subprocess.list2cmdline(full_cmd))
+def execute_spin(yaml, env, path="tests/integration/yamls", cmd=""):
+    """Helper function to execute spin and return the output"""
     try:
-        output = subprocess.check_output(full_cmd, encoding="utf-8")
+        return subprocess.check_output(
+            (
+                f"spin -p spin.cache={env} -C {path} --env {str(env)} -f {yaml} " + cmd
+            ).split(" "),
+            encoding="utf-8",
+            stderr=subprocess.PIPE,
+        ).strip()
     except subprocess.CalledProcessError as ex:
-        print(ex.stdout.strip())
+        print(ex.stdout)
+        print(ex.stderr)
         raise
-    return output.strip()
 
 
 @pytest.mark.integration()
-def test_mkinstance_provision(tmpdir):
+def test_mkinstance_provision(tmp_path):
     """Provision the mkinstance plugin"""
-    execute_spin(tmpdir=tmpdir, what="mkinstance.yaml", cmd=["mkinstance", "--help"])
+    yaml = "mkinstance.yaml"
+    execute_spin(yaml=yaml, env=tmp_path, cmd="cleanup")
+    execute_spin(yaml=yaml, env=tmp_path, cmd="provision")
+    execute_spin(yaml=yaml, env=tmp_path, cmd="mkinstance --help")
 
 
 @pytest.mark.skipif(
@@ -49,12 +43,18 @@ def test_mkinstance_provision(tmpdir):
     reason="ce_services needs redis-server, which must be preinstalled on Linux",
 )
 @pytest.mark.integration()
-def test_ce_services_provision(tmpdir):
+def test_ce_services_provision(tmp_path):
     """Provision the ce_services plugin"""
-    execute_spin(tmpdir=tmpdir, what="ce_services.yaml", cmd=["ce_services", "--help"])
+    yaml = "ce_services.yaml"
+    execute_spin(yaml=yaml, env=tmp_path, cmd="cleanup")
+    execute_spin(yaml=yaml, env=tmp_path, cmd="provision")
+    execute_spin(yaml=yaml, env=tmp_path, cmd="ce-services --help")
 
 
 @pytest.mark.integration()
-def test_pkgtest_provision(tmpdir):
+def test_pkgtest_provision(tmp_path):
     """Provision the pgktest plugin"""
-    execute_spin(tmpdir=tmpdir, what="pkgtest.yaml", cmd=["pkgtest", "--help"])
+    yaml = "pkgtest.yaml"
+    execute_spin(yaml=yaml, env=tmp_path, cmd="cleanup")
+    execute_spin(yaml=yaml, env=tmp_path, cmd="provision")
+    execute_spin(yaml=yaml, env=tmp_path, cmd="pkgtest --help")
