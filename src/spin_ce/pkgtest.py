@@ -71,7 +71,7 @@ def pkgtest(cfg, args):
         cfg.pkgtest.name,
         wheel,
         "--python",
-        f"{cfg.python.python}{cfg.platform.exe}",
+        cfg.python.python,
         *cfg.pkgtest.opts,
         *args,
     )
