@@ -10,7 +10,6 @@ Provides a wrapper around the CLI tool of ce_services and
 provisions all tool necessary for these ce_services.
 """
 
-import filecmp
 import os
 import shutil
 import sys
@@ -19,7 +18,6 @@ from path import Path
 from spin import (
     Verbosity,
     config,
-    copy,
     debug,
     die,
     exists,
@@ -220,10 +218,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
         else:
             debug(f"Using cached traefik ({traefik})")
 
-        venv_traefik = cfg.python.scriptdir / f"traefik{cfg.platform.exe}"
-        if not exists(venv_traefik) or not filecmp.cmp(traefik, venv_traefik):
-            copy(traefik, venv_traefik)
-
     def install_solr(cfg):
         version = cfg.ce_services.solr.version
         install_dir = cfg.ce_services.solr.install_dir
@@ -271,9 +265,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     ).rename(redis_install_dir)
             else:
                 debug(f"Using cached redis-server ({redis})")
-            venv_redis = cfg.python.scriptdir / "redis-server.exe"
-            if not exists(venv_redis) or not filecmp.cmp(redis, venv_redis):
-                copy(redis, cfg.python.scriptdir / "redis-server.exe")
 
         elif not shutil.which("redis-server"):
             die(
@@ -409,11 +400,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
         else:
             debug(f"Using cached InfluxDB ({influxdb_dir})")
 
-        influxd = influxdb_dir / f"influxd{cfg.platform.exe}"
-        venv_influxd = cfg.python.scriptdir / f"influxd{cfg.platform.exe}"
-        if not exists(venv_influxd) or not filecmp.cmp(influxd, venv_influxd):
-            copy(influxd, venv_influxd)
-
     install_traefik(cfg)
     install_redis(cfg)
     install_solr(cfg)
@@ -426,11 +412,26 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
 
 def init(cfg):
-    """Sets some environment variables"""
-    setenv(
-        PATH=cfg.ce_services.solr.install_dir
+    """
+    Set all provisioned tools into the PATH variable.
+    """
+    path_extensions = {
+        cfg.ce_services.traefik.install_dir / cfg.ce_services.traefik.version,
+        cfg.ce_services.solr.install_dir
         / f"solr-{cfg.ce_services.solr.version}{cfg.ce_services.solr.version_postfix}"
-        / "bin"
-        + os.pathsep
-        + "{PATH}"
+        / "bin",
+    }
+
+    if sys.platform == "win32":
+        path_extensions.add(
+            cfg.ce_services.redis.install_dir / cfg.ce_services.redis.version
+        )
+
+    if cfg.ce_services.influxdb.enabled:
+        path_extensions.add(
+            cfg.ce_services.influxdb.install_dir / cfg.ce_services.influxdb.version
+        )
+
+    setenv(
+        PATH=f"{os.pathsep.join([str(e) for e in path_extensions])}{os.pathsep}{os.getenv('PATH', '')}"
     )
