@@ -1,4 +1,4 @@
-plugin-packages:
+plugin_packages:
     - spin_frontend
     - spin_python
     - ../../..
