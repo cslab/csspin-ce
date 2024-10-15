@@ -6,6 +6,9 @@
 
 """
 Provides a wrapper around the CLI tool pkgtest.
+
+See https://code.contact.de/qs/tooling/pkgtest for more information about
+pkgtest.
 """
 
 from glob import glob
@@ -13,18 +16,18 @@ from glob import glob
 from spin import config, die, sh, task
 
 defaults = config(
-    requires=config(
-        spin=["spin_ce.ce_services"],  # For the tool provisioning
-        python=["pkgtest"],
-    ),
-    additional_packages=[],
-    opts=[],
-    caddok_package_server_index_url=None,
-    caddok_package_server="packages.contact.de",
     name=None,
     package=None,
     tests="tests/accepttests",
     test_command=None,
+    additional_packages=[],
+    opts=[],
+    caddok_package_server_index_url=None,
+    caddok_package_server="packages.contact.de",
+    requires=config(
+        spin=["spin_ce.ce_services"],  # For the tool provisioning
+        python=["pkgtest"],
+    ),
 )
 
 

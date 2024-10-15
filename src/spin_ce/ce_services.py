@@ -8,6 +8,9 @@
 """
 Provides a wrapper around the CLI tool of ce_services and
 provisions all tool necessary for these ce_services.
+
+For more information about the ce_services tool, see:
+https://code.contact.de/qs/tooling/ce_services/
 """
 
 import os
@@ -30,16 +33,6 @@ from spin import (
 )
 
 defaults = config(
-    requires=config(
-        spin=[
-            "spin_ce.mkinstance",
-        ],
-        python=[
-            "ce_services",
-            "requests",
-            "psutil",
-        ],
-    ),
     hivemq=config(
         enabled=False,
         install_dir="{spin.data}/hivemq",
@@ -71,6 +64,16 @@ defaults = config(
         install_dir="{spin.data}/redis",
     ),
     loglevel="",
+    requires=config(
+        spin=[
+            "spin_ce.mkinstance",
+        ],
+        python=[
+            "ce_services",
+            "requests",
+            "psutil",
+        ],
+    ),
 )
 
 
