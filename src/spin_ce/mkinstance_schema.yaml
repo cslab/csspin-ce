@@ -17,6 +17,12 @@ mkinstance:
         webmake:
             type: bool
             help: If set to ``True``, webmake will be run.
+        std_calendar_profile_range:
+            type: str
+            help: |
+                Value for CADDOK_GENERATE_STD_CALENDAR_PROFILE_RANGE to
+                determine the range of dates that are being created for the
+                standard calendar profile.
         base:
             type: object
             help: The base defines the base properties for an CE instance.
