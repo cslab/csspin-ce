@@ -1,0 +1,35 @@
+# The spinfile.yaml for spin_ce is required since building the documentation
+# requires a provisioned project.
+
+plugin_packages:
+    - spin_docs
+    - spin_frontend
+    - spin_python
+    - .
+
+plugins:
+    - spin_docs.sphinx
+    - spin_ce:
+          - ce_services
+          - mkinstance
+          - pkgtest
+
+python:
+    version: '3.11.9'
+    requirements:
+        - sphinx-rtd-theme
+    index_url: https://packages.contact.de/apps/16.0-dev/+simple
+
+node:
+    version: '18.17.1'
+    mirror: https://nodejs-proxy.ops.contact.de/dist/
+
+build_rules:
+    task docs:
+        sources: doc/_schemaref.rst
+    doc/_schemaref.rst:
+        sources: [src/spin_ce]
+        spin:
+            - schemadoc ce_services --rst -o doc/plugins/ce_services_schemaref.rst
+            - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst
+            - schemadoc pkgtest --rst -o doc/plugins/pkgtest_schemaref.rst

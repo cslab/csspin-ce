@@ -20,30 +20,6 @@ from spin import config, interpolate1, option, rmtree, setenv, sh, task
 from spin.tree import ConfigTree
 
 
-def system_requirements(
-    cfg,
-):  # pylint: disable=unused-argument,missing-function-docstring
-    # This is our little database of system requirements for
-    # provisioning Python; spin identifies platforms by a tuple
-    # composed of the distro id and version e.g. ("debian", 10).
-    debian_requirements = ["libaio1"]
-    windows_requirements = ["vcredist140"]
-    return [
-        (
-            lambda distro, version: distro in ("debian", "mint", "ubuntu"),
-            {
-                "apt": " ".join(debian_requirements),
-            },
-        ),
-        (
-            lambda distro, version: distro in ("windows"),
-            {
-                "choco": " ".join(windows_requirements),
-            },
-        ),
-    ]
-
-
 def default_id(cfg):
     """Compute a default id used as value for many mkinstance options"""
 
@@ -172,3 +148,27 @@ def mkinstance(cfg, rebuild: option("--rebuild", is_flag=True)):  # noqa: F821
 
     # Run cdbpkg sync on the new install
     sh("cdbpkg", "--instancedir", instancedir, "sync")
+
+
+def system_requirements(
+    cfg,
+):  # pylint: disable=unused-argument,missing-function-docstring
+    # This is our little database of system requirements for
+    # provisioning Python; spin identifies platforms by a tuple
+    # composed of the distro id and version e.g. ("debian", 10).
+    debian_requirements = ["libaio1"]
+    windows_requirements = ["vcredist140"]
+    return [
+        (
+            lambda distro, version: distro in ("debian", "mint", "ubuntu"),
+            {
+                "apt": " ".join(debian_requirements),
+            },
+        ),
+        (
+            lambda distro, version: distro in ("windows"),
+            {
+                "choco": " ".join(windows_requirements),
+            },
+        ),
+    ]

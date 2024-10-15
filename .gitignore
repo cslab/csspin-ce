@@ -40,23 +40,9 @@ junit.xml
 cept_test_results.json
 pytest*.xml
 
-# Translations
-*.pot
-*.mo
-
 # Sphinx documentation
 doc/_build
-doc/_docindex
-doc/docportal.db
-doc/*/*/*/docset.info
-doc/*/*/doctrees/
-doc/*/*/html/
-doc/*/*/htmlhelp/
-doc/*/*/latex/
-doc/*/*/pickle/
-doc/*/*/.build
-.doctrees/
-doc/**/_js
+doc/plugins/*_schemaref.rst
 
 # IDE configuration
 .idea/
