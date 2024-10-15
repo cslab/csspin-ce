@@ -16,7 +16,7 @@ import os
 import platform
 import zlib
 
-from spin import config, interpolate1, option, rmtree, sh, task
+from spin import config, interpolate1, option, rmtree, setenv, sh, task
 from spin.tree import ConfigTree
 
 
@@ -76,6 +76,7 @@ defaults = config(
         sslmode="0",  # TLS setup
         instance_location=default_location,
     ),
+    std_calendar_profile_range="-",
     # DBMS-specific defaults
     oracle=config(
         ora_dbhost="//localhost:1521/xe",
@@ -159,7 +160,9 @@ def mkinstance(cfg, rebuild: option("--rebuild", is_flag=True)):  # noqa: F821
     instancedir = interpolate1(cfg.mkinstance.base.instance_location)
     if rebuild and os.path.isdir(instancedir):
         rmtree(instancedir)
-
+    setenv(
+        CADDOK_GENERATE_STD_CALENDAR_PROFILE_RANGE=cfg.mkinstance.std_calendar_profile_range
+    )
     if not os.path.isdir(instancedir):
         sh("mkinstance", *opts, dbms, *dbms_opts, shell=False)
 
