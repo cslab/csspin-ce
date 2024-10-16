@@ -96,9 +96,6 @@ ce_services:
                 install_dir:
                     type: path
                     help: The installation directory of redis.
-        timeout:
-            type: int
-            help: Timeout for services to come up.
         loglevel:
             type: str
             help: The loglevel for the started services.
