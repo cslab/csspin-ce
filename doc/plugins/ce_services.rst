@@ -82,18 +82,6 @@ The ``influxdb`` service can be enabled by setting the ``enabled`` property to
 
 (Re-)provision may be required to apply the changes.
 
-How to increase the timeout when starting the CE services?
-##########################################################
-
-The timeout for starting the CE services can be increased by modifying the
-``ce_services.timeout`` property in the ``spinfile.yaml``.
-
-.. code-block:: yaml
-    :caption: Increase the timeout for starting the CE services
-
-    ce_services:
-        timeout: 60 # i.e. 60 seconds
-
 How to pass additional options and flags to the `ce_services`_?
 ###############################################################
 
