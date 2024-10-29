@@ -100,14 +100,8 @@ def extract_service_config(cfg):
     if cfg.ce_services.hivemq.enabled:
         additional_cfg["hivemq"] = True
         hivemq_options = {
-            "hivemq_bin_path": cfg.ce_services.hivemq.install_dir
-            / cfg.ce_services.hivemq.version,
-            "hivemq_elements_integration_install_dir": (
-                cfg.ce_services.hivemq.elements_integration.install_dir
-            ),
             "hivemq_elements_integration_password": cfg.ce_services.hivemq.elements_integration.password,
             "hivemq_elements_integration_user": cfg.ce_services.hivemq.elements_integration.user,
-            "hivemq_elements_integration_version": cfg.ce_services.hivemq.elements_integration.version,
         }
         for key, value in hivemq_options.items():
             if value:
@@ -433,6 +427,16 @@ def init(cfg):
     if cfg.ce_services.influxdb.enabled:
         path_extensions.add(
             cfg.ce_services.influxdb.install_dir / cfg.ce_services.influxdb.version
+        )
+
+    if cfg.ce_services.hivemq.enabled:
+        setenv(
+            HIVEMQ_HOME=cfg.ce_services.hivemq.install_dir
+            / cfg.ce_services.hivemq.version
+        )
+        setenv(
+            HIVEMQ_EXTENSION_FOLDER=cfg.ce_services.hivemq.elements_integration.install_dir
+            / cfg.ce_services.hivemq.elements_integration.version
         )
 
     setenv(
