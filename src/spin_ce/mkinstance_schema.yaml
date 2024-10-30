@@ -87,6 +87,9 @@ mkinstance:
                 mssql_catalog:
                     type: str
                     help: The name of the database catalog to use or create.
+                mssql_dbpasswd:
+                    type: str
+                    help: The password for the MSSQL database user.
         mssql_sspi:
             type: object
             help: |
