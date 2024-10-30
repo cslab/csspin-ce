@@ -100,6 +100,16 @@ defaults = config(
             "spin_frontend.node",
             "spin_python.python",
         ],
+        system=config(
+            debian=config(
+                apt=[
+                    "libaio1",
+                ],
+            ),
+            windows=config(
+                choco=["vcredist140"],
+            ),
+        ),
     ),
 )
 
@@ -148,27 +158,3 @@ def mkinstance(cfg, rebuild: option("--rebuild", is_flag=True)):  # noqa: F821
 
     # Run cdbpkg sync on the new install
     sh("cdbpkg", "--instancedir", instancedir, "sync")
-
-
-def system_requirements(
-    cfg,
-):  # pylint: disable=unused-argument,missing-function-docstring
-    # This is our little database of system requirements for
-    # provisioning Python; spin identifies platforms by a tuple
-    # composed of the distro id and version e.g. ("debian", 10).
-    debian_requirements = ["libaio1"]
-    windows_requirements = ["vcredist140"]
-    return [
-        (
-            lambda distro, version: distro in ("debian", "mint", "ubuntu"),
-            {
-                "apt": " ".join(debian_requirements),
-            },
-        ),
-        (
-            lambda distro, version: distro in ("windows"),
-            {
-                "choco": " ".join(windows_requirements),
-            },
-        ),
-    ]
