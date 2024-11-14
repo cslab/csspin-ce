@@ -113,6 +113,7 @@ repos:
                 - '--rcfile=pyproject.toml'
                 - '--output-format=parseable'
                 - '-j=4'
+                - '-d=W0511' # W0511 disables fixme checking
     - repo: https://github.com/PyCQA/bandit
       # Bandit is a tool designed to find common security issues in Python code.
       rev: 1.7.10
