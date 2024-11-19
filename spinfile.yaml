@@ -5,6 +5,7 @@ plugin_packages:
     - spin_docs
     - spin_frontend
     - spin_python
+    - spin_java
     - .
 
 plugins:
@@ -23,6 +24,9 @@ python:
 node:
     version: '18.17.1'
     mirror: https://nodejs-proxy.ops.contact.de/dist/
+
+java:
+    version: '21'
 
 build_rules:
     task docs:

@@ -1,9 +1,12 @@
 plugin_packages:
     - spin_frontend
     - spin_python
+    - spin_java
     - ../../..
 plugins:
     - spin_ce.ce_services
+java:
+    version: '21'
 python:
     version: '3.11.9'
     index_url: https://packages.contact.de/apps/16.0-dev/+simple/
