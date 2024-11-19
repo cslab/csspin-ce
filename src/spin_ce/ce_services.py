@@ -65,9 +65,7 @@ defaults = config(
     ),
     loglevel="",
     requires=config(
-        spin=[
-            "spin_ce.mkinstance",
-        ],
+        spin=["spin_ce.mkinstance", "spin_java.java"],
         python=[
             "ce_services",
             "requests",

@@ -5,6 +5,11 @@ include:
       ref: v1.7.0
       file: ci/.gitlab-ci.yml
 
+variables:
+    SPIN_TREE_NODE__USE: node
+    SPIN_TREE_PYTHON__USE: python
+    SPIN_TREE_JAVA__USE: '{JAVA_HOME}'
+
 test_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
     image: registry.contact.de/cetest:16.0-6.latest
