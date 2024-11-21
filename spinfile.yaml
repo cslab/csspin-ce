@@ -6,7 +6,7 @@ plugin_packages:
     - spin_frontend
     - spin_python
     - spin_java
-    - .
+    - -e .
 
 plugins:
     - spin_docs.sphinx

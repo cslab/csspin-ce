@@ -90,6 +90,19 @@ mkinstance:
                 mssql_dbpasswd:
                     type: str
                     help: The password for the MSSQL database user.
+                mssql_pyodbc:
+                    type: str
+                    help: |
+                        Use the PyODBC driver: The installation will be created
+                        with the PyODBC driver.
+                mssql_odbc_driver:
+                    type: str
+                    help: |
+                        ODBC driver name for the PyODBC driver: ODBC driver name
+                        to use in the ODBC connection string
+                mssql_odbc_encrypt:
+                    type: str
+                    help: Enable ODBC encryption.
         mssql_sspi:
             type: object
             help: |
