@@ -66,6 +66,9 @@ defaults = config(
         mssql_syspwd="sa",
         mssql_dbpasswd=default_id,
         mssql_catalog=default_id,
+        mssql_pyodbc="0",
+        mssql_odbc_driver=None,
+        mssql_odbc_encrypt="no",
     ),
     mssql_sspi=config(
         mssql_dbhost="localhost\\SQLEXPRESS",
