@@ -24,7 +24,8 @@ at least contain the following configuration.
 
     plugin_packages:
         - spin_ce
-        - spin_frontend # required by spin_ce.mkinstance
+        - spin_frontend
+        - spin_java
         - spin_python
     plugins:
         - spin_ce.mkinstance
@@ -33,6 +34,8 @@ at least contain the following configuration.
         index_url: <package server index url to retrieve CE wheels from>
     node:
         version: '18.17.1'
+    java:
+        version: '17'
 
 The provisioning of the required tools and the plugins dependencies can be done
 via the well-known ``spin provision``-command.

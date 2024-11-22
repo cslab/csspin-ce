@@ -19,8 +19,9 @@ within a project's ``spinfile.yaml``.
 
     plugin_packages:
         - spin_ce
-        - spin_python # required by spin_ce
-        - spin_frontend # required by spin_ce.mkinstance
+        - spin_frontend # required by spin_ce
+        - spin_java     # required by spin_ce
+        - spin_python   # required by spin_ce
     plugins:
         - spin_ce:
             - ce_services

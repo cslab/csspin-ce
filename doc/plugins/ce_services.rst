@@ -27,7 +27,8 @@ at least contain the following configuration.
 
     plugin_packages:
         - spin_ce
-        - spin_frontend # required by spin_ce
+        - spin_frontend
+        - spin_java
         - spin_python
     plugins:
         - spin_ce.ce_services
@@ -36,6 +37,8 @@ at least contain the following configuration.
         index_url: <package server index url to retrieve CE wheels from>
     node:
         version: '18.17.1'
+    java:
+        version: '17'
 
 The provisioning of the required tools and the plugins dependencies can be done
 via the well-known ``spin provision``-command.
@@ -53,7 +56,7 @@ instance specified in the ``spinfile.yaml``.
     spin ce_services -i <path to instance>
 
 How to use the `HiveMQ`_ service and CE Elements integration?
-#######################################################################################
+#############################################################
 
 The ``hivemq`` service as well as the CONZTACT Elements HiveMQ integration can
 be activated by enabling it within the configuration of ``ce_services``.
@@ -65,10 +68,10 @@ be activated by enabling it within the configuration of ``ce_services``.
         hivemq:
             enabled: true
 
-(Re-)provision may be required to apply the changes.
+(Re-) provision may be required to apply the changes.
 
 How to enable the `InfluxDB`_ service?
-####################################################################
+######################################
 
 The ``influxdb`` service can be enabled by setting the ``enabled`` property to
 ``true`` within the configuration of ``ce_services``.
@@ -80,7 +83,7 @@ The ``influxdb`` service can be enabled by setting the ``enabled`` property to
         influxdb:
             enabled: true
 
-(Re-)provision may be required to apply the changes.
+(Re-) provision may be required to apply the changes.
 
 How to pass additional options and flags to the `ce_services`_?
 ###############################################################

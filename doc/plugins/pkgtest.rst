@@ -23,6 +23,7 @@ at least contain the following configuration.
 
     plugin_packages:
         - spin_ce
+        - spin_java
         - spin_python
     plugins:
         - spin_ce.pkgtest
@@ -32,6 +33,8 @@ at least contain the following configuration.
         name: cs.template
         package: dist/cs.template-*.whl
         caddok_package_server_index_url: <index URL to retrieve wheels from>
+    java:
+        version: '17'
 
 The provisioning of the required tools and the plugins dependencies can be done
 via the well-known ``spin provision``-command.
