@@ -4,8 +4,8 @@
 plugin_packages:
     - spin_docs
     - spin_frontend
-    - spin_python
     - spin_java
+    - spin_python
     - -e .
 
 plugins:
