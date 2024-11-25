@@ -8,7 +8,7 @@ include:
 variables:
     SPIN_TREE_NODE__USE: node
     SPIN_TREE_PYTHON__USE: python
-    SPIN_TREE_JAVA__USE: '{JAVA_HOME}'
+    SPIN_TREE_JAVA__USE: java
 
 test_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
