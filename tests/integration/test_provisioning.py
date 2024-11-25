@@ -4,7 +4,7 @@
 # All rights reserved.
 # https://www.contact-software.com/
 
-"""Module implementing the integration tests for spin_cpp"""
+"""Module implementing the integration tests for spin_ce"""
 
 import shutil
 import subprocess

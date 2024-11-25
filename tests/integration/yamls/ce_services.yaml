@@ -1,7 +1,7 @@
 plugin_packages:
     - spin_frontend
-    - spin_python
     - spin_java
+    - spin_python
     - ../../..
 plugins:
     - spin_ce.ce_services
