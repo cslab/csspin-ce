@@ -4,7 +4,7 @@ requires = ["setuptools>=64", "setuptools_scm>=8"]
 
 [project]
 authors = [{name = "CONTACT Software GmbH"}]
-dependencies = []
+dependencies = ["spin_frontend", "spin_java", "spin_python"]
 description = "spin_ce"
 dynamic = ["version", "readme"]
 license = {text = "Copyright (C) 2024 CONTACT Software GmbH"}
