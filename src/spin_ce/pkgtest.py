@@ -16,7 +16,7 @@ from glob import glob
 from spin import config, die, sh, task
 
 defaults = config(
-    name=None,
+    name="{spin.project_name}",
     package=None,
     tests="tests/accepttests",
     test_command=None,
