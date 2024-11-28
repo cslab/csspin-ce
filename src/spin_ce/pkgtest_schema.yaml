@@ -24,7 +24,7 @@ pkgtest:
             help: DNS Name of the package server.
         name:
             type: str
-            help: Name of the package under test.
+            help: Name of the package under test. Defaults to '{spin.project_name}'.
         package:
             type: str
             help: The package under test. May be a glob.
