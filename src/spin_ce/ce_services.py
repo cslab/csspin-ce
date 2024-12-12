@@ -109,7 +109,15 @@ def extract_service_config(cfg):
 
 
 @task(aliases=["ce_services"])
-def ce_services(cfg, instance: option("-i", "--instance"), args):  # noqa: F821
+def ce_services(
+    cfg,
+    instance: option(
+        "-i",  # noqa: F821
+        "--instance",  # noqa: F821
+        help="Directory of the CONTACT Elements instance.",  # noqa: F722
+    ),
+    args,
+):
     """
     Start the ce services synchronously.
     """

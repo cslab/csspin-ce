@@ -132,7 +132,14 @@ def configure(cfg):
 
 
 @task()
-def mkinstance(cfg, rebuild: option("--rebuild", is_flag=True)):  # noqa: F821
+def mkinstance(
+    cfg,
+    rebuild: option(
+        "--rebuild",  # noqa: F821
+        is_flag=True,
+        help="Remove an existing instance prior creating the new one.",  # noqa: F722
+    ),
+):
     """Run the 'mkinstance' command for development."""
 
     def to_cli_options(cfgtree):
