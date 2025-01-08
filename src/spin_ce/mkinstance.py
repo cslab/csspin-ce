@@ -12,16 +12,16 @@ Create a fresh instance based on spinfile.yaml configuration.
 """
 
 import getpass
-import os
 import platform
 import zlib
 
-from spin import config, interpolate1, option, rmtree, setenv, sh, task
+from path import Path
+from spin import argument, config, option, rmtree, setenv, sh, task
 from spin.tree import ConfigTree
 
 
 def default_id(cfg):
-    """Compute a default id used as value for many mkinstance options"""
+    """Compute a default id used as value for many mkinstance options."""
 
     # The instance location is per default a callable
     inst_location = cfg.mkinstance.base.instance_location
@@ -33,8 +33,8 @@ def default_id(cfg):
 
 
 def default_location(cfg):
-    """Compute a default location for the instance"""
-    return os.path.join(cfg.spin.project_root, cfg.mkinstance.dbms)
+    """Compute a default location for the instance."""
+    return Path(cfg.spin.project_root) / cfg.mkinstance.dbms
 
 
 defaults = config(
@@ -139,8 +139,21 @@ def mkinstance(
         is_flag=True,
         help="Remove an existing instance prior creating the new one.",  # noqa: F722
     ),
+    dbms: argument(type=str, nargs=1, required=False),  # noqa: F821
 ):
-    """Run the 'mkinstance' command for development."""
+    """
+    Run the 'mkinstance' command for development.
+
+    If webmake is enabled, the JS bundles are built as well, followed by a
+    cdbpkg sync.
+    """
+    instancedir = cfg.mkinstance.base.instance_location
+
+    if dbms and instancedir == default_location(cfg):
+        # If 'dbms' was passed and the instance location is the default (not
+        # custom like './inst'), we need to update the default location based on
+        # the dbms passed.
+        instancedir = cfg.spin.project_root / dbms
 
     def to_cli_options(cfgtree):
         return [f"--{k}={v}" for k, v in cfgtree.items() if v is not None]
@@ -151,16 +164,17 @@ def mkinstance(
         + to_cli_options(cfg.mkinstance.s3_blobstore)
         + to_cli_options(cfg.mkinstance.azure_blobstore)
     )
-    dbms = cfg.mkinstance.dbms
-    dbms_opts = to_cli_options(cfg.mkinstance.get(dbms, {}))
 
-    instancedir = interpolate1(cfg.mkinstance.base.instance_location)
-    if rebuild and os.path.isdir(instancedir):
+    if rebuild and instancedir.is_dir():
         rmtree(instancedir)
+
     setenv(
         CADDOK_GENERATE_STD_CALENDAR_PROFILE_RANGE=cfg.mkinstance.std_calendar_profile_range
     )
-    if not os.path.isdir(instancedir):
+
+    dbms = dbms or cfg.mkinstance.dbms
+    if not instancedir.is_dir():
+        dbms_opts = to_cli_options(cfg.mkinstance.get(dbms, {}))
         sh("mkinstance", *opts, dbms, *dbms_opts, shell=False)
 
     if cfg.mkinstance.webmake:

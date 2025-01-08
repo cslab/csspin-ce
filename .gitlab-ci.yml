@@ -12,11 +12,11 @@ variables:
 
 test_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
-    image: registry.contact.de/cetest:16.0-6.latest
+    image: registry.contact.de/cetest:16.0-7.latest
 
 triggered_integration_tests_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
-    image: registry.contact.de/cetest:16.0-6.latest
+    image: registry.contact.de/cetest:16.0-7.latest
     before_script:
         # We need to overwrite this, as spin_plugin_common needs to install jq and
         # asserts that we're root, which isn't the case for cetest. But as jq is

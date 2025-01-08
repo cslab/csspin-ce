@@ -50,10 +50,17 @@ specified in the ``spinfile.yaml`` and the plugin.
 .. code-block:: bash
     :caption: Create a new instance
 
-    spin mkinstance -i <path to instance>
+    spin mkinstance
 
-After the command succeeds, a new instance will be created at the specified
-path.
+After the command succeeds, a new instance will be created using the default
+values of the plugin and the provided `spinfile.yaml`.
+
+Using another DBMS is as simple as:
+
+.. code-block:: bash
+    :caption: Create a new instance using another DBMS
+
+    spin mkinstance mssql
 
 ``spin_ce.mkinstance`` schema reference
 ########################################
