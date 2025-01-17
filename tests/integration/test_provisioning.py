@@ -6,6 +6,7 @@
 
 """Module implementing the integration tests for spin_ce"""
 
+import shlex
 import shutil
 import subprocess
 import sys
@@ -15,11 +16,10 @@ import pytest
 
 def execute_spin(yaml, env, path="tests/integration/yamls", cmd=""):
     """Helper function to execute spin and return the output"""
+    cmd = f"spin -p spin.cache={env} -C {path} --env {str(env)} -f {yaml} " + cmd
     try:
         return subprocess.check_output(
-            (
-                f"spin -p spin.cache={env} -C {path} --env {str(env)} -f {yaml} " + cmd
-            ).split(" "),
+            shlex.split(cmd, posix=sys.platform != "win32"),
             encoding="utf-8",
             stderr=subprocess.PIPE,
         ).strip()
