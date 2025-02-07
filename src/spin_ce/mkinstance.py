@@ -160,7 +160,7 @@ def mkinstance(
 
     opts = (
         cfg.mkinstance.opts
-        + to_cli_options(cfg.mkinstance.base)
+        + to_cli_options(cfg.mkinstance.base | {"instance_location": instancedir})
         + to_cli_options(cfg.mkinstance.s3_blobstore)
         + to_cli_options(cfg.mkinstance.azure_blobstore)
     )
