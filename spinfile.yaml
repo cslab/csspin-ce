@@ -11,6 +11,7 @@ plugin_packages:
 plugins:
     - spin_docs.sphinx
     - spin_ce:
+          - cdbpkg
           - ce_services
           - mkinstance
           - pkgtest
@@ -34,6 +35,7 @@ build_rules:
     doc/_schemaref.rst:
         sources: [src/spin_ce]
         spin:
+            - schemadoc cdbpkg --rst -o doc/plugins/cdbpkg_schemaref.rst
             - schemadoc ce_services --rst -o doc/plugins/ce_services_schemaref.rst
             - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst
             - schemadoc pkgtest --rst -o doc/plugins/pkgtest_schemaref.rst

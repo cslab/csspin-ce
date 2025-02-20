@@ -1,0 +1,8 @@
+# -*- mode: yaml; coding: utf-8 -*-
+#
+# Schema for the cdbpkg plugin for cs.spin
+
+cdbpkg:
+    type: object
+    help: |
+        The cdbpkg plugin for cs.spin provides the full cdbpkg experience - all in the context of cs.spin.

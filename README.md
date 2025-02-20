@@ -3,6 +3,7 @@
 This repository contains the spin plugin-package `spin_ce`. It provides the
 following spin-plugins:
 
+-   spin_ce.cdbpkg
 -   spin_ce.ce_services
 -   spin_ce.mkinstance
 -   spin_ce.pkgtest
