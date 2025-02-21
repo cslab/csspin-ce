@@ -1,0 +1,15 @@
+plugin_packages:
+    - spin_frontend
+    - spin_java
+    - spin_python
+    - ../../..
+plugins:
+    - spin_ce.cdbpkg
+java:
+    version: '21'
+python:
+    version: '3.11.9'
+    index_url: https://packages.contact.de/apps/16.0-dev/+simple/
+node:
+    version: '18.20.4'
+    mirror: https://nodejs-proxy.ops.contact.de/dist/
