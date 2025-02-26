@@ -71,6 +71,7 @@ defaults = config(
             "requests",
             "psutil",
         ],
+        system=config(debian=config(apt=["redis-server"])),
     ),
 )
 
@@ -271,7 +272,7 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
         elif not shutil.which("redis-server"):
             die(
-                "Cannot provision redis on linux. Install it yourself and make sure its available in PATH!"  # noqa: E501
+                "Cannot provision redis-server on linux. Please run 'spin system-provision'."  # noqa: E501
             )
 
     def install_hivemq(cfg):
