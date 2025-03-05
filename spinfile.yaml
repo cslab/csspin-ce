@@ -13,6 +13,7 @@ plugins:
     - spin_ce:
           - cdbpkg
           - ce_services
+          - ce_support_tools
           - mkinstance
           - pkgtest
 
