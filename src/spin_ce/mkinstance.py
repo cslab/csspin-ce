@@ -49,7 +49,6 @@ defaults = config(
     base=config(
         namespace="cs",  # Application namespace
         instance_admpwd="",  # Empty password for caddok
-        sslmode=False,  # TLS setup
         instance_location=default_location,
     ),
     std_calendar_profile_range="-",
@@ -130,9 +129,6 @@ def configure(cfg):
 
     compute_values(cfg.mkinstance)
 
-    if cfg.mkinstance.base.sslmode:
-        cfg.mkinstance.base.instance_location += "_ssl"
-
 
 @task()
 def mkinstance(
@@ -141,11 +137,6 @@ def mkinstance(
         "--rebuild",  # noqa: F821
         is_flag=True,
         help="Remove an existing instance prior creating the new one.",  # noqa: F722
-    ),
-    ssl: option(
-        "--ssl",  # noqa: F821
-        is_flag=True,
-        help="Use SSL for the database connection.",  # noqa: F722
     ),
     dbms: argument(type=str, nargs=1, required=False),  # noqa: F821
 ):
@@ -165,10 +156,6 @@ def mkinstance(
 
     def to_cli_options(cfgtree):
         return [f"--{k}={v}" for k, v in cfgtree.items() if v is not None]
-
-    if ssl:
-        instancedir = instancedir + "_ssl"
-        cfg.mkinstance.base.sslmode = True
 
     opts = (
         cfg.mkinstance.opts
