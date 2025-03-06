@@ -41,9 +41,6 @@ mkinstance:
                 instance_location:
                     type: path
                     help: The location where the CE instance should be created.
-                sslmode:
-                    type: bool
-                    help: Enable or disable TLS for the CE instance.
         oracle:
             type: object
             help: |
