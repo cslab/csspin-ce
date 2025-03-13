@@ -48,7 +48,7 @@ be used. The command will create a new instance based on the configuration
 specified in the ``spinfile.yaml`` and the plugin.
 
 .. code-block:: bash
-    :caption: Create a new instance
+    :caption: Create a new instance (default: sqlite)
 
     spin mkinstance
 
@@ -60,9 +60,15 @@ Using another DBMS is as simple as:
 .. code-block:: bash
     :caption: Create a new instance using another DBMS
 
-    spin mkinstance mssql
+    # Note: The mkinstance.postgres.postgres_dbhost can be any valid hostname or
+    #       IP address, in our case it is the IP address of a locally running
+    #       PostgreSQL container.
+    spin \
+        -p mkinstance.postgres.postgres_dbhost=127.0.0.1 \
+        -p mkinstance.postgres.postgres_syspwd=password \
+        mkinstance postgres
 
 ``spin_ce.mkinstance`` schema reference
-########################################
+#######################################
 
 .. include:: mkinstance_schemaref.rst
