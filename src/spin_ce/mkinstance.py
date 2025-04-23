@@ -12,11 +12,12 @@ Create a fresh instance based on spinfile.yaml configuration.
 """
 
 import getpass
+import os
 import platform
 import zlib
 
 from path import Path
-from spin import argument, config, option, rmtree, setenv, sh, task
+from spin import argument, config, interpolate1, option, rmtree, setenv, sh, task
 from spin.tree import ConfigTree
 
 
@@ -118,7 +119,7 @@ defaults = config(
 
 
 def configure(cfg):
-    """Recursively resolve all values in the configtree"""
+    """Configure the mkinstance plugin and resolve the plugins subtree."""
 
     def compute_values(conftree):
         for k, v in conftree.items():
@@ -128,6 +129,11 @@ def configure(cfg):
                 compute_values(v)
 
     compute_values(cfg.mkinstance)
+
+    if Path(caddok_base := os.getenv("CADDOK_BASE", "")).is_dir():
+        cfg.mkinstance.base.instance_location = caddok_base
+    elif interpolate1(Path(cfg.mkinstance.base.instance_location)).is_dir():
+        setenv(CADDOK_BASE=cfg.mkinstance.base.instance_location)
 
 
 @task()
@@ -166,6 +172,7 @@ def mkinstance(
 
     if rebuild and instancedir.is_dir():
         rmtree(instancedir)
+        setenv(CADDOK_BASE=None)
 
     setenv(
         CADDOK_GENERATE_STD_CALENDAR_PROFILE_RANGE=cfg.mkinstance.std_calendar_profile_range

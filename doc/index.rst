@@ -21,7 +21,6 @@ https://packages.contact.de/tools/misc/spin-ce.
    :caption: Contents:
 
    installation.rst
-   plugins/cdbpkg.rst
    plugins/ce_services.rst
    plugins/ce_support_tools.rst
    plugins/mkinstance.rst

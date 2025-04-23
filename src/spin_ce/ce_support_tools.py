@@ -8,12 +8,10 @@
 Spin plugin for the ce_support_tools.
 """
 
-from spin import (
-    config,
-    option,
-    sh,
-    task,
-)
+import os
+
+from path import Path
+from spin import config, die, option, setenv, sh, task
 
 defaults = config(
     requires=config(
@@ -27,7 +25,7 @@ defaults = config(
 
 @task()
 def pyperf(
-    cfg,
+    cfg,  # pylint: disable=unused-argument
     instancedir: option("-D", "--instancedir", required=False, type=str),  # noqa: F821
     help: option("--help", is_flag=True),  # pylint: disable=redefined-builtin
     args,
@@ -37,8 +35,13 @@ def pyperf(
     """
     if help:
         args = (*args, "--help")
-    if instancedir is None:
-        instancedir = cfg.mkinstance.base.instance_location
+    if (
+        not Path(os.getenv("CADDOK_BASE", "")).is_dir()
+        and not (instancedir := Path(instancedir).absolute()).is_dir()
+    ):
+        die("Can't find the CE instance.")
+    if instancedir:
+        setenv(CADDOK_BASE=instancedir)
     if args is None or len(args) == 0:
         args = ("--help",)
-    sh("powerscript", "-D", instancedir, "-m", "ce.support.pyperf", *args)
+    sh("powerscript", "-m", "ce.support.pyperf", *args)
