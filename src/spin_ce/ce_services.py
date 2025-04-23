@@ -119,15 +119,15 @@ def ce_services(
     ),
     args,
 ):
-    """
-    Start the ce services synchronously.
-    """
-    inst = (
-        os.path.abspath(instance) if instance else cfg.mkinstance.base.instance_location
-    )
-    if not os.path.isdir(inst):
-        die(f"Cannot find the CE instance '{inst}'.")
-    setenv(CADDOK_BASE=inst)
+    """Start the CE services synchronously."""
+
+    if (
+        not Path(os.getenv("CADDOK_BASE", "")).is_dir()
+        and not (instance := Path(instance).absolute()).is_dir()
+    ):
+        die("Can't find the CE instance.")
+    if instance:
+        setenv(CADDOK_BASE=instance)
 
     # Now set the relevant CLI options from cfg, making sure to only add those
     # from cfg that haven't already been set by the CLI.
