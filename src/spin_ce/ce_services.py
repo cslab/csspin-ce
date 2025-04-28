@@ -55,7 +55,7 @@ defaults = config(
         install_dir="{spin.data}/traefik",
     ),
     solr=config(
-        version="9.6.1",  # FIXME: Wait for release with https://issues.apache.org/jira/browse/SOLR-17457
+        version="9.8.1",
         install_dir="{spin.data}/solr",
         version_postfix="-slim",
     ),
