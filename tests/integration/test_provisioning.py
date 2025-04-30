@@ -43,7 +43,7 @@ def test_ce_services_provision(tmp_path):
 
 
 @pytest.mark.integration()
-@pytest.mark.parametrize("plugin", ("mkinstance", "pkgtest"))
+@pytest.mark.parametrize("plugin", ("mkinstance", "pkgtest", "localize"))
 def test_plugin_provision(tmp_path: str, plugin: str):
     """Provision plugins and run their help command"""
     yaml = f"{plugin}.yaml"

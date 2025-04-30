@@ -1,0 +1,16 @@
+# -*- mode: yaml; coding: utf-8 -*-
+#
+# Schema for the localization plugin for cs.spin
+
+localization:
+    type: object
+    help: |
+        The localization plugin for cs.spin provides a wrapper
+        around the localization (l10n) CLI tool.
+    properties:
+        target_langs:
+            type: list
+            help: List of target languages for localization.
+        xliff_dir:
+            type: path
+            help: The export directory of XLIFF files.
