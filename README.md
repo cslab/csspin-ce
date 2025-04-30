@@ -5,6 +5,7 @@ following spin-plugins:
 
 - spin_ce.ce_services
 - spin_ce.ce_support_tools
+- spin_ce.localization
 - spin_ce.mkinstance
 - spin_ce.pkgtest
 

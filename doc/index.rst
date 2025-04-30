@@ -23,5 +23,6 @@ https://packages.contact.de/tools/misc/spin-ce.
    installation.rst
    plugins/ce_services.rst
    plugins/ce_support_tools.rst
+   plugins/localization.rst
    plugins/mkinstance.rst
    plugins/pkgtest.rst
