@@ -18,19 +18,35 @@ import shutil
 import sys
 
 from path import Path
-from spin import (
-    Verbosity,
-    config,
-    debug,
-    die,
-    exists,
-    mkdir,
-    option,
-    rmtree,
-    setenv,
-    sh,
-    task,
-)
+
+try:
+    from csspin import (
+        Verbosity,
+        config,
+        debug,
+        die,
+        exists,
+        mkdir,
+        option,
+        rmtree,
+        setenv,
+        sh,
+        task,
+    )
+except ImportError:
+    from spin import (
+        Verbosity,
+        config,
+        debug,
+        die,
+        exists,
+        mkdir,
+        option,
+        rmtree,
+        setenv,
+        sh,
+        task,
+    )
 
 defaults = config(
     hivemq=config(
@@ -160,7 +176,10 @@ def provision(cfg):  # pylint: disable=too-many-statements
     import zipfile
     from tempfile import TemporaryDirectory
 
-    from spin import download
+    try:
+        from csspin import download
+    except ImportError:
+        from spin import download
 
     def extract(archive, extract_to, member=""):
         """Unpacks archives"""

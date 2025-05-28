@@ -17,8 +17,13 @@ import platform
 import zlib
 
 from path import Path
-from spin import argument, config, interpolate1, option, rmtree, setenv, sh, task
-from spin.tree import ConfigTree
+
+try:
+    from csspin import argument, config, interpolate1, option, rmtree, setenv, sh, task
+    from csspin.tree import ConfigTree
+except ImportError:
+    from spin import argument, config, interpolate1, option, rmtree, setenv, sh, task
+    from spin.tree import ConfigTree
 
 
 def default_id(cfg):
