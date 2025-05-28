@@ -11,7 +11,12 @@ Spin plugin for the ce_support_tools.
 import os
 
 from path import Path
-from spin import config, die, option, setenv, sh, task
+
+try:
+    from csspin import config, die, option, setenv, sh, task
+except ImportError:
+    from spin import config, die, option, setenv, sh, task
+
 
 defaults = config(
     requires=config(

@@ -10,15 +10,26 @@ Spin wrapper plugin for the localization tool.
 
 import os
 
-from spin import (
-    Path,
-    config,
-    die,
-    option,
-    setenv,
-    sh,
-    task,
-)
+try:
+    from csspin import (
+        Path,
+        config,
+        die,
+        option,
+        setenv,
+        sh,
+        task,
+    )
+except ImportError:
+    from spin import (
+        Path,
+        config,
+        die,
+        option,
+        setenv,
+        sh,
+        task,
+    )
 
 defaults = config(
     xliff_dir="xliff_export",

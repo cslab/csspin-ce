@@ -43,7 +43,7 @@ repos:
             files: \.(pyi?|ue)$
     - repo: https://github.com/rbubley/mirrors-prettier
       # Prettier is an opinionated code formatter for JS, TS, json etc.
-      rev: v3.5.1
+      rev: v3.5.3
       hooks:
           - id: prettier
     - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks

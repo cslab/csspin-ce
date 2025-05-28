@@ -13,7 +13,10 @@ pkgtest.
 
 from glob import glob
 
-from spin import config, die, sh, task
+try:
+    from csspin import config, die, sh, task
+except ImportError:
+    from spin import config, die, sh, task
 
 defaults = config(
     name="{spin.project_name}",
