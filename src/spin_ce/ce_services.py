@@ -425,7 +425,9 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     install_traefik(cfg)
     install_redis(cfg)
-    install_solr(cfg)
+
+    if not cfg.ce_services.solr.use:
+        install_solr(cfg)
 
     if cfg.ce_services.hivemq.enabled:
         install_hivemq(cfg)
@@ -440,10 +442,27 @@ def init(cfg):
     """
     path_extensions = {
         cfg.ce_services.traefik.install_dir / cfg.ce_services.traefik.version,
-        cfg.ce_services.solr.install_dir
-        / f"solr-{cfg.ce_services.solr.version}{cfg.ce_services.solr.version_postfix}"
-        / "bin",
     }
+
+    if cfg.ce_services.solr.use:
+        from shutil import which  # noqa: F401
+
+        solr_path = which(cfg.ce_services.solr.use)
+        if solr_path is None:
+            if Path(solr_path).exists():
+                path_extensions.add(solr_path)
+            else:
+                die(
+                    f"Cannot find Solr executable: {cfg.ce_services.solr.use}. "
+                    "Please check your configuration."
+                )
+
+    else:
+        path_extensions.add(
+            cfg.ce_services.solr.install_dir
+            / f"solr-{cfg.ce_services.solr.version}{cfg.ce_services.solr.version_postfix}"
+            / "bin"
+        )
 
     if sys.platform == "win32":
         path_extensions.add(

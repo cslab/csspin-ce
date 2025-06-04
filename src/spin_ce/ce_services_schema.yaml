@@ -85,7 +85,14 @@ ce_services:
                     help: The installation directory of Apache Solr.
                 version_postfix:
                     type: str
-                    help: The solr version postfix.
+                    help: The Solr version postfix.
+                use:
+                    type: path
+                    help: |
+                        The use property can be used to specify an alternative
+                        Apache Solr source to use. This is useful to rather use
+                        the system Apache Solr than the one defined in
+                        spinfile.yaml or ``ce_services.solr.install_dir``.
         redis:
             type: object
             help: Configuration regarding redis
