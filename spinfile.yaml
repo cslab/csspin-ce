@@ -1,6 +1,9 @@
 # The spinfile.yaml for spin_ce is required since building the documentation
 # requires a provisioned project.
 
+spin:
+    index_url: https://packages.contact.de/tools/stable
+
 plugin_packages:
     - spin_docs
     - spin_frontend
