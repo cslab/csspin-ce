@@ -1,3 +1,5 @@
+spin:
+    index_url: https://packages.contact.de/tools/stable
 plugin_packages:
     - spin_python
     - ../../..

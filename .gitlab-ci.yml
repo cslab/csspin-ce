@@ -2,17 +2,13 @@
 
 include:
     - project: qs/spin/spin_plugin_common
-      ref: v1.8.1
+      ref: v1.8.2
       file: ci/.gitlab-ci.yml
 
 variables:
     SPIN_TREE_NODE__USE: node
     SPIN_TREE_PYTHON__USE: python
     SPIN_TREE_JAVA__USE: java
-
-test_linux:
-    # Overwrite image to have the necessary tools for ce_services in the CI
-    image: registry.contact.de/cetest:16.0-7.latest
 
 triggered_integration_tests_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
@@ -30,5 +26,18 @@ triggered_integration_tests_linux:
             )
         - curl -O ${CI_API_V4_URL}/projects/1065/jobs/${WHEEL_JOB_ID}/artifacts.zip
         - unzip artifacts.zip "dist/*"
-        - pip install dist/cs_spin*.whl
-        - pip install --index-url https://packages.contact.de/tools/stable dist/cs_spin*.whl -r requirements-dev.txt
+        - pip install --index-url https://packages.contact.de/tools/stable dist/cs*spin*.whl -r requirements-dev.txt
+
+test_linux:
+    # Overwrite image to have the necessary tools for ce_services in the CI
+    image: registry.contact.de/cetest:16.0-7.latest
+    # TODO: Remove the following lines as soon as csspin is released on PyPI
+    #       SAME for test_windows
+    before_script:
+        - python3 -m pip install --index-url https://packages.contact.de/tools/stable cs.spin pytest pytest-cov -e .
+
+test_windows:
+    before_script:
+        - python -m venv venv
+        - venv\Scripts\activate.ps1
+        - python -m pip install --index-url https://packages.contact.de/tools/stable cs.spin pytest pytest-cov -e .
