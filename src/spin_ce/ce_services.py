@@ -12,10 +12,10 @@ provisions all tool necessary for these ce_services.
 For more information about the ce_services tool, see:
 https://code.contact.de/qs/tooling/ce_services/
 """
-
 import os
 import shutil
 import sys
+from urllib.error import HTTPError
 
 from path import Path
 
@@ -253,12 +253,42 @@ def provision(cfg):  # pylint: disable=too-many-statements
         if not solr_path.exists():
             debug("Installing Apache Solr")
             archive = f"{solr_name}.tgz"
+
+            try:
+                from csspin import warn  # noqa: F401
+            except ImportError:
+                from spin import warn  # noqa: F401
+
             with TemporaryDirectory() as tmp_dir:
                 archive_path = Path(tmp_dir) / archive
-                download(
-                    f"https://archive.apache.org/dist/solr/solr/{version}/{archive}",
-                    archive_path,
-                )
+                try:
+                    download(
+                        f"https://dlcdn.apache.org/solr/solr/{version}/{archive}",
+                        archive_path,
+                    )
+
+                except HTTPError as exc:
+                    if exc.status != 404:
+                        die(
+                            f"Could not download Apache Solr {version} from "
+                            f"dlcdn.apache.org: {exc}"
+                        )
+
+                    warn(
+                        "Could not download Apache Solr from dlcdn.apache.org, "  # noqa: E501
+                        "trying archive.apache.org instead."
+                    )
+                    try:
+                        download(
+                            f"https://archive.apache.org/dist/solr/solr/{version}/{archive}",
+                            archive_path,
+                        )
+                    except HTTPError as exc2:
+                        die(
+                            f"Could not download Apache Solr {version} from "
+                            f"archive.apache.org: {exc2}"
+                        )
+
                 extract(archive_path, install_dir, solr_name)
         else:
             debug(f"Using cached Apache Solr ({solr_path})")
