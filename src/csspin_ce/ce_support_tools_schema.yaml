@@ -1,0 +1,8 @@
+# -*- mode: yaml; coding: utf-8 -*-
+#
+# Schema for the ce_support_tools plugin for csspin
+
+ce_support_tools:
+    type: object
+    help: |
+        The ce_support_tools plugin for csspin

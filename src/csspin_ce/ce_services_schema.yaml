@@ -1,11 +1,11 @@
 # -*- mode: yaml; coding: utf-8 -*-
 #
-# Schema for the ce_services plugin for cs.spin
+# Schema for the ce_services plugin for csspin
 
 ce_services:
     type: object
     help: |
-        The ce_services plugin equips cs.spin with the ability to provision,
+        The ce_services plugin equips csspin with the ability to provision,
         start, stop or even control services. These services are e.g. traefik,
         solr, redis and many more.
     properties:
@@ -29,21 +29,18 @@ ce_services:
                         Configuration regarding the CONTACT Elements
                         Integration for HiveMQ
                     properties:
-                        version:
-                            type: str
-                            help: The version of CONTACT Elements Integration
                         user:
                             type: str
                             help: |
                                 The default user to use when accessing the
                                 CONTACT Elements Integration
                         password:
-                            type: str
+                            type: secret
                             help: The password corresponding to the user
                         install_dir:
                             type: path
                             help: |
-                                The installation directory of the CONTACT
+                                The installation directory of the HiveMQ CONTACT
                                 Elements integration.
         influxdb:
             type: object

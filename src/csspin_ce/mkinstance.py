@@ -1,8 +1,19 @@
 # -*- mode: python; coding: utf-8 -*-
 #
 # Copyright (C) 2022 CONTACT Software GmbH
-# All rights reserved.
 # http://www.contact.de/
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 """
 Create a fresh instance based on spinfile.yaml configuration.
@@ -16,14 +27,9 @@ import os
 import platform
 import zlib
 
+from csspin import argument, config, interpolate1, option, rmtree, setenv, sh, task
+from csspin.tree import ConfigTree
 from path import Path
-
-try:
-    from csspin import argument, config, interpolate1, option, rmtree, setenv, sh, task
-    from csspin.tree import ConfigTree
-except ImportError:
-    from spin import argument, config, interpolate1, option, rmtree, setenv, sh, task
-    from spin.tree import ConfigTree
 
 
 def default_id(cfg):
@@ -105,9 +111,9 @@ defaults = config(
         python=["nodeenv", "cs.platform"],
         npm=["sass", "yarn"],
         spin=[
-            "spin_java.java",
-            "spin_frontend.node",
-            "spin_python.python",
+            "csspin_java.java",
+            "csspin_frontend.node",
+            "csspin_python.python",
         ],
         system=config(
             debian=config(

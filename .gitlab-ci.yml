@@ -2,7 +2,7 @@
 
 include:
     - project: qs/spin/spin_plugin_common
-      ref: v1.8.2
+      ref: v2.0.0
       file: ci/.gitlab-ci.yml
 
 variables:
@@ -12,7 +12,9 @@ variables:
 
 triggered_integration_tests_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
-    image: registry.contact.de/cetest:16.0-7.latest
+    image: registry.contact.de/cetest:16.0-8.latest
+    variables:
+        SPIN_TREE_CE_SERVICES__HIVEMQ__ELEMENTS_INTEGRATION__INSTALL_DIR: /opt/hivemq-elements-integration
     before_script:
         # We need to overwrite this, as spin_plugin_common needs to install jq and
         # asserts that we're root, which isn't the case for cetest. But as jq is
@@ -26,18 +28,18 @@ triggered_integration_tests_linux:
             )
         - curl -O ${CI_API_V4_URL}/projects/1065/jobs/${WHEEL_JOB_ID}/artifacts.zip
         - unzip artifacts.zip "dist/*"
-        - pip install --index-url https://packages.contact.de/tools/stable dist/cs*spin*.whl -r requirements-dev.txt
+        - pip install dist/csspin*.whl -r requirements-dev.txt
+
+triggered_integration_tests_windows:
+    variables:
+        SPIN_TREE_CE_SERVICES__HIVEMQ__ELEMENTS_INTEGRATION__INSTALL_DIR: 'C:\Program Files\hivemq-elements-integration'
 
 test_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
-    image: registry.contact.de/cetest:16.0-7.latest
-    # TODO: Remove the following lines as soon as csspin is released on PyPI
-    #       SAME for test_windows
-    before_script:
-        - python3 -m pip install --index-url https://packages.contact.de/tools/stable cs.spin pytest pytest-cov -e .
+    image: registry.contact.de/cetest:16.0-8.latest
+    variables:
+        SPIN_TREE_CE_SERVICES__HIVEMQ__ELEMENTS_INTEGRATION__INSTALL_DIR: /opt/hivemq-elements-integration
 
 test_windows:
-    before_script:
-        - python -m venv venv
-        - venv\Scripts\activate.ps1
-        - python -m pip install --index-url https://packages.contact.de/tools/stable cs.spin pytest pytest-cov -e .
+    variables:
+        SPIN_TREE_CE_SERVICES__HIVEMQ__ELEMENTS_INTEGRATION__INSTALL_DIR: 'C:\Program Files\hivemq-elements-integration'

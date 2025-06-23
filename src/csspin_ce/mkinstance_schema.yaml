@@ -1,12 +1,12 @@
 # -*- mode: yaml; coding: utf-8 -*-
 #
-# Schema for the mkinstance plugin for cs.spin
+# Schema for the mkinstance plugin for csspin
 
 mkinstance:
     type: object
     help: |
-        The mkinstance plugin for cs.spin provides the full mkinstance
-        experience - all in the context of cs.spin.
+        The mkinstance plugin for csspin provides the full mkinstance
+        experience - all in the context of csspin.
     properties:
         opts:
             type: list
