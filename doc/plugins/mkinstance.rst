@@ -1,34 +1,45 @@
 .. -*- coding: utf-8 -*-
    Copyright (C) 2024 CONTACT Software GmbH
-   All rights reserved.
    https://www.contact-software.com/
 
-.. _spin_ce.mkinstance:
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-==================
-spin_ce.mkinstance
-==================
+       http://www.apache.org/licenses/LICENSE-2.0
 
-The ``spin_ce.mkinstance`` plugin provides a way to create a new CONTACT
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+.. _csspin_ce.mkinstance:
+
+====================
+csspin_ce.mkinstance
+====================
+
+The ``csspin_ce.mkinstance`` plugin provides a way to create a new CONTACT
 Elements instance by using the ``mkinstance`` command-line tool within the
-context of cs.spin.
+context of csspin.
 
-How to setup the ``spin_ce.mkinstance`` plugin?
-################################################
+How to setup the ``csspin_ce.mkinstance`` plugin?
+#################################################
 
-For using the ``spin_ce.mkinstance`` plugin, a project's ``spinfile.yaml`` must
+For using the ``csspin_ce.mkinstance`` plugin, a project's ``spinfile.yaml`` must
 at least contain the following configuration.
 
 .. code-block:: yaml
-    :caption: Minimal configuration of ``spinfile.yaml`` for ``spin_ce.mkinstance``
+    :caption: Minimal configuration of ``spinfile.yaml`` for ``csspin_ce.mkinstance``
 
     plugin_packages:
-        - spin_ce
-        - spin_frontend
-        - spin_java
-        - spin_python
+        - csspin-ce
+        - csspin-frontend
+        - csspin-java
+        - csspin-python
     plugins:
-        - spin_ce.mkinstance
+        - csspin_ce.mkinstance
     python:
         version: '3.11.9'
         index_url: <package server index url to retrieve CE wheels from>
@@ -68,7 +79,7 @@ Using another DBMS is as simple as:
         -p mkinstance.postgres.postgres_syspwd=password \
         mkinstance postgres
 
-``spin_ce.mkinstance`` schema reference
-#######################################
+``csspin_ce.mkinstance`` schema reference
+#########################################
 
 .. include:: mkinstance_schemaref.rst

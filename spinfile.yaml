@@ -1,19 +1,17 @@
-# The spinfile.yaml for spin_ce is required since building the documentation
+# The spinfile.yaml for csspin-ce is required since building the documentation
 # requires a provisioned project.
 
 spin:
+    project_name: csspin-ce
     index_url: https://packages.contact.de/tools/stable
 
 plugin_packages:
-    - spin_docs
-    - spin_frontend
-    - spin_java
-    - spin_python
+    - csspin-docs
     - -e .
 
 plugins:
-    - spin_docs.sphinx
-    - spin_ce:
+    - csspin_docs.sphinx
+    - csspin_ce:
           - ce_services
           - ce_support_tools
           - localization
@@ -33,11 +31,14 @@ node:
 java:
     version: '21'
 
+pkgtest:
+    caddok_package_server: packages.contact.de
+
 build_rules:
     task docs:
         sources: doc/_schemaref.rst
     doc/_schemaref.rst:
-        sources: [src/spin_ce]
+        sources: [src/csspin_ce]
         spin:
             - schemadoc ce_services --rst -o doc/plugins/ce_services_schemaref.rst
             - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst

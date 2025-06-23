@@ -3,30 +3,30 @@
    All rights reserved.
    https://www.contact-software.com/
 
-.. _spin_ce.pkgtest:
+.. _csspin_ce.pkgtest:
 
-===============
-spin_ce.pkgtest
-===============
+=================
+csspin_ce.pkgtest
+=================
 
-The ``spin_ce.pkgtest`` plugin provides a way to run package tests for CONTACT
+The ``csspin_ce.pkgtest`` plugin provides a way to run package tests for CONTACT
 Elements instances by using the `pkgtest`_ command-line tool.
 
-How to setup the ``spin_ce.pkgtest`` plugin?
-############################################
+How to setup the ``csspin_ce.pkgtest`` plugin?
+##############################################
 
-For using the ``spin_ce.pkgtest`` plugin, a project's ``spinfile.yaml`` must
+For using the ``csspin_ce.pkgtest`` plugin, a project's ``spinfile.yaml`` must
 at least contain the following configuration.
 
 .. code-block:: yaml
-    :caption: Minimal configuration of ``spinfile.yaml`` for ``spin_ce.pkgtest``
+    :caption: Minimal configuration of ``spinfile.yaml`` for ``csspin_ce.pkgtest``
 
     plugin_packages:
-        - spin_ce
-        - spin_java
-        - spin_python
+        - csspin-ce
+        - csspin-java
+        - csspin-python
     plugins:
-        - spin_ce.pkgtest
+        - csspin_ce.pkgtest
     python:
         version: '3.11.9'
     pkgtest:
@@ -85,7 +85,7 @@ property.
         ...
         test_command: <Custom test command>
 
-``spin_ce.pkgtest`` schema reference
-########################################
+``csspin_ce.pkgtest`` schema reference
+######################################
 
 .. include:: pkgtest_schemaref.rst

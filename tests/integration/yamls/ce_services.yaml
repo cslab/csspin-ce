@@ -1,12 +1,12 @@
 spin:
     index_url: https://packages.contact.de/tools/stable
 plugin_packages:
-    - spin_frontend
-    - spin_java
-    - spin_python
+    - csspin-frontend
+    - csspin-java
+    - csspin-python
     - ../../..
 plugins:
-    - spin_ce.ce_services
+    - csspin_ce.ce_services
 java:
     version: '21'
 python:

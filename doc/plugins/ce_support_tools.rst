@@ -1,32 +1,44 @@
 .. -*- coding: utf-8 -*-
    Copyright (C) 2025 CONTACT Software GmbH
-   All rights reserved.
    https://www.contact-software.com/
 
-.. _spin_ce.ce_support_tools:
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-========================
-spin_ce.ce_support_tools
-========================
+       http://www.apache.org/licenses/LICENSE-2.0
 
-The ``spin_ce.ce_support_tools`` plugin provides a wrapper for the ce_support_tools package.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 
-How to setup the ``spin_ce.ce_support_tools`` plugin?
-#####################################################
+.. _csspin_ce.ce_support_tools:
 
-For using the ``spin_ce.ce_support_tools`` plugin, a project's ``spinfile.yaml`` must
-at least contain the following configuration.
+==========================
+csspin_ce.ce_support_tools
+==========================
+
+The ``csspin_ce.ce_support_tools`` plugin provides a wrapper for the
+ce_support_tools package.
+
+How to setup the ``csspin_ce.ce_support_tools`` plugin?
+#######################################################
+
+For using the ``csspin_ce.ce_support_tools`` plugin, a project's
+``spinfile.yaml`` must at least contain the following configuration.
 
 .. code-block:: yaml
-    :caption: Configuring ``spin_ce.ce_support_tools`` in ``spinfile.yaml``
+    :caption: Configuring ``csspin_ce.ce_support_tools`` in ``spinfile.yaml``
 
     plugin_packages:
-        - spin_ce
+        - csspin-ce
     plugins:
-        - spin_ce:
+        - csspin_ce:
             - mkinstance  # Required for instance location
             - ce_support_tools
-    # ... other configurations depending on spin_ce.mkinstance's requirements.
+    # ... other configurations depending on csspin_ce.mkinstance's requirements.
 
 The provisioning of the required tools and the plugins dependencies can be done
 via the well-known ``spin provision``-command.
@@ -48,6 +60,6 @@ Examples
 Run performance tests:
 
 .. code-block:: console
-    :caption: Check the configuration of cs.template
+    :caption: Run performance tests for the current project
 
     spin pyperf run

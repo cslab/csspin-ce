@@ -1,37 +1,48 @@
 .. -*- coding: utf-8 -*-
    Copyright (C) 2024 CONTACT Software GmbH
-   All rights reserved.
    https://www.contact-software.com/
 
-.. _spin_ce.ce_services:
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-===================
-spin_ce.ce_services
-===================
+       http://www.apache.org/licenses/LICENSE-2.0
 
-The ``spin_ce.ce_services`` plugin provides a way to start and stop services
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+.. _csspin_ce.ce_services:
+
+=====================
+csspin_ce.ce_services
+=====================
+
+The ``csspin_ce.ce_services`` plugin provides a way to start and stop services
 required by CONTACT Elements instances by using the `ce_services`_ command-line
 tool.
 
 The plugin also provisions the necessary tools to run the services, like
 `traefik`_, `Apache Solr`_, and others.
 
-How to setup the ``spin_ce.ce_services`` plugin?
-################################################
+How to setup the ``csspin_ce.ce_services`` plugin?
+##################################################
 
-For using the ``spin_ce.ce_services`` plugin, a project's ``spinfile.yaml`` must
-at least contain the following configuration.
+For using the ``csspin_ce.ce_services`` plugin, a project's ``spinfile.yaml``
+must at least contain the following configuration.
 
 .. code-block:: yaml
-    :caption: Minimal configuration of ``spinfile.yaml`` for ``spin_ce.ce_services``
+    :caption: Minimal configuration of ``spinfile.yaml`` for ``csspin_ce.ce_services``
 
     plugin_packages:
-        - spin_ce
-        - spin_frontend
-        - spin_java
-        - spin_python
+        - csspin-ce
+        - csspin-frontend
+        - csspin-java
+        - csspin-python
     plugins:
-        - spin_ce.ce_services
+        - csspin_ce.ce_services
     python:
         version: '3.11.9'
         index_url: <package server index url to retrieve CE wheels from>
@@ -46,20 +57,23 @@ via the well-known ``spin provision``-command.
 How to start the services for a local CE instance?
 ##################################################
 
-To start the services required to run a local CE instance, the ``spin ce_services
+To start the services required to run a local CE instance, the ``spin ce-services
 start`` command can be used. The command will start the services required by the
 instance specified in the ``spinfile.yaml``.
 
 .. code-block:: bash
     :caption: Start
 
-    spin ce_services -i <path to instance>
+    spin ce-services -i <path to instance>
 
 How to use the `HiveMQ`_ service and CE Elements integration?
 #############################################################
 
-The ``hivemq`` service as well as the CONZTACT Elements HiveMQ integration can
-be activated by enabling it within the configuration of ``ce_services``.
+The ``hivemq`` service as well as the CONTACT Elements HiveMQ integration can be
+used by enabling it within the configuration of ``ce_services``. While HiveMQ
+can be provisioned using ``spin provision``, the CONTACT Elements HiveMQ
+integration must be installed manually, e.g. by downloading it from the customer
+portal.
 
 .. code-block:: yaml
     :caption: Enable HiveMQ service within ``spinfile.yaml``
@@ -67,6 +81,9 @@ be activated by enabling it within the configuration of ``ce_services``.
     ce_services:
         hivemq:
             enabled: true
+            elements_integration:
+                install_dir: <path to CONTACT Elements HiveMQ integration installation directory>
+
 
 (Re-) provision may be required to apply the changes.
 
@@ -95,17 +112,17 @@ tool as shown below:
 .. code-block:: bash
     :caption: Pass additional flags and options to ``ce_services``
 
-    spin ce_services -i <path to instance> --<flag> <value>
+    spin ce-services -i <path to instance> --<flag> <value>
 
 How to configure services and their options?
 ############################################
 
-Since the ``spin_ce.ce_services`` plugin is based on the `ce_services`_ tool,
+Since the ``csspin_ce.ce_services`` plugin is based on the `ce_services`_ tool,
 the configuration of the services and their options is done via the
 ``setup.cfg`` or ``pyproject.toml`` file of the project. For more information
 about the configuration of the services, please refer to `ce_services`_.
 
-``spin_ce.ce_services`` schema reference
+``csspin_ce.ce_services`` schema reference
 ########################################
 
 .. include:: ce_services_schemaref.rst

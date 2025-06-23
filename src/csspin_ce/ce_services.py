@@ -1,52 +1,46 @@
 # -*- mode: python; coding: utf-8 -*-
 #
 # Copyright (C) 2024 CONTACT Software GmbH
-# All rights reserved.
 # https://www.contact-software.com/
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 # pylint: disable=too-many-lines
 
 """
 Provides a wrapper around the CLI tool of ce_services and
 provisions all tool necessary for these ce_services.
-
-For more information about the ce_services tool, see:
-https://code.contact.de/qs/tooling/ce_services/
 """
+
 import os
 import shutil
 import sys
 from urllib.error import HTTPError
 
+from csspin import (
+    Verbosity,
+    config,
+    debug,
+    die,
+    exists,
+    mkdir,
+    option,
+    rmtree,
+    setenv,
+    sh,
+    task,
+)
 from path import Path
-
-try:
-    from csspin import (
-        Verbosity,
-        config,
-        debug,
-        die,
-        exists,
-        mkdir,
-        option,
-        rmtree,
-        setenv,
-        sh,
-        task,
-    )
-except ImportError:
-    from spin import (
-        Verbosity,
-        config,
-        debug,
-        die,
-        exists,
-        mkdir,
-        option,
-        rmtree,
-        setenv,
-        sh,
-        task,
-    )
 
 defaults = config(
     hivemq=config(
@@ -54,10 +48,9 @@ defaults = config(
         install_dir="{spin.data}/hivemq",
         version="2024.4",
         elements_integration=config(
-            version="1.0",
             user="csiot_integrator",
             password="",  # nosec: hardcoded_password_funcarg
-            install_dir="{spin.data}/hivemq-elements-integration",
+            install_dir="",
         ),
     ),
     influxdb=config(
@@ -81,7 +74,7 @@ defaults = config(
     ),
     loglevel="",
     requires=config(
-        spin=["spin_ce.mkinstance", "spin_java.java"],
+        spin=["csspin_ce.mkinstance", "csspin_java.java"],
         python=[
             "ce_services",
             "requests",
@@ -176,10 +169,7 @@ def provision(cfg):  # pylint: disable=too-many-statements
     import zipfile
     from tempfile import TemporaryDirectory
 
-    try:
-        from csspin import download
-    except ImportError:
-        from spin import download
+    from csspin import download
 
     def extract(archive, extract_to, member=""):
         """Unpacks archives"""
@@ -254,10 +244,7 @@ def provision(cfg):  # pylint: disable=too-many-statements
             debug("Installing Apache Solr")
             archive = f"{solr_name}.tgz"
 
-            try:
-                from csspin import warn  # noqa: F401
-            except ImportError:
-                from spin import warn  # noqa: F401
+            from csspin import warn  # noqa: F401
 
             with TemporaryDirectory() as tmp_dir:
                 archive_path = Path(tmp_dir) / archive
@@ -389,32 +376,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
             rmtree(hivemq_base_dir / "extensions" / "hivemq-allow-all-extension")
 
-        integration_version = cfg.ce_services.hivemq.elements_integration.version
-        hivemq_elements_integration_dir = (
-            cfg.ce_services.hivemq.elements_integration.install_dir
-            / integration_version
-            / "hivemq-elements-integration"
-        )  # HiveMQ expects plugins to be in a subfolder
-        if exists(hivemq_elements_integration_dir):
-            debug(
-                "Using cached HiveMQ Elements Integration"
-                f" ({hivemq_elements_integration_dir})"
-            )
-        else:
-            debug(f"Installing HiveMQ Elements Integration {integration_version}")
-            elements_integration_zipfile = (
-                "hivemq-elements-integration-" f"{integration_version}-distribution.zip"
-            )
-            _download(
-                url="https://code.contact.de/api/v4/projects/566/packages/"
-                "generic/hivemq-elements-integration/"
-                f"{integration_version}/{elements_integration_zipfile}",
-                zipfile_name=elements_integration_zipfile,
-                unpacked_source_directory="hivemq-elements-integration",
-                target_directory=hivemq_elements_integration_dir,
-                ignore={elements_integration_zipfile},
-            )
-
     def install_influxdb(cfg):
         version = cfg.ce_services.influxdb.version
         if not (
@@ -505,13 +466,20 @@ def init(cfg):
         )
 
     if cfg.ce_services.hivemq.enabled:
+        hivemq_intgr_dir = cfg.ce_services.hivemq.elements_integration.install_dir
+
+        if not hivemq_intgr_dir or not exists(hivemq_intgr_dir):
+            die(
+                "CONTACT Elements HiveMQ Integration installation directory"
+                f" does not exist. ({hivemq_intgr_dir})"
+            )
+
         setenv(
             HIVEMQ_HOME=cfg.ce_services.hivemq.install_dir
             / cfg.ce_services.hivemq.version
         )
         setenv(
             HIVEMQ_EXTENSION_FOLDER=cfg.ce_services.hivemq.elements_integration.install_dir
-            / cfg.ce_services.hivemq.elements_integration.version
         )
 
     setenv(
