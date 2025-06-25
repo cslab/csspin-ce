@@ -439,14 +439,12 @@ def init(cfg):
         from shutil import which  # noqa: F401
 
         solr_path = which(cfg.ce_services.solr.use)
-        if solr_path is None:
-            if Path(solr_path).exists():
-                path_extensions.add(solr_path)
-            else:
-                die(
-                    f"Cannot find Solr executable: {cfg.ce_services.solr.use}. "
-                    "Please check your configuration."
-                )
+        if not solr_path:
+            die(
+                f"Cannot find Solr executable: {cfg.ce_services.solr.use}. "
+                "Please check your configuration."
+            )
+        path_extensions.add(solr_path)
 
     else:
         path_extensions.add(
