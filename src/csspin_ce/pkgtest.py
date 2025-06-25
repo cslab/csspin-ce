@@ -19,7 +19,7 @@
 
 from glob import glob
 
-from csspin import config, die, sh, task
+from csspin import config, die, setenv, sh, task
 
 defaults = config(
     name="{spin.project_name}",
@@ -73,6 +73,10 @@ def pkgtest(cfg, args):
         die(f"Found multiple packages for {cfg.pkgtest.package}.")
     else:
         wheel = wheel[0]
+
+    setenv(
+        CADDOK_BASE=None
+    )  # Unset CADDOK_BASE here so mkinstance call in pkgtest script doesn't fail
 
     sh(
         "pkgtest",
