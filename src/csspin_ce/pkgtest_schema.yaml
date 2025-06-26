@@ -25,6 +25,9 @@ pkgtest:
         caddok_package_server:
             type: str
             help: DNS Name of the package server.
+        dbms:
+            type: str
+            help: The DBMS that pkgtest should use.
         name:
             type: str
             help: |
