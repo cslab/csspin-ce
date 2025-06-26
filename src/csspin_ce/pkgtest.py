@@ -19,7 +19,7 @@
 
 from glob import glob
 
-from csspin import config, die, setenv, sh, task
+from csspin import config, die, option, setenv, sh, task
 
 defaults = config(
     name="{spin.project_name}",
@@ -30,6 +30,7 @@ defaults = config(
     opts=[],
     caddok_package_server_index_url=None,
     caddok_package_server="",
+    dbms="sqlite",  # Default backend for development
     requires=config(
         spin=["csspin_ce.ce_services"],  # For the tool provisioning
         python=["pkgtest"],
@@ -38,7 +39,13 @@ defaults = config(
 
 
 @task()
-def pkgtest(cfg, args):
+def pkgtest(
+    cfg,
+    args,
+    dbms: option(
+        "--dbms", is_flag=False, help="Override default dbms"  # noqa: F821, F722
+    ),
+):
     """
     Run the CLI took 'pkgtest'.
     """
@@ -85,6 +92,8 @@ def pkgtest(cfg, args):
         wheel,
         "--python",
         cfg.python.python,
+        "--dbms",
+        dbms or cfg.pkgtest.dbms,
         *cfg.pkgtest.opts,
         *args,
     )
