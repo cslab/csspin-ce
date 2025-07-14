@@ -130,9 +130,8 @@ def ce_services(
 ):
     """Start the CE services synchronously."""
 
-    if (
-        not Path(os.getenv("CADDOK_BASE", "")).is_dir()
-        and not (instance := Path(instance).absolute()).is_dir()
+    if not Path(os.getenv("CADDOK_BASE", "")).is_dir() and not (
+        instance and Path(instance).is_dir()
     ):
         die("Can't find the CE instance.")
     if instance:
