@@ -114,6 +114,27 @@ tool as shown below:
 
     spin ce-services -i <path to instance> --<flag> <value>
 
+How to configure and use the RabbitMQ service?
+##############################################
+
+The RabbitMQ service can be provisioned by enabling it in the ``spinfile.yaml``
+as follows:
+
+.. code-block:: yaml
+   :caption: ``spinfile.yaml`` with enabled RabbitMQ service
+
+   ce_services:
+       rabbitmq:
+           enabled: true
+
+When provisioning a project with RabbitMQ enabled, the plugin will download and
+install rabbitmq-server on Windows, and if executed on Linux, additionally
+installing and compiling the Erlang OTP. Both can be further configured via the
+``ce_services.rabbitmq`` subtree.
+
+The service can be started, e.g. via ``spin ce-services`` or manually via
+``spin run rabbitmq-server``.
+
 How to configure services and their options?
 ############################################
 

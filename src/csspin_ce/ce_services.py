@@ -29,11 +29,14 @@ from urllib.error import HTTPError
 
 from csspin import (
     Verbosity,
+    cd,
     config,
     debug,
     die,
+    echo,
     exists,
     mkdir,
+    mv,
     option,
     rmtree,
     setenv,
@@ -68,6 +71,15 @@ defaults = config(
         install_dir="{spin.data}/solr",
         version_postfix="-slim",
     ),
+    rabbitmq=config(
+        enabled=False,
+        version="4.1.0",
+        install_dir="{spin.data}/rabbitmq",
+        erlang=config(
+            version="28.0",
+            install_dir="{spin.data}/erlang",
+        ),
+    ),
     redis=config(
         version="7.2.4",
         install_dir="{spin.data}/redis",
@@ -80,7 +92,14 @@ defaults = config(
             "requests",
             "psutil",
         ],
-        system=config(debian=config(apt=["redis-server"])),
+        system=config(
+            debian=config(
+                apt=[
+                    "redis-server",
+                    "build-essential",  # For building Erlang via make
+                ],
+            ),
+        ),
     ),
 )
 
@@ -114,6 +133,8 @@ def extract_service_config(cfg):
         for key, value in hivemq_options.items():
             if value:
                 additional_cfg[key] = value
+    if cfg.ce_services.rabbitmq.enabled:
+        additional_cfg["rabbitmq"] = True
 
     return additional_cfg
 
@@ -143,7 +164,7 @@ def ce_services(
     for key, value in extract_service_config(cfg).items():
         cli_option_name = f"--{key}"
         if cli_option_name not in args:
-            if cli_option_name in ("--influxd", "--hivemq"):
+            if cli_option_name in ("--influxd", "--hivemq", "--rabbitmq"):
                 all_cli_args.append(cli_option_name)
             else:
                 all_cli_args.append(f"{cli_option_name}={value}")
@@ -163,6 +184,8 @@ def ce_services(
 def provision(cfg):  # pylint: disable=too-many-statements
     """
     Provision tools necessary to startup all ce_services.
+
+    FIXME: This function is too long and should be split into smaller functions.
     """
     import tarfile
     import zipfile
@@ -172,18 +195,25 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     def extract(archive, extract_to, member=""):
         """Unpacks archives"""
+        echo(f"Extracting {archive} to {extract_to}")
         member = member.replace("\\", "/")
 
+        mode = None
         if tarfile.is_tarfile(archive):
             extractor = tarfile.open
-            mode = "r:gz"
+            if archive.endswith(".tar.gz") or archive.endswith(".tgz"):
+                mode = "r:gz"
+            elif archive.endswith(".tar.xz"):
+                mode = "r:xz"
         elif zipfile.is_zipfile(archive):
             extractor = zipfile.ZipFile
             mode = "r"
-        else:
-            raise KeyError("Unsupported archive type...")
+        if not mode:
+            die(f"Unsupported archive type {archive}")
 
-        with extractor(archive, mode=mode) as arc:
+        with extractor(  # pylint: disable=possibly-used-before-assignment
+            archive, mode=mode  # pylint: disable=possibly-used-before-assignment
+        ) as arc:
             if isinstance(arc, tarfile.TarFile):
                 members = (
                     entity
@@ -207,12 +237,12 @@ def provision(cfg):  # pylint: disable=too-many-statements
     def install_traefik(cfg):
         version = cfg.ce_services.traefik.version
         traefik_install_dir = cfg.ce_services.traefik.install_dir / version
-        mkdir(traefik_install_dir)
 
         traefik = traefik_install_dir / f"traefik{cfg.platform.exe}"
 
         if not traefik.exists():
             debug("Installing Traefik")
+            mkdir(traefik_install_dir)
 
             archive = (
                 f"traefik_v{version}_windows_amd64.zip"
@@ -234,13 +264,13 @@ def provision(cfg):  # pylint: disable=too-many-statements
         version = cfg.ce_services.solr.version
         install_dir = cfg.ce_services.solr.install_dir
         postfix = cfg.ce_services.solr.version_postfix
-        mkdir(install_dir)
 
         solr_name = Path(f"solr-{version}{postfix}")
         solr_path = install_dir / solr_name
 
         if not solr_path.exists():
             debug("Installing Apache Solr")
+            mkdir(install_dir)
             archive = f"{solr_name}.tgz"
 
             from csspin import warn  # noqa: F401
@@ -301,7 +331,9 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     (
                         cfg.ce_services.redis.install_dir
                         / f"redis-windows-{cfg.ce_services.redis.version}"
-                    ).rename(redis_install_dir)
+                    ).rename(
+                        redis_install_dir
+                    )  # FIXME: Why not using spin.mv?
             else:
                 debug(f"Using cached redis-server ({redis})")
 
@@ -340,6 +372,7 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     )
                 ):
                     if f not in ignore:
+                        # FIXME: Why not using spin.mv?
                         debug(
                             "Moving"
                             f" {(source := str(unpacked_source_directory / f))}"
@@ -407,11 +440,81 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     from stat import S_IEXEC
 
                     for f in os.listdir((sources := sources / "usr" / "bin")):
+                        # FIXME: Why not using spin.mv?
                         debug("Moving" f" {(source := sources / f)} -> {influxdb_dir}")
                         shutil.move(source, influxdb_dir)
                         os.chmod((f := influxdb_dir / f), os.stat(f).st_mode | S_IEXEC)
         else:
             debug(f"Using cached InfluxDB ({influxdb_dir})")
+
+    def install_rabbitmq(cfg):
+        """Install RabbitMQ server from GitHub."""
+        version = str(cfg.ce_services.rabbitmq.version)
+        rabbitmq_install_dir = Path(cfg.ce_services.rabbitmq.install_dir)
+
+        if not (rabbitmq_install_dir / version).exists():
+            debug("Installing RabbitMQ")
+            mkdir(rabbitmq_install_dir)
+
+            rabbitmq_name = f"rabbitmq_server-{version}"
+            base_url = "https://github.com/rabbitmq/rabbitmq-server/releases/download"
+            if sys.platform == "win32":
+                archive = f"rabbitmq-server-windows-{version}.zip"
+            else:
+                archive = f"rabbitmq-server-generic-unix-{version}.tar.xz"
+
+            with TemporaryDirectory() as tmp_dir:
+                download(
+                    f"{base_url}/v{version}/{archive}",
+                    (archive_path := Path(tmp_dir) / archive),
+                )
+                extract(archive_path, rabbitmq_install_dir, rabbitmq_name)
+            mv(rabbitmq_install_dir / rabbitmq_name, rabbitmq_install_dir / version)
+
+        else:
+            debug(f"Using cached rabbitmq-server ({rabbitmq_install_dir / version})")
+
+    def install_erlang(cfg):
+        """Installation of the Erlang programming language"""
+        version = str(cfg.ce_services.rabbitmq.erlang.version)
+        erlang_install_dir = Path(cfg.ce_services.rabbitmq.erlang.install_dir)
+
+        if not (erlang_install_dir / version).exists():
+            debug(f"Installing Erlang {version}")
+            mkdir(erlang_install_dir)
+            base_url = f"https://github.com/erlang/otp/releases/download/OTP-{version}"
+            if sys.platform == "win32":
+                erlang_name = f"otp_win64_{version}"
+                file_extension = ".zip"
+            else:
+                erlang_name = f"otp_src_{version}"
+                file_extension = ".tar.gz"
+
+            with TemporaryDirectory() as tmp_dir:
+                tmp_path = Path(tmp_dir)
+                archive = erlang_name + file_extension
+                archive_path = tmp_path / archive
+                download(f"{base_url}/{archive}", archive_path)
+
+                if sys.platform == "win32":
+                    extract(archive_path, erlang_install_dir / version)
+                else:
+                    extract(archive_path, tmp_dir, erlang_name)
+                    debug(f"Compiling Erlang {version}")
+                    with cd(tmp_path / erlang_name):
+
+                        from subprocess import DEVNULL  # noqa: F401 # nosec
+
+                        stdout = DEVNULL if cfg.verbosity <= Verbosity.NORMAL else None
+                        sh(
+                            "./configure",
+                            f"--prefix={erlang_install_dir / version}",
+                            "--without-wx",  # no wxWidgets support
+                            "--without-odbc",  # no ODBC support
+                            stdout=stdout,
+                        )
+                        sh("make", stdout=stdout)
+                        sh("make", "install", stdout=stdout)
 
     install_traefik(cfg)
     install_redis(cfg)
@@ -424,6 +527,10 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     if cfg.ce_services.influxdb.enabled:
         install_influxdb(cfg)
+
+    if cfg.ce_services.rabbitmq.enabled:
+        install_rabbitmq(cfg)
+        install_erlang(cfg)
 
 
 def init(cfg):
@@ -477,6 +584,27 @@ def init(cfg):
         )
         setenv(
             HIVEMQ_EXTENSION_FOLDER=cfg.ce_services.hivemq.elements_integration.install_dir
+        )
+
+    if cfg.ce_services.rabbitmq.enabled:
+        path_extensions.add(
+            (
+                rabbitmq_home := cfg.ce_services.rabbitmq.install_dir
+                / cfg.ce_services.rabbitmq.version
+            )
+            / "sbin"
+        )
+        path_extensions.add(
+            cfg.ce_services.rabbitmq.erlang.install_dir
+            / cfg.ce_services.rabbitmq.erlang.version
+            / "bin"
+        )
+        setenv(
+            RABBITMQ_HOME=rabbitmq_home,
+            RABBITMQ_MNESIA_DIR=cfg.spin.spin_dir / "rabbitmq",
+            RABBITMQ_LOG_BASE=cfg.mkinstance.base.instance_location / "tmp",
+            ERLANG_HOME=cfg.ce_services.rabbitmq.erlang.install_dir
+            / cfg.ce_services.rabbitmq.erlang.version,
         )
 
     setenv(
