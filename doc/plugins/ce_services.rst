@@ -144,6 +144,6 @@ the configuration of the services and their options is done via the
 about the configuration of the services, please refer to `ce_services`_.
 
 ``csspin_ce.ce_services`` schema reference
-########################################
+##########################################
 
 .. include:: ce_services_schemaref.rst
