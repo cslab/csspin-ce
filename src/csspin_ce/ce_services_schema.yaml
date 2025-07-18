@@ -90,6 +90,26 @@ ce_services:
                         Apache Solr source to use. This is useful to rather use
                         the system Apache Solr than the one defined in
                         spinfile.yaml or ``ce_services.solr.install_dir``.
+        rabbitmq:
+            type: object
+            help: Configuration regarding the RabbitMQ service.
+            properties:
+                version:
+                    type: str
+                    help: The version of RabbitMQ to use.
+                install_dir:
+                    type: path
+                    help: The installation directory of RabbitMQ.
+                erlang:
+                    type: object
+                    help: Configuration regarding the Erlang service.
+                    properties:
+                        version:
+                            type: str
+                            help: The version of Erlang to use.
+                        install_dir:
+                            type: path
+                            help: The installation directory of Erlang.
         redis:
             type: object
             help: Configuration regarding redis

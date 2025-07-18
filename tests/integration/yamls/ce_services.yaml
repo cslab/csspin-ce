@@ -20,3 +20,5 @@ ce_services:
         enabled: True
     hivemq:
         enabled: True
+    rabbitmq:
+        enabled: True

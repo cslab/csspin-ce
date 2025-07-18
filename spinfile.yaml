@@ -17,6 +17,15 @@ plugins:
           - localization
           - mkinstance
           - pkgtest
+          - ce_support_tools
+          - mkinstance
+          - pkgtest
+
+ce_services:
+    rabbitmq:
+        enabled: true
+        erlang:
+            version: '28.0'
 
 python:
     version: '3.11.9'
