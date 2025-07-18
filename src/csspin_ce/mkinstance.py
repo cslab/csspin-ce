@@ -108,7 +108,7 @@ defaults = config(
         azure_account_key=None,
     ),
     requires=config(
-        python=["nodeenv", "cs.platform"],
+        python=["cs.platform"],
         npm=["sass", "yarn"],
         spin=[
             "csspin_java.java",
