@@ -29,10 +29,28 @@ The ``csspin_ce.localization`` plugin provides a wrapper for the localization
 How to setup the ``csspin_ce.localization`` plugin?
 ###################################################
 
-``DEEPL_AUTH_KEY`` environment variable is required so that plugin can translate new
+For using the ``csspin_ce.localization`` plugin, a project's ``spinfile.yaml`` must
+at least contain the following configuration.
+
+.. code-block:: yaml
+    :caption: Minimal configuration of ``spinfile.yaml`` for ``csspin_ce.localization``
+
+    plugin_packages:
+        - csspin_ce
+    plugins:
+        - csspin_ce.localization
+    python:
+        version: '3.11.9'
+        index_url: <package server index url to retrieve CE wheels from>
+    java:
+        version: '17'
+    node:
+        version: '18.17.1'
+
+The environment variable ``DEEPL_AUTH_KEY`` is required so that plugin can translate new
 strings with `DeepL <https://developers.deepl.com/docs>`_.
 
-Configuration in ``spinfile.yaml`` is optional for this plugin.
+Further configuration in ``spinfile.yaml`` is optional for this plugin.
 In most cases you can rely on defaults. However, it's worth mentioning,
 that you can configure the languages you want the component
 to be localized into with ``target_languages`` parameter.
