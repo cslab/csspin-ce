@@ -66,6 +66,41 @@ instance specified in the ``spinfile.yaml``.
 
     spin ce-services -i <path to instance>
 
+How to configure services and their options?
+############################################
+
+Since the ``csspin_ce.ce_services`` plugin is based on the `ce_services`_ tool,
+the configuration of the services and their options is done via the
+``setup.cfg`` or ``pyproject.toml`` file of the project. For more information
+about the configuration of the services, please refer to `ce_services`_.
+
+SSL/TLS support
+###############
+
+Some use cases require accessing the CONTACT Elements instances via TLS/SSL. To
+enable this feature, an instance must be built with the ``--sslca`` option
+pointing to a valid TLS certificate file. This can be achieved by running the
+``mkinstance`` task with enabled ``mkinstance.tls.enabled``. This automatically
+generates a new certificate and key and sets ``--sslca`` accordingly.
+
+To now run the services with TLS/SSL enabled,
+``ce_services.traefik.tls.enabled`` must be set,
+``ce_services.traefik.tls.cert`` and ``ce_services.traefik.tls.cert_key``
+pointing per default to the certificate and key file generated during the
+``mkinstance`` task execution. The services can be started as usual.
+
+.. code-block:: yaml
+    :caption: Sample ``spinfile.yaml`` for starting services with enabled SSL/TLS
+
+    ...
+    ce_services:
+        traefik:
+            tls:
+                enabled: true
+    mkinstance:
+        tls:
+            enabled: true
+
 How to use the `HiveMQ`_ service and CE Elements integration?
 #############################################################
 
@@ -134,14 +169,6 @@ installing and compiling the Erlang OTP. Both can be further configured via the
 
 The service can be started, e.g. via ``spin ce-services`` or manually via
 ``spin run rabbitmq-server``.
-
-How to configure services and their options?
-############################################
-
-Since the ``csspin_ce.ce_services`` plugin is based on the `ce_services`_ tool,
-the configuration of the services and their options is done via the
-``setup.cfg`` or ``pyproject.toml`` file of the project. For more information
-about the configuration of the services, please refer to `ce_services`_.
 
 ``csspin_ce.ce_services`` schema reference
 ##########################################

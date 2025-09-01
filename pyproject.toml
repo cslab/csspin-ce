@@ -19,7 +19,12 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Topic :: Software Development"
 ]
-dependencies = ["csspin-frontend", "csspin-java", "csspin-python"]
+dependencies = [
+  "cryptography",
+  "csspin-frontend",
+  "csspin-java",
+  "csspin-python"
+]
 description = "Plugin-package for providing CONTACT Elements-specific plugins for the csspin task runner."
 dynamic = ["version", "readme"]
 license = "Apache-2.0"
