@@ -70,6 +70,21 @@ ce_services:
                 install_dir:
                     type: path
                     help: Traefik's installation directory.
+                tls:
+                    type: object
+                    help: |
+                        Configuration regarding the SSL/TLS configuration for
+                        the traefik service.
+                    properties:
+                        enabled:
+                            type: bool
+                            help: |
+                                If set to ``True``, the traefik service will be
+                                started with enabled SSL/TLS termination. This
+                                setting requires ``mkinstance.tls.cert_key`` and
+                                ``mkinstance.tls.cert`` to be set. Additionally,
+                                the instance must be built while
+                                ``mkinstance.tls.enabled`` is set to ``True``.
         solr:
             type: object
             help: Configuration regarding the Apache Solr service.

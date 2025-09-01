@@ -65,6 +65,9 @@ defaults = config(
         version="2.11.2",
         dashboard_port="",
         install_dir="{spin.data}/traefik",
+        tls=config(
+            enabled=False,
+        ),
     ),
     solr=config(
         version="9.8.1",
@@ -88,9 +91,9 @@ defaults = config(
     requires=config(
         spin=["csspin_ce.mkinstance", "csspin_java.java"],
         python=[
-            "ce_services",
-            "requests",
+            "ce_services>=1.5.0",
             "psutil",
+            "requests",
         ],
         system=config(
             debian=config(
@@ -122,6 +125,12 @@ def extract_service_config(cfg):
         additional_cfg["instance_admpwd"] = cfg.mkinstance.base.instance_admpwd
     if cfg.ce_services.loglevel:
         additional_cfg["loglevel"] = cfg.ce_services.loglevel
+    if cfg.ce_services.traefik.tls.enabled:
+        additional_cfg |= {
+            "traefik_tls": True,
+            "traefik_tls_cert": cfg.mkinstance.tls.cert,
+            "traefik_tls_cert_key": cfg.mkinstance.tls.cert_key,
+        }
     if cfg.ce_services.influxdb.enabled:
         additional_cfg["influxd"] = True
     if cfg.ce_services.hivemq.enabled:
@@ -164,7 +173,12 @@ def ce_services(
     for key, value in extract_service_config(cfg).items():
         cli_option_name = f"--{key}"
         if cli_option_name not in args:
-            if cli_option_name in ("--influxd", "--hivemq", "--rabbitmq"):
+            if cli_option_name in (
+                "--influxd",
+                "--hivemq",
+                "--rabbitmq",
+                "--traefik_tls",
+            ):
                 all_cli_args.append(cli_option_name)
             else:
                 all_cli_args.append(f"{cli_option_name}={value}")

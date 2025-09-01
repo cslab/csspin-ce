@@ -25,9 +25,21 @@ Create a fresh instance based on spinfile.yaml configuration.
 import getpass
 import os
 import platform
+import socket
 import zlib
 
-from csspin import argument, config, interpolate1, option, rmtree, setenv, sh, task
+from csspin import (
+    argument,
+    config,
+    info,
+    interpolate1,
+    mkdir,
+    option,
+    rmtree,
+    setenv,
+    sh,
+    task,
+)
 from csspin.tree import ConfigTree
 from path import Path
 
@@ -57,6 +69,12 @@ defaults = config(
     ],
     dbms="sqlite",  # Default backend for development
     webmake=True,  # Developers mostly want to run webmake, too
+    tls=config(
+        cert="{mkinstance.base.instance_location}/certs/localhost.crt",
+        cert_key="{mkinstance.base.instance_location}/certs/localhost.key",
+        dns_names=["localhost", socket.gethostname()],
+        enabled=False,
+    ),
     # DBMS-agnostic options
     base=config(
         namespace="cs",  # Application namespace
@@ -147,6 +165,53 @@ def configure(cfg):
         setenv(CADDOK_BASE=cfg.mkinstance.base.instance_location)
 
 
+def _create_tls_cert(cfg: ConfigTree) -> None:
+    """Create a self-signed SSL/TLS certificate and private key."""
+    # pylint: disable=too-many-locals
+    import datetime
+    import ipaddress
+
+    from cryptography import x509
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from cryptography.x509.oid import NameOID
+
+    key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
+    subject = issuer = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "localhost")])
+
+    alt_names = [
+        x509.DNSName(dns_name) for dns_name in cfg.mkinstance.tls.dns_names
+    ] + [x509.IPAddress(ipaddress.IPv4Address("127.0.0.1"))]
+
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(issuer)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(datetime.datetime.now(datetime.timezone.utc))
+        .not_valid_after(
+            datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=365)
+        )
+        .add_extension(x509.SubjectAlternativeName(alt_names), critical=False)
+        .sign(key, hashes.SHA256())
+    )
+
+    with open(cfg.mkinstance.tls.cert_key, "wb") as f:
+        f.write(
+            key.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.TraditionalOpenSSL,
+                encryption_algorithm=serialization.NoEncryption(),
+            )
+        )
+
+    with open(cfg.mkinstance.tls.cert, "wb") as f:
+        f.write(cert.public_bytes(serialization.Encoding.PEM))
+
+    info(f"Generated '{cfg.mkinstance.tls.cert_key}' and '{cfg.mkinstance.tls.cert}'.")
+
+
 @task()
 def mkinstance(
     cfg,
@@ -191,6 +256,12 @@ def mkinstance(
 
     dbms = dbms or cfg.mkinstance.dbms
     if not instancedir.is_dir():
+        if cfg.mkinstance.tls:
+            if cfg.mkinstance.tls.cert.parent == instancedir / "certs":
+                mkdir(cfg.mkinstance.tls.cert.parent)
+                _create_tls_cert(cfg)
+            opts.append(f"--sslca={cfg.mkinstance.tls.cert}")
+
         dbms_opts = to_cli_options(cfg.mkinstance.get(dbms, {}))
         sh("mkinstance", *opts, dbms, *dbms_opts, shell=False)
 

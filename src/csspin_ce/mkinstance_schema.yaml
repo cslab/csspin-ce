@@ -17,6 +17,27 @@ mkinstance:
         webmake:
             type: bool
             help: If set to ``True``, webmake will be run.
+        tls:
+            type: object
+            help: TLS configuration
+            properties:
+                cert:
+                    type: path
+                    help: The certificate file to use for SSL/TLS termination.
+                tls_cert_key:
+                    type: path
+                    help: The key file for ``mkinstance.tls.cert``.
+                enabled:
+                    type: bool
+                    help: |
+                        If set to ``True``, the instance will be equipped with a
+                        self-signed TLS certificate that is added to the
+                        instances' CA. The ``localhost.crt`` and
+                        ``localhost.key`` can be obtained from the instances'
+                        'certs' directory.
+                dns_names:
+                    type: list
+                    help: DNS names for the TLS certificate
         std_calendar_profile_range:
             type: str
             help: |
