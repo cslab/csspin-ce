@@ -256,7 +256,7 @@ def mkinstance(
 
     dbms = dbms or cfg.mkinstance.dbms
     if not instancedir.is_dir():
-        if cfg.mkinstance.tls:
+        if cfg.mkinstance.tls.enabled:
             if cfg.mkinstance.tls.cert.parent == instancedir / "certs":
                 mkdir(cfg.mkinstance.tls.cert.parent)
                 _create_tls_cert(cfg)
