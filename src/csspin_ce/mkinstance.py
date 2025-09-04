@@ -31,14 +31,15 @@ import zlib
 from csspin import (
     argument,
     config,
+    die,
     info,
-    interpolate1,
     mkdir,
     option,
     rmtree,
     setenv,
     sh,
     task,
+    warn,
 )
 from csspin.tree import ConfigTree
 from path import Path
@@ -159,9 +160,15 @@ def configure(cfg):
 
     compute_values(cfg.mkinstance)
 
-    if Path(caddok_base := os.getenv("CADDOK_BASE", "")).is_dir():
-        cfg.mkinstance.base.instance_location = caddok_base
-    elif interpolate1(Path(cfg.mkinstance.base.instance_location)).is_dir():
+
+def init(cfg):
+    """Init hook of the mkinstance plugin"""
+    if "CADDOK_BASE" in os.environ:
+        warn(
+            "CADDOK_BASE should not be set, consider using"
+            + " 'mkinstance.base.instance_location'!"
+        )
+    if cfg.mkinstance.base.instance_location.is_dir():
         setenv(CADDOK_BASE=cfg.mkinstance.base.instance_location)
 
 
@@ -250,6 +257,9 @@ def mkinstance(
         rmtree(instancedir)
         setenv(CADDOK_BASE=None)
 
+    if not instancedir.is_dir() and os.getenv("CADDOK_BASE", None) is not None:
+        setenv(CADDOK_BASE=None)
+
     setenv(
         CADDOK_GENERATE_STD_CALENDAR_PROFILE_RANGE=cfg.mkinstance.std_calendar_profile_range
     )
@@ -265,9 +275,13 @@ def mkinstance(
         dbms_opts = to_cli_options(cfg.mkinstance.get(dbms, {}))
         sh("mkinstance", *opts, dbms, *dbms_opts, shell=False)
 
-    if cfg.mkinstance.webmake:
-        sh("webmake", "--instancedir", instancedir, "devupdate")
-        sh("webmake", "--instancedir", instancedir, "buildall", "--parallel")
+        if cfg.mkinstance.webmake:
+            sh("webmake", "--instancedir", instancedir, "devupdate")
+            sh("webmake", "--instancedir", instancedir, "buildall", "--parallel")
 
-    # Run cdbpkg sync on the new install
-    sh("cdbpkg", "--instancedir", instancedir, "sync")
+        # Run cdbpkg sync on the new install
+        sh("cdbpkg", "--instancedir", instancedir, "sync")
+    else:
+        die(
+            "There already exists an instance, if you want to rebuild, try the '--rebuild' option"
+        )
