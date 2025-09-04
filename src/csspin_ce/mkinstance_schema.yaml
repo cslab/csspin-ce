@@ -54,7 +54,7 @@ mkinstance:
                         The namespace that the CE instance should be assigned
                         to.
                 instance_admpwd:
-                    type: str
+                    type: secret
                     help: |
                         The admin password for the CE instance to create. Use
                         ``""`` for empty password, thus the user caddok is
@@ -66,7 +66,7 @@ mkinstance:
             type: object
             help: |
                 The Oracle DBMS properties are exclusively used, if
-                `mkinstance.dbms=oracle`.
+                ``mkinstance.dbms=oracle``.
             properties:
                 ora_dbhost:
                     type: str
@@ -74,7 +74,7 @@ mkinstance:
                         The hostname or IP address of the Oracle database
                         server.
                 ora_syspwd:
-                    type: str
+                    type: secret
                     help: |
                         The password for the Oracle SYS user, used for
                         administrative tasks.
@@ -82,13 +82,13 @@ mkinstance:
                     type: str
                     help: The username for connecting to the Oracle database.
                 ora_dbpasswd:
-                    type: str
+                    type: secret
                     help: The password for the specified Oracle database user.
         mssql:
             type: object
             help: |
                 The MSSQL DBMS properties are exclusively used, if
-                `mkinstance.dbms=mssql`.
+                ``mkinstance.dbms=mssql``.
             properties:
                 mssql_dbuser:
                     type: str
@@ -98,7 +98,7 @@ mkinstance:
                     help: |
                         The hostname or IP address of the MSSQL database server.
                 mssql_syspwd:
-                    type: str
+                    type: secret
                     help: |
                         The password for the MSSQL SYS user, used for
                         administrative tasks.
@@ -106,7 +106,7 @@ mkinstance:
                     type: str
                     help: The name of the database catalog to use or create.
                 mssql_dbpasswd:
-                    type: str
+                    type: secret
                     help: The password for the MSSQL database user.
                 mssql_pyodbc:
                     type: str
@@ -125,7 +125,7 @@ mkinstance:
             type: object
             help: |
                 The MSSQL sspi DBMS properties are exclusively used, if
-                `mkinstance.dbms=mssql_sspi`.
+                ``mkinstance.dbms=mssql_sspi``.
             properties:
                 mssql_dbhost:
                     type: str
@@ -139,7 +139,7 @@ mkinstance:
             type: object
             help: |
                 The Postgres DBMS properties are exclusively used, if
-                `mkinstance.dbms=postgres`.
+                ``mkinstance.dbms=postgres``.
             properties:
                 postgres_database:
                     type: str
@@ -150,7 +150,7 @@ mkinstance:
                         The hostname or IP address of the Postgres database
                         server.
                 postgres_dbpasswd:
-                    type: str
+                    type: secret
                     help: The database password.
                 postgres_dbport:
                     type: int
@@ -166,5 +166,62 @@ mkinstance:
                         The system user with administrative privileges in
                         Postgres.
                 postgres_syspwd:
-                    type: str
+                    type: secret
                     help: The password for the Postgres system user.
+        s3_blobstore:
+            type: object
+            help: |
+                The AWS S3 Blobstore properties are exclusively used, if
+                ``mkinstance.dbms=s3_blobstore``.
+            properties:
+                s3_bucket:
+                    type: str
+                    help: |
+                        The bucket name to be used in the S3 backend.
+                        The bucket is not created and must already exist.
+                s3_endpoint_url:
+                    type: str
+                    help: |
+                        The URL that the client uses to connect to the MinIO server of the S3 backend.
+                        When connection to Amazon S3, use the region option instead.
+                s3_region:
+                    type: str
+                    help: |
+                        The region is needed to connect to Amazon S3.
+                        This option is not needed when using MinIO.
+                s3_access_key_id:
+                    type: str
+                    help: |
+                        The AWS S3 Access Key ID identifies your AWS account and the resources you are authorized to access.
+                        The Access Key ID is typically used in conjunction with the ``s3_secret_access_key``.
+                s3_secret_access_key:
+                    type: secret
+                    help: |
+                        The s3_secret_access_key is a secret key that is used to sign requests made to AWS services.
+                        The Secret Access Key should be kept private and should never be shared with anyone.
+        azure_blobstore:
+            type: object
+            help: |
+                The Azure Blobstore properties are exclusively used, if
+                ``mkinstance.dbms=azure_blobstore``.
+            properties:
+                azure_container:
+                    type: str
+                    help: |
+                        The container name to be used in the Azure backend.
+                        The container is not created and must already exist.
+                azure_endpoint_url:
+                    type: str
+                    help: |
+                        The URL that the client uses to connect to the server of the Azure backend.
+                        Note, that the URL schema differs for local development using Azurite and the cloud server.
+                azure_account_name:
+                    type: str
+                    help: |
+                        This parameter used to specify the identity of the Azure account that will be used to access cloud resources.
+                        If not specified, the account name is extracted from the endpoint URL.
+                azure_account_key:
+                    type: secret
+                    help: |
+                        The Azure Account Key is a shared secret key that is used to sign requests made to Azure services.
+                        The Secret Access Key should be kept private and should never be shared with anyone.
