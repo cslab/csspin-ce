@@ -24,7 +24,7 @@ mkinstance:
                 cert:
                     type: path
                     help: The certificate file to use for SSL/TLS termination.
-                tls_cert_key:
+                cert_key:
                     type: path
                     help: The key file for ``mkinstance.tls.cert``.
                 enabled:

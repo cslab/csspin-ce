@@ -172,7 +172,7 @@ def init(cfg):
         setenv(CADDOK_BASE=cfg.mkinstance.base.instance_location)
 
 
-def _create_tls_cert(cfg: ConfigTree) -> None:
+def _create_tls_cert(cfg: ConfigTree, cert_dir: Path) -> None:
     """Create a self-signed SSL/TLS certificate and private key."""
     # pylint: disable=too-many-locals
     import datetime
@@ -204,7 +204,7 @@ def _create_tls_cert(cfg: ConfigTree) -> None:
         .sign(key, hashes.SHA256())
     )
 
-    with open(cfg.mkinstance.tls.cert_key, "wb") as f:
+    with open(tls_cert := cert_dir / "localhost.key", "wb") as f:
         f.write(
             key.private_bytes(
                 encoding=serialization.Encoding.PEM,
@@ -213,10 +213,10 @@ def _create_tls_cert(cfg: ConfigTree) -> None:
             )
         )
 
-    with open(cfg.mkinstance.tls.cert, "wb") as f:
+    with open(tls_key := cert_dir / "localhost.crt", "wb") as f:
         f.write(cert.public_bytes(serialization.Encoding.PEM))
 
-    info(f"Generated '{cfg.mkinstance.tls.cert_key}' and '{cfg.mkinstance.tls.cert}'.")
+    info(f"Generated '{tls_key}' and '{tls_cert}'.")
 
 
 @task()
@@ -236,12 +236,18 @@ def mkinstance(
     cdbpkg sync.
     """
     instancedir = cfg.mkinstance.base.instance_location
-
-    if dbms and instancedir == default_location(cfg):
+    if dbms and instancedir == (instance_default_location := default_location(cfg)):
         # If 'dbms' was passed and the instance location is the default (not
         # custom like './inst'), we need to update the default location based on
-        # the dbms passed.
+        # the dbms passed. Same for the TLS certificate.
         instancedir = cfg.spin.project_root / dbms
+
+    if cfg.mkinstance.tls.enabled and (
+        cfg.mkinstance.tls.cert == instance_default_location / "certs" / "localhost.crt"
+    ):
+        tls_cert = instancedir / "certs" / "localhost.crt"
+    else:
+        tls_cert = cfg.mkinstance.tls.cert
 
     def to_cli_options(cfgtree):
         return [f"--{k}={v}" for k, v in cfgtree.items() if v is not None]
@@ -267,10 +273,10 @@ def mkinstance(
     dbms = dbms or cfg.mkinstance.dbms
     if not instancedir.is_dir():
         if cfg.mkinstance.tls.enabled:
-            if cfg.mkinstance.tls.cert.parent == instancedir / "certs":
-                mkdir(cfg.mkinstance.tls.cert.parent)
-                _create_tls_cert(cfg)
-            opts.append(f"--sslca={cfg.mkinstance.tls.cert}")
+            if tls_cert.parent == instancedir / "certs":
+                mkdir(tls_cert.parent)
+                _create_tls_cert(cfg, tls_cert.parent)
+            opts.append(f"--sslca={tls_cert}")
 
         dbms_opts = to_cli_options(cfg.mkinstance.get(dbms, {}))
         sh("mkinstance", *opts, dbms, *dbms_opts, shell=False)
