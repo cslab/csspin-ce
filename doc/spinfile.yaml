@@ -13,7 +13,6 @@ plugins:
     - csspin_docs.sphinx
     - csspin_ce:
           - ce_services
-          - ce_support_tools
           - localization
           - mkinstance
 
