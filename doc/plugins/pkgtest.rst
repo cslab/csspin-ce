@@ -88,4 +88,4 @@ property.
 ``csspin_ce.pkgtest`` schema reference
 ######################################
 
-.. include:: pkgtest_schemaref.rst
+#.. include:: pkgtest_schemaref.rst

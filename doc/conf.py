@@ -52,6 +52,16 @@ exclude_patterns = [
     "Thumbs.db",
 ]
 
+# Exclude some sources from "lite" version
+# 'tags' is a built-in variable for sphinx
+if tags.has("lite"):  # noqa: F821 # pylint: disable=undefined-variable
+    exclude_patterns.extend(
+        [
+            "plugins/pkgtest.rst",
+            "plugins/ce_support_tools.rst",
+        ]
+    )
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
