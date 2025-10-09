@@ -5,8 +5,8 @@ spin:
     project_name: csspin-ce
 
 plugin_packages:
-    - csspin-python[aws_auth]
     - csspin-docs
+    - csspin-python[aws_auth]
     - -e .
 
 plugins:
@@ -25,6 +25,8 @@ python:
         enabled: True
         static_oidc: True
         key_duration: 600 # 10 minutes
+        role_arn: '{CS_AWS_OIDC_ROLE_ARN}'
+        client_id: '{CS_AWS_OIDC_CLIENT_ID}'
 
 node:
     version: '18.17.1'
