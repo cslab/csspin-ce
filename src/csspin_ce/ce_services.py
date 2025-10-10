@@ -42,6 +42,7 @@ from csspin import (
     setenv,
     sh,
     task,
+    warn,
 )
 from path import Path
 
@@ -287,8 +288,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
             mkdir(install_dir)
             archive = f"{solr_name}.tgz"
 
-            from csspin import warn  # noqa: F401
-
             with TemporaryDirectory() as tmp_dir:
                 archive_path = Path(tmp_dir) / archive
                 try:
@@ -532,6 +531,12 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     install_traefik(cfg)
     install_redis(cfg)
+
+    if cfg.ce_services.solr.use:
+        if cfg.ce_services.solr.version:
+            warn(
+                "ce_services.solr.version will be ignored, using '{ce_services.solr.use}' instead."
+            )
 
     if not cfg.ce_services.solr.use:
         install_solr(cfg)
