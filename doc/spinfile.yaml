@@ -13,8 +13,10 @@ plugins:
     - csspin_docs.sphinx
     - csspin_ce:
           - ce_services
+          - ce_support_tools
           - localization
           - mkinstance
+          - pkgtest
 
 python:
     version: '3.11.9'
