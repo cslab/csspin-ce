@@ -47,4 +47,5 @@ build_rules:
         spin:
             - schemadoc ce_services --rst -o doc/plugins/ce_services_schemaref.rst
             - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst
+            - schemadoc pkgtest --rst -o doc/plugins/pkgtest_schemaref.rst
             - schemadoc localization --rst -o doc/plugins/localization_schemaref.rst
