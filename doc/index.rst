@@ -33,11 +33,7 @@ as starting and managing its services.
 
    installation.rst
    plugins/ce_services.rst
+   plugins/ce_support_tools.rst
    plugins/localization.rst
    plugins/mkinstance.rst
-
-.. only:: not lite
-
-   .. toctree::
-      plugins/ce_support_tools.rst
-      plugins/pkgtest.rst
+   plugins/pkgtest.rst

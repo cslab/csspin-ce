@@ -32,7 +32,6 @@ node:
     version: '18.17.1'
 
 sphinx:
-    opts: '-qaEt=lite'
     docs: doc
 
 java:
