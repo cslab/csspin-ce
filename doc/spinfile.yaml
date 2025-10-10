@@ -1,12 +1,12 @@
-# The spinfile.yaml for csspin-ce is required since building the documentation
-# requires a provisioned project.
+# This spinfile.yaml is only intended to be used for building the documentation
+# using readthedocs.org.
 
 spin:
     project_name: csspin-ce
-    index_url: https://packages.contact.de/tools/stable
 
 plugin_packages:
     - csspin-docs
+    - csspin-python[aws_auth]
     - -e .
 
 plugins:
@@ -18,27 +18,26 @@ plugins:
           - mkinstance
           - pkgtest
 
-ce_services:
-    rabbitmq:
-        enabled: true
-        erlang:
-            version: '28.0'
-
 python:
     version: '3.11.9'
     requirements:
         - sphinx-rtd-theme
-    index_url: https://packages.contact.de/apps/16.0-dev/+simple
+    aws_auth:
+        # required to access Codeartifact for cs.platform, cs.web, ce_services
+        enabled: True
+        static_oidc: True
+        key_duration: 600 # 10 minutes
+        role_arn: '{CS_AWS_OIDC_ROLE_ARN}'
+        client_id: '{CS_AWS_OIDC_CLIENT_ID}'
 
 node:
     version: '18.17.1'
-    mirror: https://nodejs-proxy.ops.contact.de/dist/
+
+sphinx:
+    docs: doc
 
 java:
     version: '21'
-
-pkgtest:
-    caddok_package_server: packages.contact.de
 
 build_rules:
     task docs:
