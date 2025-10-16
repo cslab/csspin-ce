@@ -93,7 +93,6 @@ defaults = config(
     mssql=config(
         mssql_dbuser=default_id,
         mssql_dbhost="localhost\\SQLEXPRESS",
-        mssql_syspwd="sa",
         mssql_dbpasswd=default_id,
         mssql_catalog=default_id,
         mssql_pyodbc="0",
@@ -118,13 +117,11 @@ defaults = config(
         s3_region=None,
         s3_endpoint_url=None,
         s3_access_key_id=None,
-        s3_secret_access_key=None,
     ),
     azure_blobstore=config(
         azure_container=None,
         azure_endpoint_url=None,
         azure_account_name=None,
-        azure_account_key=None,
     ),
     requires=config(
         python=["cs.platform"],
