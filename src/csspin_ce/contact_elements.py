@@ -32,5 +32,5 @@ def configure(cfg):
     ALLOWED_VERSIONS = ("16.0", "2026.1", "2026.2")
     if version not in ALLOWED_VERSIONS:
         die(
-            f"Invalid version for ce.version: {version}. Possible values are: {ALLOWED_VERSIONS}"
+            f"Invalid value for contact_elements.umbrella: {version}. Possible values are: {ALLOWED_VERSIONS}"
         )
