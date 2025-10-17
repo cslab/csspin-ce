@@ -14,6 +14,7 @@ plugins:
     - csspin_ce:
           - ce_services
           - ce_support_tools
+          - contact_elements
           - localization
           - mkinstance
           - pkgtest
@@ -49,6 +50,7 @@ build_rules:
         sources: [src/csspin_ce]
         spin:
             - schemadoc ce_services --rst -o doc/plugins/ce_services_schemaref.rst
+            - schemadoc contact_elements --rst -o doc/plugins/contact_elements_schemaref.rst
             - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst
             - schemadoc pkgtest --rst -o doc/plugins/pkgtest_schemaref.rst
             - schemadoc localization --rst -o doc/plugins/localization_schemaref.rst

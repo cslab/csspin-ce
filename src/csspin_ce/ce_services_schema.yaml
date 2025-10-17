@@ -135,6 +135,16 @@ ce_services:
                 install_dir:
                     type: path
                     help: The installation directory of redis.
+        tika:
+            type: object
+            help: Configuration regarding apache tika
+            properties:
+                version:
+                    type: str
+                    help: The apache tika version to use.
+                install_dir:
+                    type: path
+                    help: The directory to put the tika-server.jar files.
         loglevel:
             type: str
             help: The loglevel for the started services.

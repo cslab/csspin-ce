@@ -88,6 +88,7 @@ defaults = config(
         version="7.2.4",
         install_dir="{spin.data}/redis",
     ),
+    tika=config(version="3.2.3", install_dir="{spin.data}/tika"),
     loglevel="",
     requires=config(
         spin=["csspin_ce.contact_elements", "csspin_ce.mkinstance", "csspin_java.java"],
@@ -529,6 +530,43 @@ def provision(cfg):  # pylint: disable=too-many-statements
                         sh("make", stdout=stdout)
                         sh("make", "install", stdout=stdout)
 
+    def install_tika(cfg):
+        debug(f"Installing apache tika {cfg.ce_services.tika.version}")
+        tika_path = (
+            cfg.ce_services.tika.install_dir
+            / f"tika-server-standard-{cfg.ce_services.tika.version}.jar"
+        )
+        if exists(tika_path):
+            return
+
+        mkdir(cfg.ce_services.tika.install_dir)
+        url_path = f"tika/{cfg.ce_services.tika.version}/tika-server-standard-{cfg.ce_services.tika.version}.jar"  # noqa: E501
+        try:
+            download(
+                f"https://downloads.apache.org/{url_path}",
+                tika_path,
+            )
+        except HTTPError as exc:
+            if exc.status != 404:
+                die(
+                    f"Could not download Apache Tika {cfg.ce_services.tika.version} from "
+                    f"downloads.apache.org: {exc}"
+                )
+            warn(
+                "Could not download Apache Tika from downloads.apache.org, "  # noqa: E501
+                "trying archive.apache.org instead."
+            )
+            try:
+                download(
+                    f"https://archive.apache.org/dist/{url_path}",
+                    tika_path,
+                )
+            except HTTPError as exc2:
+                die(
+                    f"Could not download Apache Tika {cfg.ce_services.tika.version} from "
+                    f"archive.apache.org: {exc2}"
+                )
+
     install_traefik(cfg)
     install_redis(cfg)
 
@@ -550,6 +588,9 @@ def provision(cfg):  # pylint: disable=too-many-statements
     if cfg.ce_services.rabbitmq.enabled:
         install_rabbitmq(cfg)
         install_erlang(cfg)
+
+    if cfg.contact_elements.umbrella not in ("16.0", "2026.1"):
+        install_tika(cfg)
 
 
 def init(cfg):
@@ -624,6 +665,11 @@ def init(cfg):
             RABBITMQ_LOG_BASE=cfg.mkinstance.base.instance_location / "tmp",
             ERLANG_HOME=cfg.ce_services.rabbitmq.erlang.install_dir
             / cfg.ce_services.rabbitmq.erlang.version,
+        )
+    if cfg.contact_elements.umbrella not in ("16.0", "2026.1"):
+        setenv(
+            TIKA_PATH=cfg.ce_services.tika.install_dir
+            / f"tika-server-standard-{cfg.ce_services.tika.version}.jar"
         )
 
     setenv(

@@ -172,6 +172,16 @@ installing and compiling the Erlang OTP. Both can be further configured via the
 The service can be started, e.g. via ``spin ce-services`` or manually via
 ``spin run rabbitmq-server``.
 
+How to configure and use Apache Tika?
+#####################################
+
+The service Apache Tika will be provisioned automatically for
+``contact_elements.umbrella>="2026.2"``. The ce_services plugin will then
+download the ``tika-server-standard.jar`` file for the chosen version. The
+downloaded ``.jar`` file will be available via the environment variable
+``TIKA_PATH``. Thus, to run the service the command ``spin run java -jar
+$TIKA_PATH`` can be used.
+
 ``csspin_ce.ce_services`` schema reference
 ##########################################
 
