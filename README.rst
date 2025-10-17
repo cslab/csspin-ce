@@ -10,6 +10,9 @@ The following plugins are available:
   by CONTACT Elements applications.
 - `csspin_ce.ce_support_tools`: Plugin for supporting tools used in
   CONTACT Elements applications.
+- `csspin_ce.contact_elements`: Plugin for configuring the umbrella release of
+  CONTACT Elements, which changes the behavior of the other plugins of this
+  package.
 - `csspin_ce.localization`: Plugin for localization of CONTACT Elements
   applications.
 - `csspin_ce.mkinstance`: Plugin for creating and managing instances of

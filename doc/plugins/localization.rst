@@ -39,6 +39,8 @@ at least contain the following configuration.
         - csspin_ce
     plugins:
         - csspin_ce.localization
+    contact_elements:
+        umbrella: <The umbrella to use>
     python:
         version: '3.11.9'
         index_url: <package server index url to retrieve CE wheels from>

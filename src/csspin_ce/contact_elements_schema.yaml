@@ -1,0 +1,13 @@
+# -*- mode: yaml; coding: utf-8 -*-
+#
+# Schema for the ce_services plugin for csspin_ce.contact_elements
+
+contact_elements:
+    type: object
+    help: |
+        This plugin is designed to provide common configuration for all plugins
+        of the csspin_ce plugin-package.
+    properties:
+        umbrella:
+            type: str
+            help: The CONTACT Elements umbrella release to use, as defined in the "Software Maintenance Policy - TN0020".

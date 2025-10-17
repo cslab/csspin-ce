@@ -27,6 +27,8 @@ at least contain the following configuration.
         - csspin-python
     plugins:
         - csspin_ce.pkgtest
+    contact_elements:
+        umbrella: <The umbrella to use>
     python:
         version: '3.11.9'
     pkgtest:

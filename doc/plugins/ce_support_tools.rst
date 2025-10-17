@@ -38,6 +38,8 @@ For using the ``csspin_ce.ce_support_tools`` plugin, a project's
         - csspin_ce:
             - mkinstance  # Required for instance location
             - ce_support_tools
+    contact_elements:
+        umbrella: <The umbrella to use>
     # ... other configurations depending on csspin_ce.mkinstance's requirements.
 
 The provisioning of the required tools and the plugins dependencies can be done

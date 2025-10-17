@@ -18,6 +18,9 @@ plugins:
           - mkinstance
           - pkgtest
 
+contact_elements:
+    umbrella: '16.0'
+
 ce_services:
     rabbitmq:
         enabled: true
@@ -28,7 +31,7 @@ python:
     version: '3.11.9'
     requirements:
         - sphinx-rtd-theme
-    index_url: https://packages.contact.de/apps/16.0-dev/+simple
+    index_url: https://packages.contact.de/apps/16.0/+simple
 
 node:
     version: '18.17.1'
@@ -47,6 +50,7 @@ build_rules:
         sources: [src/csspin_ce]
         spin:
             - schemadoc ce_services --rst -o doc/plugins/ce_services_schemaref.rst
+            - schemadoc contact_elements --rst -o doc/plugins/contact_elements_schemaref.rst
+            - schemadoc localization --rst -o doc/plugins/localization_schemaref.rst
             - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst
             - schemadoc pkgtest --rst -o doc/plugins/pkgtest_schemaref.rst
-            - schemadoc localization --rst -o doc/plugins/localization_schemaref.rst

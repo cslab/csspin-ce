@@ -27,9 +27,7 @@ from path import Path
 defaults = config(
     requires=config(
         python=["ce-support-tools"],
-        spin=[
-            "csspin_ce.mkinstance",
-        ],
+        spin=["csspin_ce.contact_elements", "csspin_ce.mkinstance"],
     ),
 )
 
