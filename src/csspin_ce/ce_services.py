@@ -25,7 +25,10 @@ provisions all tool necessary for these ce_services.
 import os
 import shutil
 import sys
-from urllib.error import HTTPError
+import tarfile
+import zipfile
+from tempfile import TemporaryDirectory
+from urllib.error import HTTPError, URLError
 
 from csspin import (
     Verbosity,
@@ -33,6 +36,7 @@ from csspin import (
     config,
     debug,
     die,
+    download,
     echo,
     exists,
     mkdir,
@@ -74,6 +78,7 @@ defaults = config(
         version="9.8.1",
         install_dir="{spin.data}/solr",
         version_postfix="-slim",
+        mirrors=["https://downloads.apache.org/", "https://archive.apache.org/dist/"],
     ),
     rabbitmq=config(
         enabled=False,
@@ -88,7 +93,11 @@ defaults = config(
         version="7.2.4",
         install_dir="{spin.data}/redis",
     ),
-    tika=config(version="3.2.3", install_dir="{spin.data}/tika"),
+    tika=config(
+        version="3.2.3",
+        install_dir="{spin.data}/tika",
+        mirrors=["https://downloads.apache.org/", "https://archive.apache.org/dist/"],
+    ),
     loglevel="",
     requires=config(
         spin=["csspin_ce.contact_elements", "csspin_ce.mkinstance", "csspin_java.java"],
@@ -203,11 +212,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     FIXME: This function is too long and should be split into smaller functions.
     """
-    import tarfile
-    import zipfile
-    from tempfile import TemporaryDirectory
-
-    from csspin import download
 
     def extract(archive, extract_to, member=""):
         """Unpacks archives"""
@@ -291,33 +295,25 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
             with TemporaryDirectory() as tmp_dir:
                 archive_path = Path(tmp_dir) / archive
-                try:
-                    download(
-                        f"https://dlcdn.apache.org/solr/solr/{version}/{archive}",
-                        archive_path,
-                    )
-
-                except HTTPError as exc:
-                    if exc.status != 404:
-                        die(
-                            f"Could not download Apache Solr {version} from "
-                            f"dlcdn.apache.org: {exc}"
-                        )
-
-                    warn(
-                        "Could not download Apache Solr from dlcdn.apache.org, "  # noqa: E501
-                        "trying archive.apache.org instead."
-                    )
+                url_path = f"solr/solr/{version}/{archive}"
+                for mirror in cfg.ce_services.solr.mirrors:
+                    if mirror[-1] == "/":
+                        url = f"{mirror}{url_path}"
+                    else:
+                        url = f"{mirror}/{url_path}"
                     try:
-                        download(
-                            f"https://archive.apache.org/dist/solr/solr/{version}/{archive}",
-                            archive_path,
-                        )
-                    except HTTPError as exc2:
-                        die(
-                            f"Could not download Apache Solr {version} from "
-                            f"archive.apache.org: {exc2}"
-                        )
+                        download(url, archive_path)
+                        break
+                    except HTTPError:
+                        warn(f"Solr {version} not found at {url}")
+                        continue
+                    except URLError:
+                        warn(f"{mirror} currently not reachable")
+                        continue
+                else:
+                    die(  # pylint: disable=broad-exception-raised
+                        "Could not download Apache Solr from any of the mirrors."
+                    )
 
                 extract(archive_path, install_dir, solr_name)
         else:
@@ -541,31 +537,24 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
         mkdir(cfg.ce_services.tika.install_dir)
         url_path = f"tika/{cfg.ce_services.tika.version}/tika-server-standard-{cfg.ce_services.tika.version}.jar"  # noqa: E501
-        try:
-            download(
-                f"https://downloads.apache.org/{url_path}",
-                tika_path,
-            )
-        except HTTPError as exc:
-            if exc.status != 404:
-                die(
-                    f"Could not download Apache Tika {cfg.ce_services.tika.version} from "
-                    f"downloads.apache.org: {exc}"
-                )
-            warn(
-                "Could not download Apache Tika from downloads.apache.org, "  # noqa: E501
-                "trying archive.apache.org instead."
-            )
+        for mirror in cfg.ce_services.tika.mirrors:
+            if mirror[-1] == "/":
+                url = f"{mirror}{url_path}"
+            else:
+                url = f"{mirror}/{url_path}"
             try:
-                download(
-                    f"https://archive.apache.org/dist/{url_path}",
-                    tika_path,
-                )
-            except HTTPError as exc2:
-                die(
-                    f"Could not download Apache Tika {cfg.ce_services.tika.version} from "
-                    f"archive.apache.org: {exc2}"
-                )
+                download(url, tika_path)
+                break
+            except HTTPError:
+                warn(f"Tika {cfg.ce_services.tika.version} not found at {url}")
+                continue
+            except URLError:
+                warn(f"{mirror} currently not reachable")
+                continue
+        else:
+            die(  # pylint: disable=broad-exception-raised
+                "Could not download Apache Tika from any of the mirrors."
+            )
 
     install_traefik(cfg)
     install_redis(cfg)
