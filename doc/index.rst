@@ -34,6 +34,7 @@ as starting and managing its services.
    installation.rst
    plugins/ce_services.rst
    plugins/ce_support_tools.rst
+   plugins/contact_elements.rst
    plugins/localization.rst
    plugins/mkinstance.rst
    plugins/pkgtest.rst

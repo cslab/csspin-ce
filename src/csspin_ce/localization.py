@@ -36,7 +36,7 @@ defaults = config(
     target_langs=["ja"],
     requires=config(
         python=["localization"],
-        spin=["csspin_ce.mkinstance"],
+        spin=["csspin_ce.contact_elements", "csspin_ce.mkinstance"],
     ),
 )
 

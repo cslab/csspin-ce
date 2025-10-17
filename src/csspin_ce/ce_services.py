@@ -90,7 +90,7 @@ defaults = config(
     ),
     loglevel="",
     requires=config(
-        spin=["csspin_ce.mkinstance", "csspin_java.java"],
+        spin=["csspin_ce.contact_elements", "csspin_ce.mkinstance", "csspin_java.java"],
         python=[
             "ce_services>=1.5.0",
             "psutil",

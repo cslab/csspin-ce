@@ -37,6 +37,8 @@ within a project's ``spinfile.yaml``.
             - ce_services
             - mkinstance
             - pkgtest
+    contact_elements:
+        umbrella: <The umbrella to use>
     python:
         version: '3.11.9'
         index_url: <URL to package server to retrieve CE wheels from>
@@ -56,3 +58,5 @@ used, using:
 .. code-block:: console
 
     spin ce-services --help
+
+.. note:: Using any plugin of this package requires setting ``contact_elements.umbrella`` in the spinfile.yaml.

@@ -32,7 +32,10 @@ defaults = config(
     caddok_package_server="",
     dbms="sqlite",  # Default backend for development
     requires=config(
-        spin=["csspin_ce.ce_services"],  # For the tool provisioning
+        spin=[
+            "csspin_ce.contact_elements",
+            "csspin_ce.ce_services",  # For the tool provisioning
+        ],
         python=["pkgtest"],
     ),
 )

@@ -130,6 +130,7 @@ defaults = config(
             "csspin_java.java",
             "csspin_frontend.node",
             "csspin_python.python",
+            "csspin_ce.contact_elements",
         ],
         system=config(
             debian=config(
