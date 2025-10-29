@@ -29,24 +29,27 @@ def execute_spin(yaml, env, path="tests/integration/yamls", cmd=""):
         raise
 
 
-@pytest.mark.skipif(
-    sys.platform != "win32" and shutil.which("redis-server") is None,
-    reason="ce_services needs redis-server, which must be preinstalled on Linux",
-)
 @pytest.mark.integration()
-def test_ce_services_provision(tmp_path):
-    """Provision the ce_services plugin"""
-    yaml = "ce_services.yaml"
-    execute_spin(yaml=yaml, env=tmp_path, cmd="cleanup")
-    execute_spin(yaml=yaml, env=tmp_path, cmd="provision")
-    execute_spin(yaml=yaml, env=tmp_path, cmd="ce-services --help")
-
-
-@pytest.mark.integration()
-@pytest.mark.parametrize("plugin", ("mkinstance", "pkgtest", "localize"))
-def test_plugin_provision(tmp_path: str, plugin: str):
+@pytest.mark.parametrize("umbrella", ("16.0", "2026.2"))
+@pytest.mark.parametrize("plugin", ("ce_services", "mkinstance", "pkgtest", "localize"))
+def test_plugin_provision(short_tmp_path: str, umbrella: str, plugin: str) -> None:
     """Provision plugins and run their help command"""
+    if (
+        plugin == "ce_services"
+        and sys.platform != "win32"
+        and shutil.which("redis-server") is None
+    ):
+        pytest.skip(
+            "ce_services needs redis-server, which must be preinstalled on Linux"
+        )
+
     yaml = f"{plugin}.yaml"
-    execute_spin(yaml=yaml, env=tmp_path, cmd="cleanup")
-    execute_spin(yaml=yaml, env=tmp_path, cmd="provision")
-    execute_spin(yaml=yaml, env=tmp_path, cmd=f"{plugin} --help")
+    opts = " ".join(
+        [
+            f"-p contact_elements.umbrella={umbrella}",
+            f"-p python.index_url=https://packages.contact.de/apps/{umbrella}/+simple/",
+        ]
+    )
+    execute_spin(yaml=yaml, env=short_tmp_path, cmd=f"{opts} cleanup")
+    execute_spin(yaml=yaml, env=short_tmp_path, cmd=f"{opts} provision")
+    execute_spin(yaml=yaml, env=short_tmp_path, cmd=f"{opts} {plugin} --help")

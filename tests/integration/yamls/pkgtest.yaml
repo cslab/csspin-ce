@@ -1,5 +1,5 @@
 spin:
-    index_url: https://packages.contact.de/tools/stable
+    index_url: https://packages.contact.de/tools/stable/+simple/
 plugin_packages:
     - csspin-frontend
     - csspin-java
@@ -11,9 +11,15 @@ java:
     version: '21'
 python:
     version: '3.11.9'
-    index_url: https://packages.contact.de/apps/16.0/+simple/
 node:
     version: '18.20.4'
     mirror: https://nodejs-proxy.ops.contact.de/dist/
-contact_elements:
-    umbrella: '16.0'
+ce_services:
+    solr:
+        mirrors:
+            - https://apache-proxy.ops.contact.de
+            - https://apache-proxy.ops.contact.de/dist
+    tika:
+        mirrors:
+            - https://apache-proxy.ops.contact.de
+            - https://apache-proxy.ops.contact.de/dist
