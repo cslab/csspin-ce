@@ -6,9 +6,22 @@
 
 """Fixtures for the integration testsuite"""
 
+import hashlib
 import os
 
 import pytest
+
+
+@pytest.fixture
+def short_tmp_path(tmp_path_factory, request):
+    """
+    Create a temporary path with a short prefix to avoid long paths on
+    Windows.
+    """
+    test_hash = hashlib.sha256(request.node.name.encode()).hexdigest()[:8]
+    base = tmp_path_factory.getbasetemp() / test_hash
+    base.mkdir(parents=True, exist_ok=True)
+    return base
 
 
 @pytest.fixture(scope="session", autouse=True)
