@@ -28,6 +28,7 @@ import platform
 import socket
 import zlib
 
+from click import Choice
 from csspin import (
     argument,
     config,
@@ -225,7 +226,20 @@ def mkinstance(
         is_flag=True,
         help="Remove an existing instance prior creating the new one.",  # noqa: F722
     ),
-    dbms: argument(type=str, nargs=1, required=False),  # noqa: F821
+    dbms: argument(  # noqa: F821
+        type=Choice(
+            (
+                "azure_blobstore",  # noqa: F821
+                "mssql_sspi",  # noqa: F821
+                "mysql",  # noqa: F821
+                "oracle",  # noqa: F821
+                "postgres",  # noqa: F821
+                "s3_blobstore",  # noqa: F821
+            ),
+        ),
+        nargs=1,
+        required=False,
+    ),
 ):
     """
     Run the 'mkinstance' command for development.
