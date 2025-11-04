@@ -41,8 +41,8 @@ defaults = config(
 )
 
 
-@task()
-def localize(
+@task(when="localize")
+def localize_ce(
     cfg,
     instance: option(
         "-i",  # noqa: F821

@@ -31,7 +31,9 @@ def execute_spin(yaml, env, path="tests/integration/yamls", cmd=""):
 
 @pytest.mark.integration()
 @pytest.mark.parametrize("umbrella", ("16.0", "2026.2"))
-@pytest.mark.parametrize("plugin", ("ce_services", "mkinstance", "pkgtest", "localize"))
+@pytest.mark.parametrize(
+    "plugin", ("ce_services", "mkinstance", "pkgtest", "localize-ce")
+)
 def test_plugin_provision(short_tmp_path: str, umbrella: str, plugin: str) -> None:
     """Provision plugins and run their help command"""
     if (

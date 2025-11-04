@@ -60,13 +60,17 @@ to be localized into with ``target_languages`` parameter.
 The provisioning of the required tools and the plugins dependencies can be done
 via the well-known ``spin provision``-command.
 
-How to automate localization with csspin_ce.localize?
-#####################################################
+How to automate localization with csspin_ce.localization?
+#########################################################
 
-Except for the ``-D`` / ``--instancedir`` option, all additional flags and
-options are ignored.
+``spin localize-ce`` command can be used for this purpose.
 
-Execute ``spin localize`` command and lean back in your chair.
+Internally, the command exports strings from the database of your CONTACT Elements instance
+into XLIFF files. These files are saved at the path specified by ``localization.xliff_dir``,
+which defaults to ``<project_root>/xliff_export``. It then synchronizes strings
+that have been modified (added, deleted, or changed) within the instance database
+and translates those lacking translations.
+
 
 ``csspin_ce.localization`` schema reference
 ###########################################
