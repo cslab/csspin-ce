@@ -182,6 +182,38 @@ downloaded ``.jar`` file will be available via the environment variable
 ``TIKA_PATH``. Thus, to run the service the command ``spin run java -jar
 $TIKA_PATH`` can be used.
 
+Recommendations
+###############
+
+Caching and limiting downloads
+------------------------------
+
+The ce_services plugin can provision lots of additional software from various
+sources. To avoid unnecessary downloads and installations, it is recommended to
+only enable the services that are really needed.
+
+Even though the plugin caches downloaded data, which speeds up the provisioning
+process on subsequent runs, in CI setups or containerized environments, this
+cache might not be available. Additionally, some software providers restrict and
+limit the number or volume of downloads.
+
+One of such software provider is the Apache Software Foundation, which provides
+many of the services used by ce_services e.g. Apache Solr, Apache Tika, etc. To
+avoid unnecessary downloads, installations, and potential blocking by the
+provider, it is recommended to proactively implement counter measures, e.g.:
+
+- Set up a caching proxy for the downloads from used Apache services. Many
+  plugins provide a ``mirrors`` property that can be used to point to such a
+  proxy.
+- Pre-provision the required software in target environments, e.g. container
+  images or directly on host systems. The ce_services can then pick them up from
+  the location specified in the ``install_dir`` property of the respective
+  service.
+
+References
+
+- https://infra.apache.org/abc/
+
 ``csspin_ce.ce_services`` schema reference
 ##########################################
 
