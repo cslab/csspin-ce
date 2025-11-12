@@ -3,7 +3,7 @@
 
 spin:
     project_name: csspin-ce
-    index_url: https://packages.contact.de/tools/stable
+    index_url: https://packages.contact.de/tools/stable/+simple/
 
 plugin_packages:
     - csspin-docs
@@ -31,7 +31,7 @@ python:
     version: '3.11.9'
     requirements:
         - sphinx-rtd-theme
-    index_url: https://packages.contact.de/apps/16.0/+simple
+    index_url: https://packages.contact.de/apps/16.0/+simple/
 
 node:
     version: '18.17.1'
