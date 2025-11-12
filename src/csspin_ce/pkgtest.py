@@ -76,6 +76,7 @@ def pkgtest(
         die(
             "'pkgtest.package' must be set in the spinfile.yaml to a path/glob to the package."
         )
+
     wheel = glob(cfg.pkgtest.package)
     if not wheel:
         die(f"The package {cfg.pkgtest.package} does not exist.")
@@ -83,6 +84,9 @@ def pkgtest(
         die(f"Found multiple packages for {cfg.pkgtest.package}.")
     else:
         wheel = wheel[0]
+
+    if cfg.python.constraints:
+        setenv(PIP_CONSTRAINT=" ".join(cfg.python.constraints))
 
     setenv(
         CADDOK_BASE=None
