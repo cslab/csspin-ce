@@ -235,6 +235,7 @@ def mkinstance(
                 "oracle",  # noqa: F821
                 "postgres",  # noqa: F821
                 "s3_blobstore",  # noqa: F821
+                "sqlite",  # noqa: F821
             ),
         ),
         nargs=1,
