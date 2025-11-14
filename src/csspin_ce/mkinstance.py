@@ -249,7 +249,8 @@ def mkinstance(
     cdbpkg sync.
     """
     instancedir = cfg.mkinstance.base.instance_location
-    if dbms and instancedir == (instance_default_location := default_location(cfg)):
+    instance_default_location = default_location(cfg)
+    if dbms and instancedir == instance_default_location:
         # If 'dbms' was passed and the instance location is the default (not
         # custom like './inst'), we need to update the default location based on
         # the dbms passed. Same for the TLS certificate.
