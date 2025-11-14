@@ -33,7 +33,7 @@ from csspin import (
 
 defaults = config(
     xliff_dir="xliff_export",
-    target_langs=["ja"],
+    target_langs=["ja", "zh"],
     requires=config(
         python=["localization"],
         spin=["csspin_ce.contact_elements", "csspin_ce.mkinstance"],
@@ -67,7 +67,7 @@ def localize_ce(
         "--sourcelang",
         "en",
         "--targetlang",
-        "ja",
+        "ja",  # We can export any lang, since we don't need source XLIFFs to contain translations
         check=False,
     )
 
