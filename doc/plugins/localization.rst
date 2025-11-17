@@ -71,6 +71,9 @@ which defaults to ``<project_root>/xliff_export``. It then synchronizes strings
 that have been modified (added, deleted, or changed) within the instance database
 and translates those lacking translations.
 
+The ``--check-only`` flag makes the command only check whether the project
+is fully localized. It does not apply any changes and does not perform DeepL API requests.
+
 
 ``csspin_ce.localization`` schema reference
 ###########################################
