@@ -49,6 +49,11 @@ def localize_ce(
         "--instance",  # noqa: F821
         help="Directory of the CONTACT Elements instance.",  # noqa: F722
     ),
+    check_only: option(
+        "--check-only",  # noqa: F821
+        is_flag=True,
+        help="Check if the project is fully localized.",  # noqa: F722
+    ),
 ):
     """Exports xliffs with cdbpkg and runs 'l10n sync' against them."""
 
@@ -73,7 +78,7 @@ def localize_ce(
 
     sh(
         "localization",
-        "sync",
+        ("check" if check_only else "sync"),
         "--source",
         cfg.localization.xliff_dir,
         *cfg.localization.target_langs,
