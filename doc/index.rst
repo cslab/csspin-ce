@@ -38,3 +38,4 @@ as starting and managing its services.
    plugins/localization.rst
    plugins/mkinstance.rst
    plugins/pkgtest.rst
+   relnotes.rst
