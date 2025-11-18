@@ -156,7 +156,10 @@ notes = ["FIXME", "XXX", "TODO", "TBC", "TBD"]
 score = "no"
 
 [tool.pytest.ini_options]
-markers = ["integration"]
+markers = [
+  "integration: Validate plugin provision integrates well with csspin",
+  "acceptance: Validate plugin functionalities in real-world scenarios"
+]
 
 [tool.setuptools.dynamic]
 readme = {file = "README.rst", content-type = "text/x-rst"}

@@ -1,32 +1,27 @@
-# -*- mode: python; coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2021 CONTACT Software GmbH
-# All rights reserved.
 # https://www.contact-software.com/
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 """Module implementing the integration tests for csspin-ce"""
 
-import shlex
 import shutil
-import subprocess
 import sys
+from typing import Callable
 
 import pytest
-
-
-def execute_spin(yaml, env, path="tests/integration/yamls", cmd=""):
-    """Helper function to execute spin and return the output"""
-    cmd = f"spin -p spin.data={env} -C {path} --env {str(env)} -f {yaml} " + cmd
-    try:
-        return subprocess.check_output(
-            shlex.split(cmd, posix=sys.platform != "win32"),
-            encoding="utf-8",
-            stderr=subprocess.PIPE,
-        ).strip()
-    except subprocess.CalledProcessError as ex:
-        print(ex.stdout)
-        print(ex.stderr)
-        raise
 
 
 @pytest.mark.integration()
@@ -34,7 +29,12 @@ def execute_spin(yaml, env, path="tests/integration/yamls", cmd=""):
 @pytest.mark.parametrize(
     "plugin", ("ce_services", "mkinstance", "pkgtest", "localize-ce")
 )
-def test_plugin_provision(short_tmp_path: str, umbrella: str, plugin: str) -> None:
+def test_plugin_provision(
+    short_tmp_path: str,
+    umbrella: str,
+    plugin: str,
+    execute_spin: Callable,
+) -> None:
     """Provision plugins and run their help command"""
     if (
         plugin == "ce_services"
