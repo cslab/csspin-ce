@@ -1,0 +1,35 @@
+# This spinfile is used to test if an instance can be built with enabled TLS +
+# services being started properly with TLS.
+spin:
+    project_name: csspin-ce
+    index_url: https://packages.contact.de/tools/stable/+simple/
+plugin_packages:
+    - ../../..
+plugins:
+    - csspin_ce:
+          - ce_services
+          - mkinstance
+contact_elements:
+    umbrella: '16.0'
+ce_services:
+    traefik:
+        tls:
+            enabled: true
+    solr:
+        mirrors:
+            - https://apache-proxy.ops.contact.de
+            - https://apache-proxy.ops.contact.de/dist
+mkinstance:
+    tls:
+        enabled: true
+python:
+    version: '3.11.9'
+    requirements: [cs.web]
+    index_url: https://packages.contact.de/apps/16.0/+simple/
+uv_provisioner:
+    enabled: true
+node:
+    version: '18.17.1'
+    mirror: https://nodejs-proxy.ops.contact.de/dist/
+java:
+    version: '21'
