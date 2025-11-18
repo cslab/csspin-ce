@@ -60,12 +60,24 @@
 Release Notes
 =============
 
-Upcoming Release
-================
+.. Upcoming Release
+.. ================
 
 .. Month Day, Year
+
+v4.1.0
+======
+
+November 18, 2025
+
+Enhancements
+------------
+
+- Add ``--check-only`` option to localize_ce task (`#104 <https://code.contact.de/qs/spin/spin_ce/-/issues/104>`_)
 
 Chores
 ------
 
+- Add zh to default localize-ce languages (`#109 <https://code.contact.de/qs/spin/spin_ce/-/issues/109>`_)
+- localization: Fail early in case no instance is present (`#105 <https://code.contact.de/qs/spin/spin_ce/-/issues/105>`_)
 - Add release notes to the documentation structure (`#99 <https://code.contact.de/qs/spin/spin_ce/-/issues/99>`_)
