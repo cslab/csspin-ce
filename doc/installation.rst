@@ -18,9 +18,10 @@
 Installation and setup
 ======================
 
-`csspin`_ must be installed to perform the following actions.
+Configuration
+=============
 
-For leveraging plugins from within the ``csspin_ce`` plugin-package for
+For leveraging plugins from within the ``csspin-ce`` plugin-package for
 ``csspin``, the plugin-package must be added to the list of plugin-packages
 within a project's ``spinfile.yaml``.
 
@@ -60,3 +61,21 @@ used, using:
     spin ce-services --help
 
 .. note:: Using any plugin of this package requires setting ``contact_elements.umbrella`` in the spinfile.yaml.
+
+System requirements
+===================
+
+The ``csspin-ce`` plugin-package requires the following software to be
+installed on the host system in order to work properly for all provided plugins
+(if not further specified, the requirements apply to all operating systems):
+
+- `csspin`_
+- vcredist140 (Windows, e.g. via
+  `Microsoft Visual C++ 2015-2022 Redistributable <https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-140>`_)
+
+For using the ``ce_services`` plugin, the following additional software is
+needed:
+
+- build-essential (Debian/Ubuntu, e.g. via ``apt-get install build-essential``)
+- libaio1 (Debian/Ubuntu, if Oracle instances are used, e.g. via ``apt-get install libaio1``)
+- redis-server  (Debian/Ubuntu, e.g. via ``apt-get install redis-server``)

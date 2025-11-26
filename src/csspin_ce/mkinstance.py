@@ -133,16 +133,6 @@ defaults = config(
             "csspin_python.python",
             "csspin_ce.contact_elements",
         ],
-        system=config(
-            debian=config(
-                apt=[
-                    "libaio1",
-                ],
-            ),
-            windows=config(
-                choco=["vcredist140"],
-            ),
-        ),
     ),
 )
 

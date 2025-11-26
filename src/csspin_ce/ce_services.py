@@ -106,14 +106,6 @@ defaults = config(
             "psutil",
             "requests",
         ],
-        system=config(
-            debian=config(
-                apt=[
-                    "redis-server",
-                    "build-essential",  # For building Erlang via make
-                ],
-            ),
-        ),
     ),
 )
 
