@@ -79,3 +79,5 @@ needed:
 - build-essential (Debian/Ubuntu, e.g. via ``apt-get install build-essential``)
 - libaio1 (Debian/Ubuntu, if Oracle instances are used, e.g. via ``apt-get install libaio1``)
 - redis-server  (Debian/Ubuntu, e.g. via ``apt-get install redis-server``)
+- make (Debian/Ubuntu, if using the RabbitMQ service without pre-installed
+  Erlang, e.g. via ``apt-get install make``)

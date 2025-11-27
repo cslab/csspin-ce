@@ -73,6 +73,7 @@ Release Notes
 .. Chores
 .. ------
 
+.. - ce_services: make missing as system requirement (`#111 <https://code.contact.de/qs/spin/spin_ce/-/issues/111>`_)
 .. - Document host system requirements properly (`#110 <https://code.contact.de/qs/spin/spin_ce/-/issues/110>`_)
 
 v4.1.0
