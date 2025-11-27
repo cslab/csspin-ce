@@ -3,10 +3,11 @@ spin:
 plugin_packages:
     - csspin-frontend
     - csspin-java
-    - csspin-python
+    - csspin-python[uv]>=3.0.0
     - ../../..
 plugins:
     - csspin_ce.ce_services
+    - csspin_python.uv_provisioner
 java:
     version: '21'
 python:
@@ -29,3 +30,5 @@ ce_services:
         mirrors:
             - https://apache-proxy.ops.contact.de
             - https://apache-proxy.ops.contact.de/dist
+uv_provisioner:
+    enabled: True

@@ -187,15 +187,17 @@ def ce_services(
                 all_cli_args.append(f"{cli_option_name}={value}")
 
     if cfg.verbosity == Verbosity.QUIET:
-        verbosity_arg = "-q"
+        all_cli_args.append("-q")
     elif cfg.verbosity == Verbosity.INFO:
-        verbosity_arg = "-v"
+        all_cli_args.append("-v")
     elif cfg.verbosity == Verbosity.DEBUG:
-        verbosity_arg = "-vv"
-    else:
-        verbosity_arg = None
+        all_cli_args.append("-vv")
 
-    sh("ce_services", verbosity_arg, *all_cli_args)
+    # Use shell=True so that signals like SIGINT after pressing CTRL+C are being
+    # propagated properly and the gatekepper with its workers don't keep
+    # hanging.
+    cmd = " ".join(["ce_services", *all_cli_args])
+    sh(cmd, shell=True)  # nosec any_other_function_with_shell_equals_true
 
 
 def provision(cfg):  # pylint: disable=too-many-statements
