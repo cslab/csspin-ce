@@ -5,10 +5,12 @@ spin:
     index_url: https://packages.contact.de/tools/stable/+simple/
 plugin_packages:
     - ../../..
+    - csspin-python[uv]~=3.0
 plugins:
     - csspin_ce:
           - ce_services
           - mkinstance
+    - csspin_python.uv_provisioner
 contact_elements:
     umbrella: '16.0'
 ce_services:

@@ -1,10 +1,11 @@
 spin:
     index_url: https://packages.contact.de/tools/stable/+simple/
 plugin_packages:
-    - csspin-python
+    - csspin-python[uv]>=3.0.0
     - ../../..
 plugins:
     - csspin_ce.localization
+    - csspin_python.uv_provisioner
 java:
     version: '21'
 python:
@@ -12,3 +13,5 @@ python:
 node:
     version: '18.20.4'
     mirror: https://nodejs-proxy.ops.contact.de/dist/
+uv_provisioner:
+    enabled: True

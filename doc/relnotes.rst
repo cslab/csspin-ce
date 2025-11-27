@@ -65,6 +65,16 @@ Release Notes
 
 .. Month Day, Year
 
+.. Bug Fixes
+   ---------
+
+..  - Gatekeeper does not stop on "spin ce-services" shutdown (`#102 <https://code.contact.de/qs/spin/spin_ce/-/issues/102>`_)
+
+.. Chores
+.. ------
+
+.. - Document host system requirements properly (`#110 <https://code.contact.de/qs/spin/spin_ce/-/issues/110>`_)
+
 v4.1.0
 ======
 
@@ -78,7 +88,6 @@ Enhancements
 Chores
 ------
 
-- Document host system requirements properly (`#110 <https://code.contact.de/qs/spin/spin_ce/-/issues/110>`_)
 - Add zh to default localize-ce languages (`#109 <https://code.contact.de/qs/spin/spin_ce/-/issues/109>`_)
 - localization: Fail early in case no instance is present (`#105 <https://code.contact.de/qs/spin/spin_ce/-/issues/105>`_)
 - Add release notes to the documentation structure (`#99 <https://code.contact.de/qs/spin/spin_ce/-/issues/99>`_)
