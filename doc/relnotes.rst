@@ -65,8 +65,13 @@ Release Notes
 
 .. Month Day, Year
 
+.. Enhancements
+.. ------------
+
+.. - Let the ce_services task use a dedicated CADDOK_SERVICE_CONFIG (`#113 <https://code.contact.de/qs/spin/spin_ce/-/issues/113>`_)
+
 .. Bug Fixes
-   ---------
+.. ---------
 
 ..  - Gatekeeper does not stop on "spin ce-services" shutdown (`#102 <https://code.contact.de/qs/spin/spin_ce/-/issues/102>`_)
 
