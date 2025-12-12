@@ -197,6 +197,7 @@ def ce_services(
     # propagated properly and the gatekepper with its workers don't keep
     # hanging.
     cmd = " ".join(["ce_services", *all_cli_args])
+    setenv(CADDOK_SERVICE_CONFIG="{CADDOK_BASE}/etcd/spin_ce_services_config.json")
     sh(cmd, shell=True)  # nosec any_other_function_with_shell_equals_true
 
 
