@@ -60,26 +60,26 @@
 Release Notes
 =============
 
-.. Upcoming Release
-.. ================
+v4.2.0
+======
 
-.. Month Day, Year
+December, 18, 2025
 
-.. Enhancements
-.. ------------
+Enhancements
+------------
 
-.. - Let the ce_services task use a dedicated CADDOK_SERVICE_CONFIG (`#113 <https://code.contact.de/qs/spin/spin_ce/-/issues/113>`_)
+- Let the ce_services task use a dedicated CADDOK_SERVICE_CONFIG (`#113 <https://code.contact.de/qs/spin/spin_ce/-/issues/113>`_)
 
-.. Bug Fixes
-.. ---------
+Bug Fixes
+---------
 
-..  - Gatekeeper does not stop on "spin ce-services" shutdown (`#102 <https://code.contact.de/qs/spin/spin_ce/-/issues/102>`_)
+ - Gatekeeper does not stop on "spin ce-services" shutdown (`#102 <https://code.contact.de/qs/spin/spin_ce/-/issues/102>`_)
 
-.. Chores
-.. ------
+Chores
+------
 
-.. - ce_services: make missing as system requirement (`#111 <https://code.contact.de/qs/spin/spin_ce/-/issues/111>`_)
-.. - Document host system requirements properly (`#110 <https://code.contact.de/qs/spin/spin_ce/-/issues/110>`_)
+- ce_services: make missing as system requirement (`#111 <https://code.contact.de/qs/spin/spin_ce/-/issues/111>`_)
+- Document host system requirements properly (`#110 <https://code.contact.de/qs/spin/spin_ce/-/issues/110>`_)
 
 v4.1.0
 ======
