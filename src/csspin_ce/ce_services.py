@@ -90,7 +90,7 @@ defaults = config(
         ),
     ),
     redis=config(
-        version="7.2.4",
+        version="8.4.0",
         install_dir="{spin.data}/redis",
     ),
     tika=config(
@@ -329,13 +329,15 @@ def provision(cfg):  # pylint: disable=too-many-statements
                         / f"redis-windows-{cfg.ce_services.redis.version}.zip"
                     )
                     download(
-                        f"https://github.com/zkteco-home/redis-windows/archive/refs/tags/{cfg.ce_services.redis.version}.zip",  # noqa: E501
+                        "https://github.com/redis-windows/redis-windows/releases/download/"
+                        f"{cfg.ce_services.redis.version}/"
+                        f"Redis-{cfg.ce_services.redis.version}-Windows-x64-msys2.zip",
                         redis_installer_archive,
                     )
                     extract(redis_installer_archive, cfg.ce_services.redis.install_dir)
                     (
                         cfg.ce_services.redis.install_dir
-                        / f"redis-windows-{cfg.ce_services.redis.version}"
+                        / f"Redis-{cfg.ce_services.redis.version}-Windows-x64-msys2"
                     ).rename(
                         redis_install_dir
                     )  # FIXME: Why not using spin.mv?

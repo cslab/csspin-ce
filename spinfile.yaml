@@ -7,10 +7,12 @@ spin:
 
 plugin_packages:
     - csspin-docs
+    - csspin-python[uv]
     - -e .
 
 plugins:
     - csspin_docs.sphinx
+    - csspin_python.uv_provisioner
     - csspin_ce:
           - ce_services
           - ce_support_tools
@@ -54,3 +56,5 @@ build_rules:
             - schemadoc localization --rst -o doc/plugins/localization_schemaref.rst
             - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst
             - schemadoc pkgtest --rst -o doc/plugins/pkgtest_schemaref.rst
+uv_provisioner:
+    enabled: true
