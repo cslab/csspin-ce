@@ -60,6 +60,18 @@
 Release Notes
 =============
 
+v4.2.1
+======
+
+January 12, 2026
+
+Chores
+------
+
+- Update release process documentation and contribution guideline (`#108 <https://code.contact.de/qs/spin/spin_ce/-/issues/108>`_)
+- Use of trusted sources for Redis provision on Windows (`#117 <https://code.contact.de/qs/spin/spin_ce/-/issues/117>`_)
+- Add repository URL information to Wheel metadata (`#119 <https://code.contact.de/qs/spin/spin_ce/-/issues/119>`_)
+
 v4.2.0
 ======
 
