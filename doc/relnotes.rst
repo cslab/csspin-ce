@@ -63,7 +63,7 @@ Release Notes
 v4.2.1
 ======
 
-January 12, 2026
+January 13, 2026
 
 Chores
 ------
