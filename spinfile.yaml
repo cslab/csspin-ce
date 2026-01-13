@@ -32,9 +32,8 @@ ce_services:
 python:
     version: '3.11.9'
     requirements:
-        - sphinx-rtd-theme
+        - sphinx-rtd-theme>=3.1.0
     index_url: https://packages.contact.de/apps/16.0/+simple/
-
 node:
     version: '18.17.1'
     mirror: https://nodejs-proxy.ops.contact.de/dist/
