@@ -18,8 +18,6 @@ node:
 ce_services:
     influxdb:
         enabled: True
-    hivemq:
-        enabled: True
     rabbitmq:
         enabled: True
     solr:

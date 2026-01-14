@@ -51,7 +51,7 @@ within the `spinfile.yaml` configuration file of your project.
       - csspin_ce.mkinstance
 
     python:
-      version: 3.9.8
+      version: 3.10.19
 
 .. NOTE:: Assuming that `my_project` is a component based on CONTACT Elements CE16+.
 
