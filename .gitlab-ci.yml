@@ -2,7 +2,7 @@
 
 include:
     - project: qs/spin/spin_plugin_common
-      ref: v2.0.1
+      ref: v3.0.0
       file: ci/.gitlab-ci.yml
 
 variables:
@@ -12,9 +12,7 @@ variables:
 
 triggered_integration_tests_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
-    image: registry.contact.de/cetest:16.0-8.latest
-    variables:
-        SPIN_TREE_CE_SERVICES__HIVEMQ__ELEMENTS_INTEGRATION__INSTALL_DIR: /opt/hivemq-elements-integration
+    image: registry.contact.de/cetest:16.0-10.latest
     before_script:
         # We need to overwrite this, as spin_plugin_common needs to install jq and
         # asserts that we're root, which isn't the case for cetest. But as jq is
@@ -36,9 +34,7 @@ triggered_integration_tests_windows:
 
 test_linux:
     # Overwrite image to have the necessary tools for ce_services in the CI
-    image: registry.contact.de/cetest:16.0-8.latest
-    variables:
-        SPIN_TREE_CE_SERVICES__HIVEMQ__ELEMENTS_INTEGRATION__INSTALL_DIR: /opt/hivemq-elements-integration
+    image: registry.contact.de/cetest:16.0-10.latest
 
 test_windows:
     variables:

@@ -21,11 +21,10 @@ The ``csspin-ce`` plugin-package for `csspin`_ serves to provide the necessary
 plugins and tools for building and testing CONTACT Elements instances, as well
 as starting and managing its services.
 
-.. The sources can be found at https://code.contact.de/qs/spin/csspin_ce, while
-.. the released versions are available at
-.. https://packages.contact.de/tools/misc/spin-ce.
+The sources can be found at https://github.com/cslab/csspin-ce, while the
+released versions are available at https://pypi.org/project/csspin-ce/.
 
-``csspin-ce`` requires at least Python 3.9.
+``csspin-ce`` requires at least Python 3.10.
 
 .. toctree::
    :maxdepth: 2
