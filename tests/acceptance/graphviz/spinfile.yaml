@@ -1,0 +1,32 @@
+# This spinfile is used to test if the graphviz provisioning was successful.
+spin:
+    project_name: csspin-ce
+    index_url: https://packages.contact.de/tools/stable/+simple/
+plugin_packages:
+    - ../../..
+    - csspin-python[uv]~=3.0
+plugins:
+    - csspin_ce:
+          - ce_services
+          - mkinstance
+    - csspin_python.uv_provisioner
+contact_elements:
+    umbrella: '2026.1'
+ce_services:
+    solr:
+        mirrors:
+            - https://apache-proxy.ops.contact.de
+            - https://apache-proxy.ops.contact.de/dist
+mkinstance:
+    webmake: False
+python:
+    version: '3.11.9'
+    requirements: [cs.web]
+    index_url: https://packages.contact.de/apps/16.1/+simple/
+uv_provisioner:
+    enabled: true
+node:
+    version: '24'
+    mirror: https://nodejs-proxy.ops.contact.de/dist/
+java:
+    version: '21'

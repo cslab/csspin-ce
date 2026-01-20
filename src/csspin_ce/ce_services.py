@@ -25,8 +25,6 @@ provisions all tool necessary for these ce_services.
 import os
 import shutil
 import sys
-import tarfile
-import zipfile
 from tempfile import TemporaryDirectory
 from urllib.error import HTTPError, URLError
 
@@ -37,7 +35,6 @@ from csspin import (
     debug,
     die,
     download,
-    echo,
     exists,
     mkdir,
     mv,
@@ -49,6 +46,8 @@ from csspin import (
     warn,
 )
 from path import Path
+
+from csspin_ce._utils import extract
 
 defaults = config(
     hivemq=config(
@@ -207,47 +206,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     FIXME: This function is too long and should be split into smaller functions.
     """
-
-    def extract(archive, extract_to, member=""):
-        """Unpacks archives"""
-        echo(f"Extracting {archive} to {extract_to}")
-        member = member.replace("\\", "/")
-
-        mode = None
-        if tarfile.is_tarfile(archive):
-            extractor = tarfile.open
-            if archive.endswith(".tar.gz") or archive.endswith(".tgz"):
-                mode = "r:gz"
-            elif archive.endswith(".tar.xz"):
-                mode = "r:xz"
-        elif zipfile.is_zipfile(archive):
-            extractor = zipfile.ZipFile
-            mode = "r"
-        if not mode:
-            die(f"Unsupported archive type {archive}")
-
-        with extractor(  # pylint: disable=possibly-used-before-assignment
-            archive, mode=mode  # pylint: disable=possibly-used-before-assignment
-        ) as arc:
-            if isinstance(arc, tarfile.TarFile):
-                members = (
-                    entity
-                    for entity in arc.getmembers()  # pylint: disable=maybe-no-member
-                    if entity.name.startswith(member)
-                )
-            elif isinstance(arc, zipfile.ZipFile):
-                members = (
-                    entity
-                    for entity in arc.namelist()  # pylint: disable=maybe-no-member
-                    if entity.startswith(member)
-                )
-            else:
-                members = ()
-
-            arc.extractall(
-                members=members,
-                path=extract_to,
-            )  # nosec: tarfile_unsafe_members
 
     def install_traefik(cfg):
         version = cfg.ce_services.traefik.version

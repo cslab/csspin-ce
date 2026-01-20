@@ -29,6 +29,9 @@ ce_services:
         erlang:
             version: '28.0'
 
+mkinstance:
+    webmake: False
+
 python:
     version: '3.11.9'
     requirements:
