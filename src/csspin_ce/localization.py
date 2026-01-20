@@ -20,6 +20,7 @@ Spin wrapper plugin for the localization tool.
 """
 
 import os
+import tempfile
 
 from csspin import (
     Path,
@@ -32,7 +33,7 @@ from csspin import (
 )
 
 defaults = config(
-    xliff_dir="xliff_export",
+    xliff_dir=None,
     target_langs=["ja", "zh"],
     requires=config(
         python=["localization"],
@@ -61,6 +62,11 @@ def localize_ce(
         setenv(CADDOK_BASE=instance)
     if not os.getenv("CADDOK_BASE") or not Path(os.getenv("CADDOK_BASE")).is_dir():
         die("Can't find the CE instance.")
+
+    if cfg.localization.xliff_dir is None:
+        cfg.localization.xliff_dir = tempfile.mkdtemp(
+            prefix=f"l10n_{cfg.spin.project_name}_"
+        )
 
     sh(
         "cdbpkg",
