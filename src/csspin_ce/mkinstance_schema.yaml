@@ -225,3 +225,21 @@ mkinstance:
                     help: |
                         The Azure Account Key is a shared secret key that is used to sign requests made to Azure services.
                         The Secret Access Key should be kept private and should never be shared with anyone.
+        graphviz:
+            type: object
+            help: |
+                Graphviz configuration
+            properties:
+                install_dir:
+                    type: path
+                    help: The installation directory of Graphviz.
+                version:
+                    type: str
+                    help: The version of Graphviz to use.
+                use:
+                    type: path
+                    help: |
+                        The use property can be used to specify an alternative
+                        Graphviz source to use. This is useful to rather use
+                        the system Graphviz installation than the one defined in
+                        spinfile.yaml or ``mkinstance.graphviz.install_dir``.

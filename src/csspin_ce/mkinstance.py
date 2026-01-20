@@ -25,14 +25,19 @@ Create a fresh instance based on spinfile.yaml configuration.
 import getpass
 import os
 import platform
+import shutil
 import socket
+import sys
 import zlib
+from tempfile import TemporaryDirectory
 
 from click import Choice
 from csspin import (
     argument,
     config,
+    debug,
     die,
+    download,
     info,
     mkdir,
     option,
@@ -44,6 +49,8 @@ from csspin import (
 )
 from csspin.tree import ConfigTree
 from path import Path
+
+from csspin_ce._utils import extract
 
 
 def default_id(cfg):
@@ -124,6 +131,7 @@ defaults = config(
         azure_endpoint_url=None,
         azure_account_name=None,
     ),
+    graphviz=config(install_dir="{spin.data}/graphviz", version="14.1.0"),
     requires=config(
         python=["cs.platform"],
         npm=["sass", "yarn"],
@@ -159,6 +167,21 @@ def init(cfg):
         )
     if cfg.mkinstance.base.instance_location.is_dir():
         setenv(CADDOK_BASE=cfg.mkinstance.base.instance_location)
+
+    if cfg.mkinstance.graphviz.use:
+        graphviz = shutil.which(cfg.mkinstance.graphviz.use)
+        if not graphviz:
+            die(
+                f"Cannot find graphviz installation: {cfg.mkinstance.graphviz.use}. "
+                "Please check your configuration."
+            )
+    else:
+        graphviz_bin_dir = (
+            cfg.mkinstance.graphviz.install_dir
+            / cfg.mkinstance.graphviz.version
+            / "bin"
+        )
+        setenv(PATH=os.pathsep.join((graphviz_bin_dir, "{PATH}")))  # noqa: E501
 
 
 def _create_tls_cert(cfg: ConfigTree, cert_dir: Path) -> None:
@@ -206,6 +229,52 @@ def _create_tls_cert(cfg: ConfigTree, cert_dir: Path) -> None:
         f.write(cert.public_bytes(serialization.Encoding.PEM))
 
     info(f"Generated '{tls_key}' and '{tls_cert}'.")
+
+
+def provision(cfg):
+    """
+    Provision tools necessary for mkinstance.
+    """
+
+    def install_graphviz(cfg):
+        if sys.platform == "win32":
+            graphviz_install_dir = (
+                cfg.mkinstance.graphviz.install_dir / cfg.mkinstance.graphviz.version
+            )
+            graphviz = graphviz_install_dir / "bin"
+            if not graphviz.exists():
+                mkdir(cfg.mkinstance.graphviz.install_dir)
+                debug("Installing graphviz")
+                with TemporaryDirectory() as tmp_dir:
+                    graphviz_archive = (
+                        Path(tmp_dir)
+                        / f"graphviz-windows-{cfg.mkinstance.graphviz.version}.zip"
+                    )
+                    download(
+                        f"https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/{cfg.mkinstance.graphviz.version}/windows_10_cmake_Release_Graphviz-{cfg.mkinstance.graphviz.version}-win64.zip",  # noqa: E501
+                        graphviz_archive,
+                    )
+                    extract(graphviz_archive, cfg.mkinstance.graphviz.install_dir)
+                    (
+                        cfg.mkinstance.graphviz.install_dir
+                        / f"Graphviz-{cfg.mkinstance.graphviz.version}-win64"
+                    ).rename(graphviz_install_dir)
+            else:
+                debug(f"Using cached graphviz installation ({graphviz})")
+        elif not shutil.which("dot"):
+            warn(
+                'Cannot provision "graphviz" on Linux.'
+                "Please check the installation requirements of the csspin_ce plugin."
+            )
+
+    if cfg.mkinstance.graphviz.use:
+        if cfg.mkinstance.graphviz.version:
+            warn(
+                "mkinstance.graphviz.version will be ignored, using '{mkinstance.graphviz.use}' instead."
+            )
+
+    if not cfg.mkinstance.graphviz.use:
+        install_graphviz(cfg)
 
 
 @task()
