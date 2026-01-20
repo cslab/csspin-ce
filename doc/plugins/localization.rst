@@ -67,7 +67,7 @@ How to automate localization with csspin_ce.localization?
 
 Internally, the command exports strings from the database of your CONTACT Elements instance
 into XLIFF files. These files are saved at the path specified by ``localization.xliff_dir``,
-which defaults to ``<project_root>/xliff_export``. It then synchronizes strings
+which defaults to ``/tmp/l10n_<project_name>``. It then synchronizes strings
 that have been modified (added, deleted, or changed) within the instance database
 and translates those lacking translations.
 
