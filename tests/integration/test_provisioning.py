@@ -24,7 +24,7 @@ from typing import Callable
 import pytest
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 @pytest.mark.parametrize("umbrella", ("16.0", "2026.2"))
 @pytest.mark.parametrize(
     "plugin", ("ce_services", "mkinstance", "pkgtest", "localize-ce")

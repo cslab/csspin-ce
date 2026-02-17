@@ -12,7 +12,7 @@ plugins:
           - mkinstance
     - csspin_python.uv_provisioner
 contact_elements:
-    umbrella: '16.0'
+    umbrella: '2026.1'
 ce_services:
     traefik:
         tls:
@@ -27,11 +27,13 @@ mkinstance:
 python:
     version: '3.11.9'
     requirements: [cs.web]
-    index_url: https://packages.contact.de/apps/16.0/+simple/
+    index_url: https://packages.contact.de/apps/16.1/+simple/
+    constraints:
+        - https://code.contact.de/sd/constraints.txt/-/raw/16.1/constraints.txt
 uv_provisioner:
     enabled: true
 node:
-    version: '18.17.1'
+    version: '22'
     mirror: https://nodejs-proxy.ops.contact.de/dist/
 java:
     version: '21'

@@ -23,8 +23,7 @@ from typing import Callable
 import pytest
 
 
-@pytest.mark.acceptance()
-@pytest.mark.wip()
+@pytest.mark.acceptance
 def test_graphviz_provisioning(execute_spin: Callable, short_tmp_path: str) -> None:
     """
     Test if the provisioning of graphviz was successful.

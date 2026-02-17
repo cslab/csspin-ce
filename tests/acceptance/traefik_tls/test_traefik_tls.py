@@ -28,7 +28,7 @@ import pytest
 import requests
 
 
-@pytest.mark.acceptance()
+@pytest.mark.acceptance
 def test_traefik_tls(execute_spin: Callable, short_tmp_path: str) -> None:
     """
     Test if an instance can be built with enabled TLS and services being
