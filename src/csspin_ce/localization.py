@@ -34,6 +34,7 @@ from csspin import (
 
 defaults = config(
     xliff_dir=None,
+    target="{spin.project_root}",
     target_langs=["ja", "zh"],
     requires=config(
         python=["localization"],
@@ -87,5 +88,7 @@ def localize_ce(
         ("check" if check_only else "sync"),
         "--source",
         cfg.localization.xliff_dir,
+        "--target",
+        cfg.localization.target,
         *cfg.localization.target_langs,
     )

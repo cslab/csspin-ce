@@ -8,6 +8,9 @@ localization:
         The localization plugin for csspin provides a wrapper
         around the localization (l10n) CLI tool.
     properties:
+        target:
+            type: path
+            help: The root directory of the Python project.
         target_langs:
             type: list
             help: List of target languages for localization.
