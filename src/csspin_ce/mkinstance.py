@@ -360,6 +360,9 @@ def mkinstance(
 
         # Run cdbpkg sync on the new install
         sh("cdbpkg", "--instancedir", instancedir, "sync")
+        setenv(
+            CADDOK_BASE=instancedir
+        )  # Needed, for using this task in custom tasks via the extra_tasks option
     else:
         die(
             "There already exists an instance, if you want to rebuild, try the '--rebuild' option"
