@@ -60,6 +60,17 @@
 Release Notes
 =============
 
+v4.3.1
+======
+
+April 14, 2026
+
+Chores
+------
+
+- Make the mkinstance task usable in extra_tasks (`!118 <https://code.contact.de/qs/spin/spin_ce/-/merge_requests/118>`_)
+- Resolve "Don't enforce the allow list of cfg.contact_elements.umbrella" (`!119 <https://code.contact.de/qs/spin/spin_ce/-/merge_requests/119>`_)
+
 v4.3.0
 ======
 
@@ -67,14 +78,17 @@ February 25, 2026
 
 Enhancements
 ------------
+
 - mkinstance should provision graphviz (`#114 <https://code.contact.de/qs/spin/spin_ce/-/issues/114>`_)
 
 Bug Fixes
 ---------
+
 - The localization plugin doesnt offer a possibility to pass 'target' to the tool (`#128 <https://code.contact.de/qs/spin/spin_ce/-/issues/128>`_)
 
 Chores
 ------
+
 - Calling the localization tool results in useless xliff_exports directory in the project (`#50 <https://code.contact.de/qs/tooling/localization/-/issues/50>`_)
 - Drop Python 3.9 support (`#125 <https://code.contact.de/qs/spin/spin_ce/-/issues/125`_)
 
