@@ -21,7 +21,7 @@ Provides the configuration of `contact_elements.umbrella` which changes the
 behavior of the other plugins of the csspin-ce plugin-package.
 """
 
-from csspin import config, die, interpolate1
+from csspin import config, interpolate1, warn
 
 defaults = config()
 
@@ -29,8 +29,10 @@ defaults = config()
 def configure(cfg):
     """Configure the plugin by enforcing to choose a valid umbrella."""
     version = interpolate1(cfg.contact_elements.umbrella)
-    ALLOWED_VERSIONS = ("16.0", "2026.1", "2026.2")
+    ALLOWED_VERSIONS = ("16.0", "2026.1", "2026.2", "2027.1")
     if version not in ALLOWED_VERSIONS:
-        die(
-            f"Invalid value for contact_elements.umbrella: {version}. Possible values are: {ALLOWED_VERSIONS}"
+        warn(
+            f"Invalid value for contact_elements.umbrella found: {version}. "
+            "This version might not be supported. Possible known values are: "
+            f"{ALLOWED_VERSIONS}"
         )
