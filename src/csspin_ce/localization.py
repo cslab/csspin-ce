@@ -37,7 +37,7 @@ defaults = config(
     target="{spin.project_root}",
     target_langs=["ja", "zh"],
     requires=config(
-        python=["localization"],
+        python=["localization>=2.0.0"],
         spin=["csspin_ce.contact_elements", "csspin_ce.mkinstance"],
     ),
 )
@@ -86,9 +86,8 @@ def localize_ce(
     sh(
         "localization",
         ("check" if check_only else "sync"),
-        "--source",
+        "--languages",
+        ",".join(cfg.localization.target_langs),
         cfg.localization.xliff_dir,
-        "--target",
         cfg.localization.target,
-        *cfg.localization.target_langs,
     )
