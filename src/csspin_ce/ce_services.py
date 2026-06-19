@@ -36,6 +36,7 @@ from csspin import (
     die,
     download,
     exists,
+    interpolate1,
     mkdir,
     mv,
     option,
@@ -74,7 +75,7 @@ defaults = config(
         ),
     ),
     solr=config(
-        version="9.8.1",
+        version="",
         install_dir="{spin.data}/solr",
         version_postfix="-slim",
         mirrors=["https://downloads.apache.org/", "https://archive.apache.org/dist/"],
@@ -148,6 +149,20 @@ def extract_service_config(cfg):
         additional_cfg["rabbitmq"] = True
 
     return additional_cfg
+
+
+def _default_solr_version():
+    umbrella = interpolate1("{contact_elements.umbrella}")
+    if umbrella in ("16.0", "2026.1", "2026.2"):
+        return "9.10.1"
+    else:
+        return "10.0.0"
+
+
+def configure(cfg):
+    """Spin's configure hook"""
+    if not interpolate1("{ce_services.solr.version}"):
+        cfg.ce_services.solr.version = _default_solr_version()
 
 
 @task(aliases=["ce_services"])
