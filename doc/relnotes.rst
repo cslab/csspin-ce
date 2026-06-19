@@ -60,6 +60,17 @@
 Release Notes
 =============
 
+v4.3.2
+======
+
+June 19, 2026
+
+Chores
+------
+
+- Update Localization CLI (`!122 <https://code.contact.de/qs/spin/spin_ce/-/merge_requests/122>`_)
+- Support solr 10 (`#138 <https://code.contact.de/qs/spin/spin_ce/-/work_items/138>`_)
+
 v4.3.1
 ======
 
