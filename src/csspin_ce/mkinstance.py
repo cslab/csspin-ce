@@ -304,8 +304,10 @@ def mkinstance(
     """
     Run the 'mkinstance' command for development.
 
-    If webmake is enabled, the JS bundles are built as well, followed by a
-    cdbpkg sync.
+    If webmake is enabled, a 'webmake devupdate' is run, followed by a cdbpkg
+    sync. The JS bundles themselves are not built here; 'setuptools_ce' already
+    builds them when 'csspin_python' installs the local package during
+    provisioning.
     """
     instancedir = cfg.mkinstance.base.instance_location
     instance_default_location = default_location(cfg)
@@ -356,7 +358,6 @@ def mkinstance(
 
         if cfg.mkinstance.webmake:
             sh("webmake", "--instancedir", instancedir, "devupdate")
-            sh("webmake", "--instancedir", instancedir, "buildall", "--parallel")
 
         # Run cdbpkg sync on the new install
         sh("cdbpkg", "--instancedir", instancedir, "sync")

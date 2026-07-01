@@ -54,8 +54,6 @@ def test_traefik_tls(execute_spin: Callable, short_tmp_path: str) -> None:
 
     with subprocess.Popen(
         shlex.split(ce_services_cmd, posix=sys.platform != "win32"),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
         encoding="utf-8",
     ) as ce_services_process:
         try:
