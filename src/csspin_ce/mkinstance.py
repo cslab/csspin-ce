@@ -264,7 +264,7 @@ def provision(cfg):
         elif not shutil.which("dot"):
             warn(
                 'Cannot provision "graphviz" on Linux.'
-                "Please check the installation requirements of the csspin_ce plugin."
+                " Please check the installation requirements of the csspin_ce plugin."
             )
 
     if cfg.mkinstance.graphviz.use:
