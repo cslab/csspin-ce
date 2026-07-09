@@ -23,6 +23,8 @@ python:
     version: '3.11.9'
     requirements: [cs.web]
     index_url: https://packages.contact.de/apps/16.1/+simple/
+    constraints:
+        - https://code.contact.de/sd/constraints.txt/-/raw/16.1/constraints.txt
 uv_provisioner:
     enabled: true
 node:
