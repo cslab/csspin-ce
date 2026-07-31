@@ -25,6 +25,7 @@ provisions all tool necessary for these ce_services.
 import os
 import shutil
 import sys
+from http.client import IncompleteRead
 from tempfile import TemporaryDirectory
 from urllib.error import HTTPError, URLError
 
@@ -230,7 +231,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
         if not traefik.exists():
             debug("Installing Traefik")
-            mkdir(traefik_install_dir)
 
             archive = (
                 f"traefik_v{version}_windows_amd64.zip"
@@ -256,9 +256,12 @@ def provision(cfg):  # pylint: disable=too-many-statements
         solr_name = Path(f"solr-{version}{postfix}")
         solr_path = install_dir / solr_name
 
-        if not solr_path.exists():
+        if exists(
+            solr_path / "bin" / ("solr.cmd" if sys.platform == "win32" else "solr")
+        ):
+            debug(f"Using cached Apache Solr ({solr_path})")
+        else:
             debug("Installing Apache Solr")
-            mkdir(install_dir)
             archive = f"{solr_name}.tgz"
 
             with TemporaryDirectory() as tmp_dir:
@@ -278,23 +281,24 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     except URLError:
                         warn(f"{mirror} currently not reachable")
                         continue
+                    except IncompleteRead:
+                        warn(f"Download of Solr from {url} was incomplete")
+                        continue
                 else:
                     die(  # pylint: disable=broad-exception-raised
                         "Could not download Apache Solr from any of the mirrors."
                     )
 
                 extract(archive_path, install_dir, solr_name)
-        else:
-            debug(f"Using cached Apache Solr ({solr_path})")
 
     def install_redis(cfg):
         if sys.platform == "win32":
             redis_install_dir = (
                 cfg.ce_services.redis.install_dir / cfg.ce_services.redis.version
             )
-            redis = redis_install_dir / "redis-server.exe"
-            if not redis.exists():
-                mkdir(cfg.ce_services.redis.install_dir)
+            if exists(redis_install_dir / "redis-server.exe"):
+                debug(f"Using cached redis-server ({redis_install_dir})")
+            else:
                 debug("Installing redis-server")
                 with TemporaryDirectory() as tmp_dir:
                     redis_installer_archive = (
@@ -308,14 +312,14 @@ def provision(cfg):  # pylint: disable=too-many-statements
                         redis_installer_archive,
                     )
                     extract(redis_installer_archive, cfg.ce_services.redis.install_dir)
-                    (
+
+                    if exists(redis_install_dir):
+                        rmtree(redis_install_dir)
+                    mv(
                         cfg.ce_services.redis.install_dir
-                        / f"Redis-{cfg.ce_services.redis.version}-Windows-x64-msys2"
-                    ).rename(
-                        redis_install_dir
-                    )  # FIXME: Why not using spin.mv?
-            else:
-                debug(f"Using cached redis-server ({redis})")
+                        / f"Redis-{cfg.ce_services.redis.version}-Windows-x64-msys2",
+                        redis_install_dir,
+                    )
 
         elif not shutil.which("redis-server"):
             die(
@@ -334,16 +338,13 @@ def provision(cfg):  # pylint: disable=too-many-statements
             Downloads the zip from provided URL and moves the desired content
             into the target directory.
             """
-            if exists(target_directory):
-                rmtree(target_directory)
-            mkdir(target_directory)
-
             with TemporaryDirectory() as tmp_dir:
                 download(
                     url=url,
                     location=(download_file := Path(tmp_dir) / zipfile_name),
                 )
                 extract(download_file, tmp_dir)
+                mkdir(target_directory)
 
                 for f in os.listdir(
                     (
@@ -362,7 +363,12 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
         hivemq_version = cfg.ce_services.hivemq.version
         hivemq_base_dir = cfg.ce_services.hivemq.install_dir / hivemq_version
-        if exists(hivemq_base_dir):
+
+        if exists(
+            hivemq_base_dir
+            / "bin"
+            / ("run.bat" if sys.platform == "win32" else "run.sh")
+        ):
             debug(f"Using cached HiveMQ ({hivemq_base_dir})")
         else:
             debug(f"Installing HiveMQ {hivemq_version}")
@@ -390,10 +396,11 @@ def provision(cfg):  # pylint: disable=too-many-statements
 
     def install_influxdb(cfg):
         version = cfg.ce_services.influxdb.version
-        if not (
-            influxdb_dir := cfg.ce_services.influxdb.install_dir / version
-        ).exists():
-            mkdir(influxdb_dir)
+        influxdb_dir = cfg.ce_services.influxdb.install_dir / version
+
+        if exists(influxdb_dir / f"influxd{cfg.platform.exe}"):
+            debug(f"Using cached InfluxDB ({influxdb_dir})")
+        else:
             debug(f"Installing InfluxDB {version}")
             archive = (
                 f"influxdb-{version}_windows_amd64.zip"
@@ -407,6 +414,7 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     (archive_path := Path(tmp_dir) / archive),
                 )
                 extract(archive_path, tmp_dir)
+                mkdir(influxdb_dir)
 
                 if (
                     sources := Path(tmp_dir) / f"influxdb-{version}-1"
@@ -424,17 +432,21 @@ def provision(cfg):  # pylint: disable=too-many-statements
                         debug("Moving" f" {(source := sources / f)} -> {influxdb_dir}")
                         shutil.move(source, influxdb_dir)
                         os.chmod((f := influxdb_dir / f), os.stat(f).st_mode | S_IEXEC)
-        else:
-            debug(f"Using cached InfluxDB ({influxdb_dir})")
 
     def install_rabbitmq(cfg):
         """Install RabbitMQ server from GitHub."""
         version = str(cfg.ce_services.rabbitmq.version)
         rabbitmq_install_dir = Path(cfg.ce_services.rabbitmq.install_dir)
 
-        if not (rabbitmq_install_dir / version).exists():
+        if exists(
+            rabbitmq_install_dir
+            / version
+            / "sbin"
+            / ("rabbitmq-server.bat" if sys.platform == "win32" else "rabbitmq-server")
+        ):
+            debug(f"Using cached rabbitmq-server ({rabbitmq_install_dir / version})")
+        else:
             debug("Installing RabbitMQ")
-            mkdir(rabbitmq_install_dir)
 
             rabbitmq_name = f"rabbitmq_server-{version}"
             base_url = "https://github.com/rabbitmq/rabbitmq-server/releases/download"
@@ -449,19 +461,20 @@ def provision(cfg):  # pylint: disable=too-many-statements
                     (archive_path := Path(tmp_dir) / archive),
                 )
                 extract(archive_path, rabbitmq_install_dir, rabbitmq_name)
-            mv(rabbitmq_install_dir / rabbitmq_name, rabbitmq_install_dir / version)
 
-        else:
-            debug(f"Using cached rabbitmq-server ({rabbitmq_install_dir / version})")
+            if (rabbitmq_version_dir := rabbitmq_install_dir / version).exists():
+                rmtree(rabbitmq_version_dir)
+            mv(rabbitmq_install_dir / rabbitmq_name, rabbitmq_version_dir)
 
     def install_erlang(cfg):
         """Installation of the Erlang programming language"""
         version = str(cfg.ce_services.rabbitmq.erlang.version)
         erlang_install_dir = Path(cfg.ce_services.rabbitmq.erlang.install_dir)
 
-        if not (erlang_install_dir / version).exists():
+        if exists(erlang_install_dir / version / "bin" / f"erl{cfg.platform.exe}"):
+            debug(f"Using cached Erlang ({erlang_install_dir / version})")
+        else:
             debug(f"Installing Erlang {version}")
-            mkdir(erlang_install_dir)
             base_url = f"https://github.com/erlang/otp/releases/download/OTP-{version}"
             if sys.platform == "win32":
                 erlang_name = f"otp_win64_{version}"
@@ -505,7 +518,6 @@ def provision(cfg):  # pylint: disable=too-many-statements
         if exists(tika_path):
             return
 
-        mkdir(cfg.ce_services.tika.install_dir)
         url_path = f"tika/{cfg.ce_services.tika.version}/tika-server-standard-{cfg.ce_services.tika.version}.jar"  # noqa: E501
         for mirror in cfg.ce_services.tika.mirrors:
             if mirror[-1] == "/":
@@ -520,6 +532,9 @@ def provision(cfg):  # pylint: disable=too-many-statements
                 continue
             except URLError:
                 warn(f"{mirror} currently not reachable")
+                continue
+            except IncompleteRead:
+                warn(f"Download of Tika from {url} was incomplete")
                 continue
         else:
             die(  # pylint: disable=broad-exception-raised
