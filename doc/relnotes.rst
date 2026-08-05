@@ -53,7 +53,7 @@
     Chores
     ------
 
-    - Add release notes to the documentation structure (`#99 <https://code.contact.de/qs/spin/spin_ce/-/issues/99>`_)
+    - Add release notes to the documentation structure (`#99 <https://code.contact.de/pod/components/csspin-ce/-/issues/99>`_)
 
 
 =============
@@ -68,8 +68,8 @@ June 19, 2026
 Chores
 ------
 
-- Update Localization CLI (`!122 <https://code.contact.de/qs/spin/spin_ce/-/merge_requests/122>`_)
-- Support solr 10 (`#138 <https://code.contact.de/qs/spin/spin_ce/-/work_items/138>`_)
+- Update Localization CLI (`!122 <https://code.contact.de/pod/components/csspin-ce/-/merge_requests/122>`_)
+- Support solr 10 (`#138 <https://code.contact.de/pod/components/csspin-ce/-/work_items/138>`_)
 
 v4.3.1
 ======
@@ -79,8 +79,8 @@ April 14, 2026
 Chores
 ------
 
-- Make the mkinstance task usable in extra_tasks (`!118 <https://code.contact.de/qs/spin/spin_ce/-/merge_requests/118>`_)
-- Resolve "Don't enforce the allow list of cfg.contact_elements.umbrella" (`!119 <https://code.contact.de/qs/spin/spin_ce/-/merge_requests/119>`_)
+- Make the mkinstance task usable in extra_tasks (`!118 <https://code.contact.de/pod/components/csspin-ce/-/merge_requests/118>`_)
+- Resolve "Don't enforce the allow list of cfg.contact_elements.umbrella" (`!119 <https://code.contact.de/pod/components/csspin-ce/-/merge_requests/119>`_)
 
 v4.3.0
 ======
@@ -90,18 +90,18 @@ February 25, 2026
 Enhancements
 ------------
 
-- mkinstance should provision graphviz (`#114 <https://code.contact.de/qs/spin/spin_ce/-/issues/114>`_)
+- mkinstance should provision graphviz (`#114 <https://code.contact.de/pod/components/csspin-ce/-/issues/114>`_)
 
 Bug Fixes
 ---------
 
-- The localization plugin doesnt offer a possibility to pass 'target' to the tool (`#128 <https://code.contact.de/qs/spin/spin_ce/-/issues/128>`_)
+- The localization plugin doesnt offer a possibility to pass 'target' to the tool (`#128 <https://code.contact.de/pod/components/csspin-ce/-/issues/128>`_)
 
 Chores
 ------
 
-- Calling the localization tool results in useless xliff_exports directory in the project (`#50 <https://code.contact.de/qs/tooling/localization/-/issues/50>`_)
-- Drop Python 3.9 support (`#125 <https://code.contact.de/qs/spin/spin_ce/-/issues/125`_)
+- Calling the localization tool results in useless xliff_exports directory in the project (`#50 <https://code.contact.de/pod/tools/localization/-/issues/50>`_)
+- Drop Python 3.9 support (`#125 <https://code.contact.de/pod/components/csspin-ce/-/issues/125`_)
 
 v4.2.1
 ======
@@ -111,9 +111,9 @@ January 14, 2026
 Chores
 ------
 
-- Update release process documentation and contribution guideline (`#108 <https://code.contact.de/qs/spin/spin_ce/-/issues/108>`_)
-- Use of trusted sources for Redis provision on Windows (`#117 <https://code.contact.de/qs/spin/spin_ce/-/issues/117>`_)
-- Add repository URL information to Wheel metadata (`#119 <https://code.contact.de/qs/spin/spin_ce/-/issues/119>`_)
+- Update release process documentation and contribution guideline (`#108 <https://code.contact.de/pod/components/csspin-ce/-/issues/108>`_)
+- Use of trusted sources for Redis provision on Windows (`#117 <https://code.contact.de/pod/components/csspin-ce/-/issues/117>`_)
+- Add repository URL information to Wheel metadata (`#119 <https://code.contact.de/pod/components/csspin-ce/-/issues/119>`_)
 
 v4.2.0
 ======
@@ -123,18 +123,18 @@ December, 18, 2025
 Enhancements
 ------------
 
-- Let the ce_services task use a dedicated CADDOK_SERVICE_CONFIG (`#113 <https://code.contact.de/qs/spin/spin_ce/-/issues/113>`_)
+- Let the ce_services task use a dedicated CADDOK_SERVICE_CONFIG (`#113 <https://code.contact.de/pod/components/csspin-ce/-/issues/113>`_)
 
 Bug Fixes
 ---------
 
- - Gatekeeper does not stop on "spin ce-services" shutdown (`#102 <https://code.contact.de/qs/spin/spin_ce/-/issues/102>`_)
+ - Gatekeeper does not stop on "spin ce-services" shutdown (`#102 <https://code.contact.de/pod/components/csspin-ce/-/issues/102>`_)
 
 Chores
 ------
 
-- ce_services: make missing as system requirement (`#111 <https://code.contact.de/qs/spin/spin_ce/-/issues/111>`_)
-- Document host system requirements properly (`#110 <https://code.contact.de/qs/spin/spin_ce/-/issues/110>`_)
+- ce_services: make missing as system requirement (`#111 <https://code.contact.de/pod/components/csspin-ce/-/issues/111>`_)
+- Document host system requirements properly (`#110 <https://code.contact.de/pod/components/csspin-ce/-/issues/110>`_)
 
 v4.1.0
 ======
@@ -144,11 +144,11 @@ November 18, 2025
 Enhancements
 ------------
 
-- Add ``--check-only`` option to localize_ce task (`#104 <https://code.contact.de/qs/spin/spin_ce/-/issues/104>`_)
+- Add ``--check-only`` option to localize_ce task (`#104 <https://code.contact.de/pod/components/csspin-ce/-/issues/104>`_)
 
 Chores
 ------
 
-- Add zh to default localize-ce languages (`#109 <https://code.contact.de/qs/spin/spin_ce/-/issues/109>`_)
-- localization: Fail early in case no instance is present (`#105 <https://code.contact.de/qs/spin/spin_ce/-/issues/105>`_)
-- Add release notes to the documentation structure (`#99 <https://code.contact.de/qs/spin/spin_ce/-/issues/99>`_)
+- Add zh to default localize-ce languages (`#109 <https://code.contact.de/pod/components/csspin-ce/-/issues/109>`_)
+- localization: Fail early in case no instance is present (`#105 <https://code.contact.de/pod/components/csspin-ce/-/issues/105>`_)
+- Add release notes to the documentation structure (`#99 <https://code.contact.de/pod/components/csspin-ce/-/issues/99>`_)

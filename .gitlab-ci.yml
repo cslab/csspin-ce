@@ -1,8 +1,8 @@
 # -*- mode: yaml; coding: utf-8 -*-
 
 include:
-    - project: qs/spin/spin_plugin_common
-      ref: v4.0.0
+    - project: pod/tools/spin_plugin_common
+      ref: v4.0.1
       file: ci/.gitlab-ci.yml
 
 variables:
