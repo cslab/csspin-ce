@@ -30,6 +30,7 @@ import socket
 import sys
 import zlib
 from tempfile import TemporaryDirectory
+from typing import Sequence
 
 from click import Choice
 from csspin import (
@@ -68,6 +69,14 @@ def default_id(cfg):
 def default_location(cfg):
     """Compute a default location for the instance."""
     return Path(cfg.spin.project_root) / cfg.mkinstance.dbms
+
+
+def default_yarn_version(cfg):
+    """Compute the default yarn package to install."""
+    if cfg.contact_elements.umbrella in ("16.0", "2026.1", "2026.2"):
+        return "yarn"
+    else:
+        return "@yarnpkg/cli-dist"
 
 
 defaults = config(
@@ -134,7 +143,7 @@ defaults = config(
     graphviz=config(install_dir="{spin.data}/graphviz", version="14.1.0"),
     requires=config(
         python=["cs.platform"],
-        npm=["sass", "yarn"],
+        npm=["sass", default_yarn_version],
         spin=[
             "csspin_java.java",
             "csspin_frontend.node",
@@ -154,6 +163,10 @@ def configure(cfg):
                 conftree[k] = v(cfg)
             elif isinstance(v, ConfigTree):
                 compute_values(v)
+            elif isinstance(v, Sequence):
+                for i, elem in enumerate(v):
+                    if callable(v[i]):
+                        v[i] = elem(cfg)
 
     compute_values(cfg.mkinstance)
 
