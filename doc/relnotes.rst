@@ -60,6 +60,41 @@
 Release Notes
 =============
 
+v5.0.0
+======
+
+August 14, 2026
+
+Breaking Changes
+----------------
+
+- ``mkinstance`` installs yarn modern (``@yarnpkg/cli-dist``) instead of
+  legacy yarn for ``contact_elements`` umbrella versions after ``2026.2``
+  (`#139 <https://code.contact.de/pod/components/csspin-ce/-/work_items/139>`_)
+
+Bug Fixes
+---------
+
+- Fix empty directories left in ``spin.data`` after a failed ``ce_services``
+  provision for influxdb, hivemq, rabbitmq, erlang, redis, solr, and traefik
+  (`#134 <https://code.contact.de/pod/components/csspin-ce/-/work_items/134>`_)
+
+Chores
+------
+
+- ``mkinstance`` no longer rebuilds JS bundles that ``setuptools_ce`` already
+  built during provisioning
+  (`#131 <https://code.contact.de/pod/components/csspin-ce/-/work_items/131>`_)
+- Fix missing space in an ``mkinstance`` warning message
+  (`#129 <https://code.contact.de/pod/components/csspin-ce/-/work_items/129>`_)
+- Let the graphviz test use ``constraints.txt``
+  (`!128 <https://code.contact.de/pod/components/csspin-ce/-/merge_requests/128>`_)
+- Add SonarQube analysis
+  (`!129 <https://code.contact.de/pod/components/csspin-ce/-/merge_requests/129>`_)
+- Update CI includes and stale references after the move to
+  ``pod/components``
+  (`!131 <https://code.contact.de/pod/components/csspin-ce/-/merge_requests/131>`_)
+
 v4.3.2
 ======
 
