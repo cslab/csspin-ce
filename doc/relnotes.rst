@@ -136,7 +136,7 @@ Chores
 ------
 
 - Calling the localization tool results in useless xliff_exports directory in the project (`#50 <https://code.contact.de/pod/tools/localization/-/issues/50>`_)
-- Drop Python 3.9 support (`#125 <https://code.contact.de/pod/components/csspin-ce/-/issues/125`_)
+- Drop Python 3.9 support (`#125 <https://code.contact.de/pod/components/csspin-ce/-/issues/125>`_)
 
 v4.2.1
 ======

@@ -20,22 +20,24 @@ plugins:
           - pkgtest
 
 contact_elements:
-    umbrella: '16.0'
+    umbrella: '2026.1'
 
 python:
     version: '3.11.9'
     requirements:
-        - sphinx-rtd-theme
+        - sphinx-rtd-theme>=3.1.0
     aws_auth:
         # required to access Codeartifact for cs.platform, cs.web, ce_services
         enabled: True
-        static_oidc: True
+        index: 16.1/simple
         key_duration: 600 # 10 minutes
         role_arn: '{CS_AWS_OIDC_ROLE_ARN}'
         client_id: '{CS_AWS_OIDC_CLIENT_ID}'
+    requires:
+        python: []
 
 node:
-    version: '18.17.1'
+    version: '22'
 
 sphinx:
     docs: doc
@@ -51,6 +53,20 @@ build_rules:
         spin:
             - schemadoc ce_services --rst -o doc/plugins/ce_services_schemaref.rst
             - schemadoc contact_elements --rst -o doc/plugins/contact_elements_schemaref.rst
+            - schemadoc localization --rst -o doc/plugins/localization_schemaref.rst
             - schemadoc mkinstance --rst -o doc/plugins/mkinstance_schemaref.rst
             - schemadoc pkgtest --rst -o doc/plugins/pkgtest_schemaref.rst
-            - schemadoc localization --rst -o doc/plugins/localization_schemaref.rst
+
+# ------------------------------------------------------------------------------
+# The following config ensures that we don't install unnecessary dependencies
+localization:
+    requires:
+        python: []
+
+ce_support_tools:
+    requires:
+        python: []
+
+pkgtest:
+    requires:
+        python: []

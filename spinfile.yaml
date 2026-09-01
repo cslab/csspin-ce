@@ -16,6 +16,7 @@ plugins:
     - csspin_ce:
           - ce_services
           - ce_support_tools
+          - contact_elements
           - localization
           - mkinstance
           - pkgtest
